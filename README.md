@@ -27,3 +27,5 @@ In *default.yaml* können Paramter eingestellt werden, Latex-Pakete bitte in *pr
 * http://kesdev.com/you-got-latex-in-my-markdown/
 * https://guides.github.com/features/mastering-markdown/
 
+Inspiration: https://github.com/dipdi/aub-skript
+
