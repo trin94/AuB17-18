@@ -4,7 +4,7 @@ author: Mitschrieb
 date: 17.10.2017
 abstract: |
   Organisatorisches, Randomisierte Algorithmen (Closest Pair).
-  Das hier ist kein Mitschreibservice. Bitte überprüft
+  **Das hier ist kein Mitschreibservice.** Bitte überprüft
   insbesondere die Formeln auf ihre Richtigkeit und korrigiert falsche Angaben.
   Auch an der Optik darf geschraubt werden.
 ---
@@ -18,7 +18,7 @@ Es gibt einen Schein. Um diesen Schein zu bekommen, müssen die folgenden Voraus
 Pro Übungsblatt wird in der Regel eine Woche Bearbeitungszeit eingeräumt.
 Wer Aufgaben abgibt, "votiert" automatsich für diese Aufgaben.
 Falls die Aufgaben im Zweifel unzureichend vorgerechnet werden,
-werden 0 Punkte für das gesamte Blatt vergeben.
+gibt es 0 Punkte für das gesamte Blatt.
 
 # Randomisierte Algorithmen
 Randomisierte Algorithmen sind Algorithmen,
@@ -30,7 +30,7 @@ Randomisierte Algorithmen werden nach "dem Verbrauch von Zufall" bewertet,
 denn Zufall zu erzeugen, ist nicht so ohne Weiteres möglich (Zufall zu "erzeugen" ist *teuer*).
 Im Gegensatz dazu bewertet man "normale" Algorithmen nach Platz- und Zeitbedarf.
 
-## Closest Pair (Randomisiertem Algorithmus)
+## Closest Pair (Randomisiert)
 Gegeben seien $n$ Punkte im $R^2$
 
 \begin{figure}[htb]
@@ -59,17 +59,17 @@ ergeben. Ein Prozessor mit 1 GHz Taktfrequenz schafft
 
 | n         | Rechnung                  |                             | Ergbnis |
 |-----------|---------------------------|-----------------------------|---------|
-| = 100     | $100^2 \cdot 10^{-9}$     | $=10^{-5}$                  | 10$\mu$s|
-| = 1000    | $1000^2 \cdot 10^{-9}$    | $=10^{-3}$                  | 1ms     |
-| = 10000   | $10000^2 \cdot 10^{-9}$   | $=10$                       | 10s     |
+| = 100     | $100^2 \cdot 10^{-9}$     | $=10^{-5}$                  | 10 $\mu$s|
+| = 1000    | $1000^2 \cdot 10^{-9}$    | $=10^{-3}$                  | 1 ms     |
+| = 10000   | $10000^2 \cdot 10^{-9}$   | $=10$                       | 10 s     |
 | = 1000000 | $1000000^2 \cdot 10^{-9}$ | $=10^3$                     | 15 min  |
-$O(n^2)$ ist für das Problem (bzw. so gut wie alle Probleme) nicht praktikabel.
+$O(n^2)$ ist für das Problem nicht praktikabel.
 
 ### Randomisierter Algorithmus für CP
 
 Ein randomisierter Algorithmus mit *erwarteter Laufzeit*
 (Varianten: Glück & Pech) hat eine Laufzeit von $O(n)$.
-Er wird aus folgendem inkrementellem Ansatz hergeleitet:
+Er wird aus folgendem inkrementellen Ansatz hergeleitet:
 
 Zuerst wird die Datenmenge $P = \{ P_1, P_2, P_3, ..., P_n \}$ betrachtet.
 Sei nun $\delta_i$ die CP-Distanz in der Menge $P$.
@@ -90,6 +90,7 @@ So kann nun ein Gitter erzeugt werden, das eine Maschenweite
 \label{fig:CP_b}
 \end{figure}
 
+\newpage
 Das Einfügen folgt einem einfachen Ablauf
 
 1. Lokalisiere $P_{i+1}$ im Gitter (orange)
@@ -106,17 +107,17 @@ So bleibt eine Wahrscheinlichkeit von $\frac{2}{i+1}$ dafür, dass der nächste 
 Die erwarteten Kosten des Einfügens sind
 
 \begin{equation*}
-\leq \underbrace{\frac{2}{i+1} \cdot O(n+1)}_{schlechter Fall} + \underbrace{O(1)}_{guter Fall} = O(1) + O(1) = O(1)
+\leq \underbrace{\frac{2}{i+1} \cdot O(n)}_{schlechter Fall} + \underbrace{O(1)}_{guter Fall} = O(1) + O(1) = O(1)
 \end{equation*}
 
-Damit lässt sich der Erwartungswert berechnen zu:
+Damit lässt sich der Erwartungswert berechnen zu
 
 \begin{equation*}
 E\left[ \sum^{n}_{i=1}(Kosten\ für\ Einfügen\ von\ P_i)\right] = \sum^{n}_{i=1}E[Kosten\ für\ Einfügen\ von\ P_i] \\
  = \sum^{n}_{i=1}O(1) = O(n)
 \end{equation*}
 
-**Lemma**: Die Wahrscheinlichkeit, beim Einfügen von $P_{i+1}$ das Gitter neu aufzubauen zu müssen ist $< \frac{2}{i+1}$.
+**Lemma**: Die Wahrscheinlichkeit, beim Einfügen von $P_{i+1}$ das Gitter neu aufbauen zu müssen, ist $< \frac{2}{i+1}$.
 
 **Beweis**: Das Gitter muss genau dann neu aufgebaut werden, wenn $P_{i+1}$
 einer der beiden Punkte ist, welche das CP in der Menge der ersten $i+1$ Punkte bestimmen.
@@ -130,18 +131,17 @@ Falls CP eindeutig:
 ### Closest Pair mit deterministischem Algorithmus
 
 Closest Pair kann in $O(n \cdot log(n))$ berechnet werden.
-Es kann sogar gezeigt werden, dass CP mindestens $O(n \cdot log(n))$ braucht.
+Es kann sogar gezeigt werden, dass CP mindestens $\Omega(n \cdot log(n))$ braucht.
 
 | n         | Rechnung                  |                             | Ergbnis |
 |-----------|---------------------------|-----------------------------|---------|
 | = 1000000 | $10^6 \cdot 6 \cdot  10^{-9}$ |                         | 6 ms    |
 
-___
-
+\newpage
 #Anhang
 ## Zufallsvariable und Erwartungswert
 Sei $Y$ eine Zufallsvariable, zum Beispiel *Augenzahl beim Wurf mit einem normalen und fairen Würfel*. \newline
-Der Erwartungswert berechnet sich
+Der Erwartungswert berechnet sich zu
 
 \begin{equation*}
 E[X] = \sum Ereignis \cdot P(Ereignis)
