@@ -1,0 +1,152 @@
+\documentclass{scrartcl}% siehe <http://www.komascript.de>
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{cancel}
+\usepackage{hyperref}
+\usepackage{listings}
+
+\newtheorem{theorem}{Lemma}
+
+\newcommand{\includepic}[2]{\includegraphics[width=#2\textwidth,height=#2\textheight,keepaspectratio]{#1}}
+
+\usepackage[yyyymmdd,hhmm]{datetime}
+
+% Base path of images
+\usepackage{graphicx}
+\graphicspath{ {../lectures-img/} }
+
+\begin{document}
+    % ----------------------------------------------------------------------------
+    \subject{Vorlesungsmitschrieb}
+    \title{Algorithmen und Berechenbarkeit}
+    \subtitle{Vorlesung 02}
+    \date{Letztes Update: \today \ - \currenttime \ Uhr}
+    \maketitle
+    % ----------------------------------------------------------------------------
+
+    \subsection*{Min-Cut-Problem}
+    \label{subsec:mincutproblem}
+
+    \subsubsection*{Cut}
+    \label{subsubsec:cut}
+
+    Ein Cut im Graphen unterteilt einen Graphen in zwei Hälften.
+    Das heißt, es gibt Kanten, bei denen ein Knoten in einer
+    Hälfte und bei denen der andere Knoten in der anderen Hälfte ist.
+
+    \begin{figure}[htb]
+        \centering
+        \includepic{lec_02_a}{0.35}
+        \caption{Ein Cut mit Wert 3}
+    \end{figure}
+
+    Der Wert des $Cut(A,G)$ ist seine Kardinalität |cut(A,G)|.
+
+    \subsubsection*{Min-Cut}
+    \label{subsubsec:mincut}
+    Der Min-Cut beschreibt den Cut, bei dem am wenigsten Kanten "`geschnitten"' werden müssen,
+    um den Graphen in zwei Hälften zu teilen.
+
+    \begin{figure}[htb]
+        \centering
+        \includepic{lec_02_b}{0.35}
+        \caption{Der Min-Cut mit Wert 2 (hier nicht eindeutig)}
+    \end{figure}
+
+    Ein realer Anwendungsfall wäre durch ein Netzwerk beschrieben,
+    in dem Daten von einem Knoten zum anderen übertragen werden müssen.
+    Siehe dazu auch \url{https://en.wikipedia.org/wiki/Max-flow_min-cut_theorem}
+
+    \subsubsection*{Kargers Min-Cut Algorithmus}
+    \label{subsubsec:kargersMincutAlgorithmus}
+
+    Kargers-Min-Cut-Algorithmus beschreibt einen randomisierten Algorithmus, der mit einer
+    Wahrscheinlichkeit von $\frac{1}{n^2}$ das richtige Ergebnis berechnet.
+    Als zentrale Operation dient hier die Kantenkontraktion:
+
+    \begin{figure}[htb]
+        \centering
+        \includepic{lec_02_c}{0.7}
+        \caption{Kantenkontraktion der Knoten $v, w$}
+    \end{figure}
+
+    Der Algorithmus lässt sich wie folgt beschreiben:
+
+    \begin{lstlisting}
+        for i = 1 to n-2:
+            Kontrahiere random Kante
+        return Kantenmenge,
+            die einem der beiden verbleibenden Knoten entspricht
+    \end{lstlisting}
+
+    Es bleiben zwei große Knoten - mit einigen Kanten dazwischen - übrig.
+    Der Wert des Min-Cut-Problems ist die Anzahl der Kanten zwischen diesen Knoten.
+
+    \textbf{\textsf{Annahme:}}  Min-Cut ist eindeutig.
+
+    \textbf{\textsf{Beobachtung:}} Algorithmus berechnet genau dann das richtige Ergebnis, wenn er nie eine der Min-Cut-Kanten kontrahiert.
+
+    Sei $k$ die Größe des Min-Cuts, $m$ die Anzahl der Kanten.
+    Die Wahrscheinlichkeit im ersten Kontraktionsschritt einen Fehler zu machen, beträgt $\frac{k}{m}$,
+    die Wahrscheinlichkeit keinen Fehler zu machen $1-\frac{k}{m}$.
+
+    \begin{theorem}
+        Betrachte einen Multigraphen (Mehrfachkanten zwischen Knoten erlaubt) $G(V,E)$ mit einem Min-Cut mit Wert $k$.
+        Dann gilt: G hat mindestens $\frac{k \cdot n}{2}$ Kanten.
+    \end{theorem}
+
+    \begin{proof}[\textbf{Beweis}]
+        Jeder Knoten hat Grad größer gleich $k$.
+
+        \begin{equation*}
+            Knoten = \frac{\sum_{}^{}(grad(v))}{2} \geq \frac{k \cdot n}{2}
+        \end{equation*}
+    \end{proof}
+
+    Sei $E_i$ das Ereignis, dass im $i$-ten Kontraktionsschritt keine Min-Cut-Kante erwischt wurde.
+    Wir wissen, dass die Wahrscheinlichkeit dafür $1-\frac{k}{m} \geq 1 - \frac{2}{n}$
+    ($m \geq \frac{k \cdot n}{2}$) beträgt.
+
+    Falls $E_1$ eingetroffen ist, existieren vor dem zweiten Schritt mindestens $\frac{k \cdot (n-1)}{2}$ Kanten.
+    Daraus folgt dass die Wahrscheinlichkeit, im zweiten Schritt keinen Fehler zu machen
+    $P_r(E_2 | E_1) \geq 1 - \frac{k}{m} \geq 1 - \frac{2}{n-1}$ beträgt, falls $E_1$ eingetreten ist.
+
+    ...
+
+    Falls $E_1, E_2, ..., E_i$ eingetroffen sind, existieren vom dem $i+1$-Schritt mindestens $\frac{k \cdot (n-i)}{2}$ Kanten:
+    $P_r(E_{i+1})  \geq 1 - \frac{2}{n-i}$.
+
+    \begin{equation*}
+        P_r(\bigcap_{i+1}^{n-2}) = P_r(E_1) \cdot P_r(E_2|E_1) \cdot P_r(E_3| E_1 \land E_2) ...
+    \end{equation*}
+    \begin{equation*}
+        \geq \prod_{i=1}^{n-2}1-\frac{2}{n - (i+1)} = \prod_{i=1}^{n-2}\frac{n-i+1-2}{n-i+1} = \prod_{i=1}^{n-2}\frac{n-i-1}{n-i+1}
+    \end{equation*}
+    \begin{equation*}
+        = \frac{\cancel{n-2}}{n} \cdot \frac{\cancel{n-3}}{n-1} \cdot \frac{n-4}{\cancel{n-2}} \cdot \frac{n-5}{\cancel{n-3}} ... = \frac{2}{n \cdot (n-1)}
+    \end{equation*}
+
+    Die Wahrscheinlichkeit, dass der Algorithmus korrekt arbeitet, beträgt damit
+    \begin{equation*}
+        \geq \frac{2}{n \cdot (n-1)}
+    \end{equation*}
+    Die Erfolgswahrscheinlichkeit kann beliebig erhöht werden.
+    Dafür muss der Algorithmus so oft wie gewünscht wiederholt werden.
+    Der kleinste Wert, der in Folge dieser Wiederholungen herauskommt, ist der Min-Cut.
+    Die Wahrscheinlichkeit, in jedem der $r$ Versuche \textbf{nicht}
+    den Min-Cut zu finden, beträgt
+    \begin{equation*}
+        \leq (1 - \frac{2}{n \cdot (n-1)})^r \leq e^{-\frac{2}{n \cdot (n-1)}} = e^{\frac{-2r}{n \cdot (n-1)}}
+    \end{equation*}
+
+    Wähle zum Beispiel $r = \frac{n \cdot (n-1)}{2}$.
+    Die Wahrscheinlichkeit für falsch ist $\leq \frac{1}{e} \approx 0,36$.
+
+    Für $r \approx n^2$ bekommen wir eine \textbf{konstante} Erfolgswahrscheinlichkeit,
+    für $r \approx n^2 \cdot n \cdot \log(n)$ ist das Ergebnis mit hoher Wahrscheinlichkeit korrekt, d.h. $\leq \frac{1}{n^2}$ für falsch.
+\end{document}

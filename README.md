@@ -1,31 +1,24 @@
 # AuB 17-18
-Notes of lecture AuB17/18. From students for students. Using Markdown and Latex with Pandoc.
 
-### Installation
-1. Latex installieren: (Tex-Live, Miktex)
-2. Pandoc installieren: (Debian-Derivate: `sudo apt-get install pandoc`)
+**Mithilfe ist erwünscht!** // Mitschriebe zur *Vorlesung AuB17/18*
 
-### Empfohlene Programme und Plugins
-* IntelliJ
-* IntelliJ Plugins (TeXiFy Idea, Markdown Navigator)
+Mitschriebe bisher:
 
-### PDF aus Markdown erzeugen
-Im Root Directory das Terminal öffnen: 
+|Vorlesung      |PDF                                    |
+|---------------|---------------------------------------|
+|01             |[klick](lectures-pdf/lecture01.pdf)    |
+|02             |[klick](lectures-pdf/lecture02.pdf)    |
 
-`pandoc -H configuration/preamble.tex configuration/default.yaml lectures-md/lecture01.md -o lectures-pdf/lecture01.pdf`
+## Installation
+- Latex installieren: (Tex-Live, Miktex)
+- Latex-Editor der Wahl installieren (z.B.: IntelliJ + TeXiFy-Plugin)
 
-Pandoc erzeugt mit den beiden Inputparamtern *preamble.tex* und *default.yaml* aus dem **configuration** Verzeichnis aus der Quelldatei *lectures01.md* im **lectures-md** Verzeichnis eine PDF Datei, die im **lectures-pdf** Verzeichnis abegelegt wird.
+## PDF erzeugen
+* *IntelliJ + TeXiFy-Plugin*: Rechtsklick auf die Tex-Datei, dann auf "Run" klicken. Eine PDF-Datei sollte im *out*-Verzeichnis erscheinen.
+Die gerenderte PDF bitte ins `lectures-pdf`-Verzeichnis kopieren, und in der Readme eintragen
 
-### Anpassungen
-Im Verzeichnis **configuration** befinden sich *preamble.tex* und *default.yaml*.
-
-In *default.yaml* können Paramter eingestellt werden, Latex-Pakete bitte in *preamble.tex* einbinden. Sofern wirs nicht übertreiben, sollte es damit hinhauen.
-
-### Links
-* https://www.soimort.org/notes/161117/
-* https://daringfireball.net/projects/markdown/syntax (Thx Alex)
-* http://kesdev.com/you-got-latex-in-my-markdown/
-* https://guides.github.com/features/mastering-markdown/
+## Links
+- Vorlage: https://komascript.de/node/1692
 
 Inspiration: https://github.com/dipdi/aub-skript
 
