@@ -1,0 +1,203 @@
+\documentclass{scrartcl}% siehe <http://www.komascript.de>
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{cancel}
+\usepackage{hyperref}
+\usepackage{mathrsfs}
+\usepackage{mathtools}
+\usepackage{listings}
+
+\lstset{basicstyle=\ttfamily}
+\lstset{literate=%
+{Ö}{{\"O}}1
+{Ä}{{\"A}}1
+{Ü}{{\"U}}1
+{ß}{{\ss}}1
+{ü}{{\"u}}1
+{ä}{{\"a}}1
+{ö}{{\"o}}1
+}
+
+\newtheorem{theorem}{Aussage}
+
+\newcommand{\includepic}[2]{\includegraphics[width=#2\textwidth,height=#2\textheight,keepaspectratio]{#1}}
+
+\usepackage[yyyymmdd,hhmm]{datetime}
+
+% Base path of images
+\usepackage{graphicx}
+\graphicspath{ {../lectures-img/} }
+
+\begin{document}
+    % ----------------------------------------------------------------------------
+    \subject{Vorlesungsmitschrieb}
+    \title{Algorithmen und Berechenbarkeit}
+    \subtitle{Vorlesung 03}
+    \date{Letztes Update: \today \ - \currenttime \ Uhr}
+    \maketitle
+    % ----------------------------------------------------------------------------
+
+    \subsection*{Laufzeiten}
+    \label{subsec:laufzeiten}
+
+    \texttt{Es wäre gut, wenn jemand die Inhalte der ersten 15 Minuten nachtragen könnte, da ich leider verhindert war.}
+
+    \begin{itemize}
+        \item $O(n^2)$ beschreibt die Menge aller Funktionen, die echt langsamer wachsen als $n^2$.
+        \begin{itemize}
+            \item \textbf{In $O(n^2)$:}\quad $n,\quad n^{1,99},\quad n \cdot \log(n),\quad n \cdot \log^2(n)$
+            \item \textbf{Nicht in $O(n^2)$:}\quad $n^2,\quad n^2 \cdot \log(n),\quad 2^n$
+        \end{itemize}
+        \item $\Omega(n^2)$ beschreibt die Menge aller Funktionen, die mindestens so schnell wie $n^2$ wachsen (asymptotisch).
+        \begin{itemize}
+            \item \textbf{In $\Omega(n^2)$:}\quad $n^2,\quad n^2 \cdot \log(n),\quad n^{2,1},\quad 2^n$
+            \item \textbf{Nicht in $\Omega(n^2)$:}\quad $n \cdot \log(n),\quad n^{1,9},\quad \sqrt{n},\quad n \cdot \log^2(n),\quad \frac{n^2}{\log(n)}$
+        \end{itemize}
+        \item $\omega(n^2)$ beschreibt die Menge aller Funktionen, die echt schneller wachsen als $n^2$.
+        \begin{itemize}
+            \item \textbf{In $\omega(n^2)$:}\quad $n^{2,1},\quad n^2 \cdot \log(n), \quad 2^n$
+            \item \textbf{Nicht in $\omega(n^2)$:}\quad $n^2, \quad n \cdot \log(n), \quad \frac{n^2}{\log(n)}, \quad \log(n)$
+        \end{itemize}
+        \item $\Theta(n^2)$ beschreibt die Menge aller Funktionen, die sowohl in $O(n^2)$ als auch in $\Omega(n^2)$ enthalten sind.
+    \end{itemize}
+
+    \subsection*{Vergleichsbasiertes Sortieren}
+    \label{subsec:vergleichsbasiertessortieren}
+
+    Es wird \textit{Vergleichsbasiertes Sortieren} von $n$ Objekten betrachtet, wobei die Elemente nur verglichen werden dürfen.
+    Hier stellt sich die \textbf{Frage}: Was ist die Komplexität des vergleichsbasierten Sortierens?
+
+    Die ersten Überlegungen stellen klar: Jeder Sortieralgorithmus liefert eine obere Schranke für $T(n)$:
+    \begin{itemize}
+        \item \textbf{Bubblesort} $\Rightarrow T(n) \in O(n^2)$
+        \item \textbf{Mergesort} $\Rightarrow T(n) \in O(n \cdot \log(n))$
+    \end{itemize}
+    \newpage
+    \begin{theorem}
+        Es kann bewiesen werden, dass $T(n) \in \Omega(n \cdot \log(n)) \quad \Rightarrow \quad T(n) \in \Theta(n \cdot \log(n))$
+    \end{theorem}
+
+    \begin{proof}[\textbf{Beweis}]
+        Man betrachte einen beliebigen Algorithmus $\mathcal{A}$ zum Sortieren. $\mathcal{A}$ vergleicht $e_i$ mit $e_j$.
+
+        \begin{figure}[htb]
+            \centering
+            \includepic{lec_03_a}{0.3}
+            \caption{Exemplarische Vergleiche beim vergleichsbasierten Sortieren}
+        \end{figure}
+
+        Ein Blatt in diesem Baum heißt im Prinzip: Der Algorithmus hat fertig sortiert.
+        Es heißt aber genauso: Der Algorithmus hat "`herausgefunden"', was die "`Permutation"' der Eingabe war.
+        Daraus folgt, dass der Baum $n!$ Blätter haben muss.
+        Es zeigt sich außerdem, dass die Worst-Case-Laufzeit des Algorithmus $\mathcal{A}$ genau der Tiefe des Baumes entspricht.
+        Damit stellt sich die nächste \textbf{Frage}:
+
+        Was ist die minimale Tiefe eines Binärbaumes, der $n!$ Blätter hat?
+
+        \begin{equation*}
+            2^n = n!
+        \end{equation*}
+        \begin{equation*}
+            \left(n! \approx \left({\frac{n}{e}}\right)^{\frac{n}{e}} \Rightarrow x = \log_2\left(\frac{n}{e}\right)^{\frac{n}{e}}
+            \Rightarrow x = n \cdot \log(n)\right)
+        \end{equation*}
+
+    \end{proof}
+
+    \subsection*{Monte-Carlo und Las-Vegas Algorithmen ineinander umwandeln}
+    \label{subsec:monte-carloUndLas-vegasAlgorithmenIneinanderUmwandeln}
+
+    Es stellt sich die Frage, ob jeder Las-Vegas-Algorithmus in einen Monte-Carlo-Algorithmus umgewandelt werden kann, und andersherum.
+
+    \subsubsection*{Las-Vegas $\Rightarrow$ Monte-Carlo}
+    Die Idee besteht aus folgender Überlegung: Lasse den Las-Vegas-Algorithmus eine bestimmte Anzahl an Schritten laufen und breche dann ab.
+    War der Las-Vegas-Algorithmus bis dahin fertig, so muss auch das Ergebnis korrekt sein.
+    War der Las-Vegas-Algorithmus bis dahin nicht fertig, dann gibt es auch kein korrektes Ergebnis.
+
+    Die zentrale \textbf{Frage}, die sich hier anfügt: Wie lange darf der Algorithmus laufen und was ist seine Erfolgswahrscheinlichkeit?
+
+    Sei nun $\mathcal{A}$ ein Las-Vegas-Algorithmus mit erwarteter Laufzeit $f(n)$.
+    $\mathcal{A}$ darf nun für maximal $\alpha \cdot f(n)\ | \alpha \geq 1$ Schritte laufen.
+    Falls der Algorithmus bis dahin fertig ist, ist das Ergebnis sicher korrekt.
+    Ist der Algorithmus bis dahin nicht fertig, so wird \textit{Müll} zurückgegeben.
+
+    Dieser modifizierte Algorithmus hat immer eine Laufzeit von $< \alpha \cdot f(n)$.
+    Die Wahrscheinlichkeit, dass \textit{Müll} zurückgegeben wird, ist gleich der Wahrscheinlichkeit,
+    dass $\mathcal{A}$ länger als $\alpha \cdot f(n)$ Zeit zum Sortieren benötigt.
+
+    \subsubsection*{Monte-Carlo $\Rightarrow$ Las-Vegas}
+
+    Nicht alle Monte-Carlo-Algorithmen können ohne Weiteres in Las-Vegas-Algorithmen umgewandelt werden.
+
+    Für manche Probleme ist die Verifikation des Ergebnisses einfacher als die Berechnung:
+    \begin{itemize}
+        \item Sortieren: $O(n \cdot \log(n))$ \quad vs. \quad $O(n)$.
+        \item Kürzeste Wege: $O(n \cdot \log(n+m))$ \quad vs. \quad $O(m)$.
+    \end{itemize}
+
+    Das Überführen von Monte-Carlo- in Las-Vegas-Algorithmen ist möglich, wenn man einen effizienten \textit{Checker} hat.
+
+    \begin{itemize}
+        \item Monte-Carlo-Algorithmus $\mathcal{A}$ hat eine Laufzeit von $f(n)$.
+        \item Checker $\mathcal{O}$ hat eine Laufzeit von $f(n)$.
+        \item Die Erfolgswahrscheinlichkeit von $\mathcal{A}$ sei $p(n)$.
+    \end{itemize}
+
+    Mit folgendem Algorithmus kann dann ein Las-Vegas-Algorithmus erzeugt werden:
+
+    \begin{lstlisting}
+        1. Lasse Algorithmus laufen
+        2. Checke Ergebnis mit Checker
+            Falls korrekt, dann fertig
+            Falls nicht korrekt, zurück zu 1.
+    \end{lstlisting}
+
+    Die erwartete Laufzeit ist dann
+
+    \begin{equation*}
+        \begin{multlined}
+            p(n) \cdot (f(n) + g(n)) + (1 - p(n)) \cdot p(n) \cdot (f(n) + g(n)) \\
+            + (1 - p(n))^2 \cdot p(n) \cdot (f(n) + g(n))
+            + ...
+        \end{multlined}
+    \end{equation*}
+    \begin{equation*}
+        \begin{multlined}
+            = \left( f(n) + g(n)) \cdot p(n) \cdot \sum^{\infty}_{i=1}(1-p(n))^i < \frac{f(n) + g(n)}{p(n)} \right)
+        \end{multlined}
+    \end{equation*}
+
+    \subsection*{Las-Vegas-Algorithmus: Randomisierter Quicksort-Algorithmus}
+    \label{subsec:las-vegas-algorithmus:RandomisierterQuicksort-algorithmus}
+
+    \begin{lstlisting}
+        Eingabe: [1, 2, 3, ..., n]
+            Wähle p aus Eingabe zufällig gleichverteilt
+            Füge p an der richtigen Stelle ein
+    \end{lstlisting}
+
+    \begin{figure}[htb]
+        \centering
+        \includepic{lec_03_b}{0.5}
+        \caption{Einfügen eines Elements "`an der richtigen Stelle"'}
+    \end{figure}
+
+    \hrulefill
+
+    \section*{Anhang}
+    \label{sec:anhang}
+
+    \subsubsection*{Markov-Ungleichung}
+    Sei $X$ eine nicht negative Zufallsvariable mit $E[X] = \mu$.
+    Dann gilt:
+
+    \begin{equation*}
+        P(X > \alpha \cdot \mu ) \leq \frac{1}{\alpha}
+    \end{equation*}
+
+\end{document}

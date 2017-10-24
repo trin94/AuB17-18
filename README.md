@@ -8,6 +8,7 @@ Mitschriebe bisher:
 |---------------|---------------------------------------|
 |01             |[klick](lectures-pdf/lecture01.pdf)    |
 |02             |[klick](lectures-pdf/lecture02.pdf)    |
+|03             |[klick](lectures-pdf/lecture03.pdf)    |
 
 ## Installation
 - Latex installieren: (Tex-Live, Miktex)
