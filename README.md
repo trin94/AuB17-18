@@ -15,7 +15,17 @@ Mitschriebe bisher:
 
 ## PDF erzeugen
 * *IntelliJ + TeXiFy-Plugin*: Rechtsklick auf die Tex-Datei, dann auf "Run" klicken. Eine PDF-Datei sollte im *out*-Verzeichnis erscheinen.
-Die gerenderte PDF bitte ins `lectures-pdf`-Verzeichnis kopieren, und in der Readme eintragen
+Die gerenderte PDF bitte ins `lectures-pdf`-Verzeichnis kopieren, und in der Readme eintragen.
+
+* *Falls `pdflatex` und **Python 3.6** installiert:* Im Rootverzeichnis dieses Projekts folgende Befehle ausführen:
+
+    ```
+    cd scripts
+    python updater.py all // Erzeugt alle PDFs erneut
+    python updater.py 1 // Erzeugt z.B. nur die erste Vorlesungseinheit-PDF
+    ```
+
+    Das Script generiert die PDFs und verschiebt sie ins `lectures-pdf` - Verzeichnis.
 
 ## Links
 - Vorlage: https://komascript.de/node/1692
