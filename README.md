@@ -4,11 +4,12 @@
 
 Mitschriebe bisher:
 
-|Vorlesung      |PDF                                    |
-|---------------|---------------------------------------|
-|01             |[klick](lectures-pdf/lecture01.pdf)    |
-|02             |[klick](lectures-pdf/lecture02.pdf)    |
-|03             |[klick](lectures-pdf/lecture03.pdf)    |
+|Vorlesung      | Datum der VL |PDF                                    |
+|---------------|--------------|---------------------------------------|
+|01             | 17.10.2017   |[klick](lectures-pdf/lecture01.pdf)    |
+|02             | 20.10.2017   |[klick](lectures-pdf/lecture02.pdf)    |
+|03             | 24.10.2017   |[klick](lectures-pdf/lecture03.pdf)    |
+|04             | 27.10.2017   |[klick](lectures-pdf/lecture04.pdf)    |
 
 ## Installation
 - Latex installieren: (Tex-Live, Miktex)

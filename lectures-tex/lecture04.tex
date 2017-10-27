@@ -1,0 +1,298 @@
+\documentclass{scrartcl}% siehe <http://www.komascript.de>
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{cancel}
+\usepackage{mathrsfs}
+\usepackage{mathtools}
+\usepackage{listings}
+
+\lstset{basicstyle=\ttfamily}
+\lstset{literate=%
+{Ö}{{\"O}}1
+{Ä}{{\"A}}1
+{Ü}{{\"U}}1
+{ß}{{\ss}}1
+{ü}{{\"u}}1
+{ä}{{\"a}}1
+{ö}{{\"o}}1
+}
+
+\newtheorem{theorem}{Theorem}
+
+\newcommand{\includepic}[2]{\includegraphics[width=#2\textwidth,height=#2\textheight,keepaspectratio]{#1}}
+
+\usepackage[yyyymmdd,hhmm]{datetime}
+
+% Base path of images
+\usepackage{graphicx}
+\graphicspath{ {../lectures-img/} }
+
+\begin{document}
+    % ----------------------------------------------------------------------------
+    \subject{Vorlesungsmitschrieb}
+    \title{Algorithmen und Berechenbarkeit}
+    \subtitle{Vorlesung 04}
+    \date{Letztes Update: \today \ - \currenttime \ Uhr}
+    \maketitle
+    % ----------------------------------------------------------------------------
+
+
+    \subsection*{Las-Vegas-Algorithmus: Randomisierter Quicksort-Algorithmus}
+    \label{subsec:las-vegas-algorithmus:RandomisierterQuicksort-algorithmus}
+
+    \begin{lstlisting}
+        Eingabe A: [1, 2, 3, ... , n]
+            Wähle p aus Eingabe zufällig gleichverteilt
+            Füge p an der richtigen Stelle ein
+    \end{lstlisting}
+
+    \begin{figure}[htb]
+        \centering
+        \includepic{lec_04_a}{0.45}
+        \caption{Einfügen eines Elements an der \textit{richtigen} Stelle}
+    \end{figure}
+    Der Algorithmus wird dann für die linke Seite $RQS(A_l)$ bzw. $RQS(A_r)$ rekursiv aufgerufen.
+    Um $p$ \textit{zufällig gleichverteilt} aufzurufen, können verschiedene Ansätze gewählt werden.
+    Zum Beispiel nimmt man immer das mittige Element ($\frac{n}{2}$)
+    oder man berechnet den Median (das klappt in $O(n)$) und wählt das entsprechende Element aus.
+    Beide Fälle sind suboptimal.
+
+    \subsubsection*{Versuch einer Analyse}
+    Zuerst stellt man sich die folgende \textbf{\textsf{Frage:}} Was ist die erwartete Länge von $A_l$ bzw. $A_r$?
+
+    \begin{equation*}
+        E(|A_l|) = E(|A_r|)= \sum^{n-1}_{i = 0}\frac{1}{n} \cdot i = \frac{1}{n} \cdot \frac{(n-1) \cdot n}{2} = \frac{n -1}{2}
+    \end{equation*}
+    Daraus folgt, dass die Tiefe des Rekursionsbaums  $\mathcal{O}(\log(n))$ sein muss.
+
+    \begin{figure}[htb]
+        \centering
+        \includepic{lec_04_b}{0.45}
+        \caption{Die Gesamtlaufzeit ergibt sich somit als $\mathcal{O}(n \cdot \log(n))$}
+    \end{figure}
+
+    Dieser Ansatz der Analyse kann nicht richtig sein,
+    denn folgender Quicksort-Algorithmus hätte mit derselben Folgerung dieselbe Laufzeit, was aber nicht stimmt.
+
+    \begin{lstlisting}
+        Eingabe A: [1, 2, 3, ... , n]
+            Wähle p
+                mit 50% Wahrscheinlichkeit als kleinstes Element
+                mit 50% Wahrscheinlichkeit als größtes Element
+            Füge p an der richtigen Stelle ein
+    \end{lstlisting}
+
+    Man wählt $p$ also entweder als erstes (kleinstes) oder letztes (größtes) Element, und startet den Algorithmus rekursiv erneut.
+    Nach obiger Rechnung ergäbe sich auch hier wieder eine Länge von
+
+    \begin{equation*}
+        E(|A_l|) = E(|A_r|) = \frac{1}{2} \cdot 0 + \frac{1}{2}(n-1) = \frac{n-1}{2}
+    \end{equation*}
+
+    Da bei einem rekursiven Aufruf aber jeweils wieder $n-1$ Elemente in der Eingabe enthalten sind, kann das also nicht stimmen.
+
+    \subsubsection*{Korrekte Analyse des Random Quicksort-Algorithmus}
+    Wir gehen zunächst von folgender \textbf{Annahme} aus:
+    Die zu sortierenden Elemente sind $s_1, s_2, s_3, ..., s_n$ und außerdem gilt $s_1 < s_2 < s_3 < ... < s_n$.
+    Die Zufallsvariable wird festgelegt als
+
+    \begin{equation*}X_{ij}=
+        \[ \begin{cases}
+               1 & \text{falls während des Alorithmus } s_i \text{ mit } s_j \text{ verglichen} \\
+               0 & \text{sonst}
+        \end{cases}
+        \]
+    \end{equation*}
+
+    Die Gesamtlaufzeit des Random Quicksort-Algorithmus ist damit
+
+    \begin{equation*}
+        \begin{flalign}
+            \sum_{i<j}X_{ij}        &= \sum_{i=1}^{n-1} \cdot \sum_{j=i+1}^{n} X_{ij}&&\\\nonumber
+            E\left(\sum_{i<j}X_{ij}\right)  &= \sum_{i<j}E(X_{ij}) \text{\quad (Linearität des Erwartungswerts)}&&\\\nonumber
+                                            &= \sum_{i<j}(0 \cdot P(X_{ij} = 0) + 1 \cdot P(X_{ij} = 1))\\\nonumber
+                                            &= \sum_{i<j}\underbrace{P(X_{ij}=1)}_{P_{ij}}
+        \end{flalign}
+    \end{equation*}
+
+    Als Nächstes soll nun $P_{ij}$ berechnet werden, wobei folgende Überlegungen zu beachten sind:
+    \begin{itemize}
+        \item Elemente mit großer Rangdifferenz werden nur mit geringer Wahrscheinlichkeit miteinander verglichen,
+                da viele Chancen bestehen, dass sie im Rekursionsbaum getrennt werden.
+        \item Elemente mit kleiner Rangdifferenz werden mit größerer Wahrschenlichkeit miteinander verglichen.
+        \item Elemente mit der Rangdifferenz von $1$ müssen miteinander verglichen werden.
+    \end{itemize}
+    \newpage
+
+    In folgendem Ablauf des Random Quicksorts entspricht ein Knoten einem Pivotelement im entsprechenden Aufruf.
+    \begin{figure}[htb]
+        \centering
+        \includepic{lec_04_c}{0.45}
+        \caption{Die erzeugte Permutation ist $\pi = s_{70}, s_{30}, s_{90}, s_{11}, s_{37}, s_{76}, s_{106} $}
+    \end{figure}
+
+    \textit{Anmerkung: $\pi$ ist nicht zufällig gleichverteilt, da manche Permutationen gar nicht vorkommen können.}
+    \newline
+    Als Nächstes stellt sich die \textbf{\textsf{Frage}}, wie es sich auf die Laufzeit auswirkt, wenn $s_i$ nicht verglichen wird.
+
+    Dann taucht ein Element $s_k$ mit $s_i < s_k < s_j$ als Pivotelement vor $s_i$ und vor $s_j$ in $\pi$ auf,
+    denn $s_i$ wird genau dann mit $s_j$ verglichen, wenn $s_i$ oder $s_j$ das erste Element aus $s_i, s_{i+1}, ... , s_j$ in $\pi$ ist.
+    Außerdem gilt: Mit gleicher Wahrscheinlichkeit ist jedes der Elemente $s_i, s_{i+1}, ... , s_j$ das erste, das in $\pi$ auftaucht.
+
+    Die Wahrscheinlichkeit, dass $s_i$ mit $s_j$ verglichen wird, beträgt also
+    \begin{equation*}
+        P_{ij}:= P(s_i \text{ wird mit } s_j \text{ verglichen}) = \frac{2}{j-i+1}
+    \end{equation*}
+
+    Damit kann nun die Laufzeit eingeordnet werden:
+%\sum_{i<j}X_{ij}        &= \sum_{i=1}^{n-1} \cdot \sum_{j=i+1}^{n} X_{ij}&&\\\nonumber
+    \begin{equation*}
+        \begin{flalign}
+            E\left(\sum_{r<j}X_{ij}\right)  &= \sum_{i+1}^{n-1} \cdot \sum_{j=i+1}^{n}E(X_{ij})&&\\\nonumber
+                                            &= \sum_{i+1}^{n-1} \cdot \sum_{j=i+1}^{n}P_{ij}&&\\\nonumber
+                                            &= \underbrace{\sum_{i+1}^{n-1} \cdot \sum_{j=i+1}^{n}\frac{2}{j-i+1}}_{\frac{2}{2}+\frac{2}{3}+\frac{2}{4}+\frac{2}{5}+\ ...}&&\\\nonumber
+                                            &\leq \sum_{i=1}^{n-1} \cdot \sum_{l=2}^{n}\frac{2}{l}&&\\\nonumber
+                                            &= \sum_{i=1}^{n-1}2 \cdot \sum_{l=2}^{n} \frac{1}{l}&&\\\nonumber
+                                            &= \sum_{i=1}^{n-1}2 \cdot \mathcal{O}(H_n)&&\\\nonumber
+                                            &= \sum_{i=1}^{n-1}2 \cdot \mathcal{O}(\log(n))&&\\\nonumber
+                                            &= \mathcal{O}(n \cdot \log(n))
+        \end{flalign}
+    \end{equation*}
+    \textit{Anmerkung: $H_n$ beschreibt die $n-$te harmonische Zahl.}
+
+    \section*{Zero-Knowledge-Proof}
+    \label{sec:zero-knowledge-proof}
+    Zunächst soll eine \textbf{\textsf{Anwendung}} des "`Zero-Knowledge-Proofs"' beschrieben werden:
+    Wie könnte eine Bank beim Onlinebanking beweisen, dass sie weiterhin die Bank ist (die betrachtete Website weiterhin zur Bank gehört)?
+
+    Ein möglicher \textbf{\textsf{Ansatz}} besagt, dass die Bank (im Folgenden auch einfach \textbf{\textsf{Alice}})
+    ihrem Kunden (\textbf{\textsf{Bob}}) beweisen muss, dass sie ein Geheimnis kennt, welches nur Alice bekannt sein kann,
+    allerdings ohne das Geheimnis zu verraten.
+
+    Außerdem sollen die folgenden \textbf{\textsf{Eigenschaften}} erfüllt sein:
+
+    \begin{itemize}
+        \item Falls Alice das Geheimnis nicht kennt, wird das mit hoher Wahrscheinlichkeit von Bob erkannt.
+        \item Alice gibt nichts über das Geheimnis preis, was Bob nicht alleine rausfinden könnte.
+    \end{itemize}
+
+    Das Protokoll basiert auf dem Graphisomorphie-Problem (Isomorphismus zwischen zwei öffentlichen Graphen $G_1$ und $G_2$).
+
+    Alice kann $G_1$ und $G_2$ wie folgt erzeugen: Sie wählt $G_1$ zufällig und außerdem eine zufällige Permutation $\Phi$ der Knoten von $G_1$, was dann $G_2$ definiert.
+    $\Phi$ bleibt geheim, wohingegen $G_1$ und $G_2$ veröffentlicht werden.
+    \newline
+    \newline
+    \subsection*{Protokoll, durch welches Alice Bob überzeugt, P zu kennen:}
+    \newline
+    \newline
+    Alice permutiert $G_{j}$ wobei $j \in \{1,2\}$ mit einer zufälligen Permutation $\pi$ zu einem Graphen $H$.
+    Dabei stellt sie sicher, dass $H\neq G_1$ und $H\neq G_2$.
+    Außerdem sendet sie $H$ an Bob.
+
+    Bob möchte sich davon überzeugen, dass Alice die Isomorphie zwischen $G_1$ und $G_2$ kennt,
+    indem er $k \in \{1,2\}$ zufällig wählt und Alice bittet, die Isomorphie zwischen $G_k$ und $H$ offenzulegen.
+
+    Falls nun Alice das Geheimnis $\Phi$ kennt, so kann sie \textbf{\textsf{immer}} $\Phi$ bzw. $\Phi \circ \pi$ zurückgeben.
+    Falls Alice $\Phi$ nicht kennt und Bob den Graphen wählt, aus dem Alice $H$ generiert hat,
+    kann sie leicht antworten, falls jedoch Bob den anderen Graphen gewählt hat,
+    müsste sie das Graphisomorphie-Problem lösen, um die korrekte Antwort zu geben.
+
+    Bei $x-$maliger Wiederholung ist die Wahrscheinlichkeit, dass Bob immer den richtigen Graphen erwischt, aus dem $H$ erzeugt wurde
+    \begin{equation*}
+        \frac{1}{2^x}
+    \end{equation*}
+    Daraus folgt, dass die Wahrscheinlichkeit, dass Bob erkennt, dass Alice $\Phi$ nicht kennt,
+    \begin{equation*}
+        1-\frac{1}{2^x}
+    \end{equation*}
+    beträgt.
+
+    \begin{theorem}
+        Alice verrät nichts über $\Phi$.
+    \end{theorem}
+
+    \begin{proof}[\textbf{Beweis}]
+        Bob lernt Isomorphie zwischen z.B. $G_1$ und einer zufälligen Permutation von $G_1$.
+        Das hätte er auch selber herausfinden können.
+    \end{proof}
+
+%    \hrulefill
+
+    \newpage
+    \section*{Anhang}
+    \label{sec:anhang}
+
+    \subsubsection*{Graphisomorphie}
+
+    Gegeben seien zwei Graphen $G_1(V_1, E_1)$ und $G_2(V_2, E_2)$.
+    Graphisomorphie bedeutet, es gibt eine bijektive Funktion $\phi$, sodass
+
+    \begin{equation*}
+        \forall a = (v,w) \in E_1 \Leftrightarrow (\phi(v), \phi(w)) \in E_2
+    \end{equation*}
+
+    \subsubsection*{Graphisomorphie-Problem}
+
+    Gegeben seien zwei Graphen $G_3(V_3, E_3)$ und $G_4(V_4, E_4)$ und man stellt sich die \textbf{\textsf{Frage}}:
+    Wann sind $G_1$ und $G_2$ isomorph?
+
+    \begin{figure}[htb]
+        \centering
+        \includepic{lec_04_d}{0.8}
+        \caption{Die Graphen $G_3$ und $G_4$}
+    \end{figure}
+
+    Die folgende Tabelle zeigt die Isomorphie zwischen $v \in V_3$ und $\phi(v)$.
+    \begin{table}[!ht]
+        \centering
+        \begin{tabular}{lll}
+            $v \in V_3$ & \phi(v) & \Phi(v)\\
+            \hline
+            $1$ & $B$ & $B$ \\
+            $2$ & $D$ & $A$ \\
+            $3$ & $C$ & $D$ \\
+            $4$ & $A$ & $C$ \\
+            \hline \\
+        \end{tabular}
+    \end{table}
+
+    $v \in V_3$ und $\Phi(v)$ sind nicht isomorph.
+    Festgestellt werden kann dies zum Beispiel über den Knotengrad oder durch die folgende Erkenntnis:
+    \begin{equation*}
+        \begin{flalign}
+            2,4 \in G_3&&\\\nonumber
+            A,C \notin G_4&&
+        \end{flalign}
+    \end{equation*}
+
+    \newpage
+    Es folgen weitere Beispiele:
+    \begin{figure}[htb]
+        \centering
+        \includepic{lec_04_e}{0.8}
+        \caption{Die nicht isomorphen Graphen $G_5$ und $G_6$}
+    \end{figure}
+    \begin{figure}[htb]
+        \centering
+        \includepic{lec_04_f}{0.8}
+        \caption{Die isomorphen Graphen $G_7$ und $G_8$}
+    \end{figure}
+    \begin{figure}[htb]
+        \centering
+        \includepic{lec_04_g}{0.8}
+        \caption{Die nicht isomorphen Graphen $G_9$ und $G_{10}$ ($D$ hat Grad $4$, $2$ hat Grad $3$)}
+    \end{figure}
+
+    \textit{Anmerkung: Bis zum Jahr 2015 dachten Informatiker, Graphenisomorphie läge in \textbf{\textsf{NP-schwer}}.
+    Im Jahr 2015 wurde jedoch gezeigt, dass das Problem der Graphenisomorphie in Quasipolynomzeit lösbar ist:}
+    \begin{equation*}
+        \mathcal{O}(2^{O(\log(n))^2})
+    \end{equation*}
+
+\end{document}
