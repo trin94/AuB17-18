@@ -112,7 +112,7 @@
     \subsection*{Monte-Carlo und Las-Vegas Algorithmen ineinander umwandeln}
     \label{subsec:monte-carloUndLas-vegasAlgorithmenIneinanderUmwandeln}
 
-    Es stellt sich die Frage, ob jeder Las-Vegas-Algorithmus in einen Monte-Carlo-Algorithmus umgewandelt werden kann, und andersherum.
+    Es stellt sich die \textbf{Frage}, ob jeder Las-Vegas-Algorithmus in einen Monte-Carlo-Algorithmus umgewandelt werden kann, und andersherum.
 
     \subsubsection*{Las-Vegas $\Rightarrow$ Monte-Carlo}
     Die Idee besteht aus folgender Überlegung: Lasse den Las-Vegas-Algorithmus eine bestimmte Anzahl an Schritten laufen und breche dann ab.
@@ -152,40 +152,22 @@
 
     \begin{lstlisting}
         1. Lasse Algorithmus laufen
-        2. Checke Ergebnis mit Checker
+        2. Überprüfe Ergebnis mit Checker
             Falls korrekt, dann fertig
             Falls nicht korrekt, zurück zu 1.
     \end{lstlisting}
 
-    Die erwartete Laufzeit ist dann
+    Die erwartete Laufzeit $\mathcal{R}$ ist dann
 
     \begin{equation*}
-        \begin{multlined}
-            p(n) \cdot (f(n) + g(n)) + (1 - p(n)) \cdot p(n) \cdot (f(n) + g(n)) \\
-            + (1 - p(n))^2 \cdot p(n) \cdot (f(n) + g(n))
-            + ...
-        \end{multlined}
+        \begin{flalign}
+            \mathcal{R} &= p(n) \cdot (f(n) + g(n))&&\\\nonumber
+                        &\quad + ((1 - p(n)) \cdot p(n) \cdot (f(n) + g(n))) \cdot 2&&\\\nonumber
+                        &\quad + ((1 - p(n))^2 \cdot p(n) \cdot (f(n) + g(n))) \cdot 3&&\\\nonumber
+                        &\quad +\ ...&&\\\nonumber
+                        &=\left( f(n) + g(n)) \cdot p(n) \cdot \sum^{\infty}_{i=1}((1-p(n))^i < \frac{f(n) + g(n)}{p(n)}) \cdot (i+1)\right)
+        \end{flalign}
     \end{equation*}
-    \begin{equation*}
-        \begin{multlined}
-            = \left( f(n) + g(n)) \cdot p(n) \cdot \sum^{\infty}_{i=1}(1-p(n))^i < \frac{f(n) + g(n)}{p(n)} \right)
-        \end{multlined}
-    \end{equation*}
-
-    \subsection*{Las-Vegas-Algorithmus: Randomisierter Quicksort-Algorithmus}
-    \label{subsec:las-vegas-algorithmus:RandomisierterQuicksort-algorithmus}
-
-    \begin{lstlisting}
-        Eingabe: [1, 2, 3, ..., n]
-            Wähle p aus Eingabe zufällig gleichverteilt
-            Füge p an der richtigen Stelle ein
-    \end{lstlisting}
-
-    \begin{figure}[htb]
-        \centering
-        \includepic{lec_03_b}{0.5}
-        \caption{Einfügen eines Elements "`an der richtigen Stelle"'}
-    \end{figure}
 
     \hrulefill
 
@@ -197,7 +179,7 @@
     Dann gilt:
 
     \begin{equation*}
-        P(X > \alpha \cdot \mu ) \leq \frac{1}{\alpha}
+        P(X \geq \alpha \cdot \mu ) \leq \frac{1}{\alpha}
     \end{equation*}
 
 \end{document}
