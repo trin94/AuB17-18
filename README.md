@@ -10,6 +10,7 @@ Mitschriebe bisher:
 |02             | 20.10.2017   |[klick](lectures-pdf/lecture02.pdf)    |
 |03             | 24.10.2017   |[klick](lectures-pdf/lecture03.pdf)    |
 |04             | 27.10.2017   |[klick](lectures-pdf/lecture04.pdf)    |
+|05             | 07.11.2017   |[klick](lectures-pdf/lecture05.pdf)    |
 
 ## Installation
 - Latex installieren: (Tex-Live, Miktex)
