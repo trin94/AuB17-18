@@ -1,0 +1,167 @@
+\documentclass{scrartcl}% siehe <http://www.komascript.de>
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+%\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{cancel}
+%\usepackage{mathrsfs}
+%\usepackage{mathtools}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usetikzlibrary{shapes.misc}
+\usetikzlibrary{matrix,backgrounds}
+\usetikzlibrary{trees}
+\usetikzlibrary{calc}
+\usepackage[all,dvips,arc,curve,color,frame]{xy}
+\usepackage[yyyymmdd,hhmm]{datetime}
+
+
+\lstset{basicstyle=\ttfamily}
+\lstset{literate=%
+{Ö}{{\"O}}1
+{Ä}{{\"A}}1
+{Ü}{{\"U}}1
+{ß}{{\ss}}1
+{ü}{{\"u}}1
+{ä}{{\"a}}1
+{ö}{{\"o}}1
+}
+
+\newtheorem{theorem}{Theorem}
+
+\newcommand{\includepic}[2]{\includegraphics[width=#2\textwidth,height=#2\textheight,keepaspectratio]{#1}}
+
+\usepackage[yyyymmdd,hhmm]{datetime}
+
+% Base path of images
+\usepackage{graphicx}
+\graphicspath{ {../lectures-img/} }
+
+\begin{document}
+    % ----------------------------------------------------------------------------
+    \subject{Vorlesungsmitschrieb}
+    \title{Algorithmen und Berechenbarkeit}
+    \subtitle{Vorlesung 05}
+    \date{Letztes Update: \today \ - \currenttime \ Uhr}
+    \maketitle
+    % ----------------------------------------------------------------------------
+
+    \section*{Quick-Select (Randomisiert)}\label{sec:quick-select}
+    Es soll in einem unsortierten Array bzw. einer unsortierten Liste $A$ das $k$-kleinste Element gefunden werden.
+    Sei $A$ zum Beispiel [$3,5,1,4,7$] und $k=2$, so soll der Algorithmus den Wert $3$ zurückgeben, was in der Eingabe dem $k$-kleinsten Wert entspricht.
+
+    Spontan und einfach zu implementieren ist vor allem diese Methode: Sortiere die Eingabedatenstruktur mit Quick- bzw.
+    Merge-Sort und gebe $A[i]$ zurück.
+    Bei diesem Ansatz in die Laufzeit maßgeblich vom verwendeten Sortieralgorithmus abhängig.
+    Es fällt außerdem auf, dass eine sortierte Liste die Antwort nun für jedes $k$ sehr schnell liefern kann.
+    Das bedeutet, der Algorithmus ist nicht auf das Nötigste beschränkt und \textit{macht zu viel}.
+
+    Eine einfache Optimierung erschließt sich beim Betrachten der Skizze: Ist bereits bekannt, dass sich das $k$-te Element nicht im betrachteten Abschnitt der Datenstruktur aufhält, so muss dieser Teil nicht sortiert werden (gelb).
+    \begin{figure}[htb]
+        \centering
+        \includepic{lec_05_a}{0.4}
+    \end{figure}
+
+    \begin{lstlisting}[escapeinside={(;}{;)}]
+        Select((;$A, k$;)):
+            Wähle Pivotelement p zufällig gleichverteilt
+            (;$A_1$;) := Array-Teil bis Index p
+            (;$A_2$;) := Array-Teil ab Index p
+
+            if (;$k \leq A_1$;).length
+                Select((;$A_1, k$;))
+            elif (;$k > A_2$;).length
+                Select((;$A_2, k-A_1$;).length)
+    \end{lstlisting}
+
+    \subsection*{Laufzeit von Quick-Select (Randomisiert)}\label{subsec:laufzeitVonQuick-selectrandomisiert}
+    \begin{itemize}
+        \item Fall immer der Median getroffen wird, so ergibt sich $n+\frac{1}{2}+\frac{1}{4}\ ... \leq 2n$
+        \item Mit $X_{ij}$ wie bei Quicksort: $E[X_{ij}] = \frac{2}{j-i+1}$.
+        \item [] Es gibt nun die drei Fälle
+        \begin{itemize}
+            \item $k<i<j$
+            \item $i<k<j$
+            \item $i<j<k$
+        \end{itemize}
+        \item [\Rightarrow] Die Laufzeit ist $\mathcal{O}(n)$.
+        Schneller ist nicht möglich, da jedes Element betrachtet werden muss.
+    \end{itemize}
+
+    \section*{Quick-Select (Deterministisch)}\label{sec:quick-selectdeterministisch}
+    In einigen Anwendungsszenarien ist es wichtiger, dass ein Ergebnis konstant schnell vorliegt als \textit{wahrscheinlich schnell}.
+
+    Wurde im randomisierten Algorithmus für Quick-Select die Wahl des Pivotelements dem Zufall überlassen,
+    so soll das Pivotelement nun nach einem festen Ablauf ermittelt werden.
+    Dabei ist es wichtig, dass das Pivotelement nicht perfekt gewählt sein muss, sondern nur \textit{ausreichend gut}.
+
+    \vspace{0.3cm}
+    \textsf{\textbf{Wahl des Pivotelements}}:
+    \begin{enumerate}
+        \item Man gruppiere die Elemente der Eingabestruktur zu je 5 Elementen.
+        \item Man berechnet in jeder Gruppe den Median (geht in sechs Vergleichen: $\mathcal{O}(n)$).
+        Nun hat man $\frac{n}{5}$ Gruppenmediane ($M[i] := \text{Median der Gruppe }i$).
+        \item Man berechnet \textbf{rekursiv} den Median der Gruppenmediane: \texttt{Select($M, \dfrac{\frac{n}{5}}{2}$)}
+        \item Der Median der Gruppenmediane wird als Pivotelement verwendet
+    \end{enumerate}
+
+    \subsubsection*{Pivotelement gut genug}
+    \begin{itemize}
+        \item Sei $M$ der Median der Gruppenmediane.
+        Von den $\frac{n}{5}$ Gruppenmedianen sind die Hälfte $(\frac{n}{5}:2=\frac{n}{10})$ größer bzw. kleiner als $M$.
+        \item In jeder Gruppe, deren Gruppenmedian $<M$ ist, sind 3 Elemente $<M$ bzw. in jeder Gruppe, deren Gruppenmedian $>M$ ist, sind 3 Elemente $>M$.
+        \item Zusammen ergibt das
+        \begin{itemize}
+            \item [$\rightarrow$] $3 \cdot \frac{n}{10} \text{ Elemente }<M$ oder eben
+            \item [$\rightarrow$] $3 \cdot \frac{n}{10} \text{ Elemente }>M$
+        \end{itemize}
+        \item [$\Rightarrow$] Wählt man also nach dieser Methode das Pivotelement, so erhält man mindestens einen $30\%-70\%$ Split.
+    \end{itemize}
+
+    \subsubsection*{Pivotelement schnell genug gefunden}
+    Für die Laufzeit ergibt sich
+    \begin{equation*}
+        T(n) \leq \underbrace{T(\dfrac{n}{5})}_{\substack{\text{Median} \\ \text{der} \\ \text{Mediane}}}
+        + \underbrace{T(\dfrac{7}{10} \cdot n)}_{\substack{\text{Quick-Sort-} \\ \text{Rekursion}}}
+        + \underbrace{\mathcal{O}(n)}_{\substack{\text{Pivotieren} \\ \text{+} \\ \text{Verwaltung}}}
+    \end{equation*}
+    Per Induktion kann nun gezeigt werden $T(n)\leq \gamma \cdot n$.
+    Im Induktionsschritt zeigt sich dann
+    \begin{equation*}
+        \begin{flalign}
+            T(n) & \overset{\text{IV}}{\leq} \gamma \cdot \frac{n}{5} + \gamma \cdot \frac{7}{10} \cdot n + c \cdot n\\\nonumber
+            &= n \cdot (\frac{9}{10} \cdot \gamma + c)\\\nonumber
+            &\leq \gamma \cdot n
+        \end{flalign}
+    \end{equation*}
+    Dies ist der Fall für $\gamma = 10 \cdot c\qquad \Longrightarrow T(n) \in \mathcal{O}(n)$
+
+    \textbf{\textsf{Nebeneffekt:}} Der Median wird in Linearzeit berechnet (im Beispiel des Quick-Sort-Pivots).
+
+    \section*{Concentration Bounds}\label{sec:concentrationBounds}
+    Bisher wurden hauptsächlich Analysen mithilfe des Erwartungswerts durchgeführt.
+    Der Erwartungswert macht jedoch keine Aussage über die Verteilung.
+
+    \begin{figure}[htb]
+        \centering
+        \includepic{lec_05_b}{0.5}
+    \end{figure}
+
+    Man kann die Verteilung eines Algorithmus mit Erwartungswert $L$ generisch analysieren: Der Algorithmus läuft $\alpha \cdot L$ Schritte.
+    Ist er danach nicht fertig, wird er einfach neugestartet.
+    Die Wahrscheinlichkeit, in einem Durchlauf nicht fertig zu werden, ist $<\frac{1}{\alpha}$.
+    Die Wahrscheinlichkeit, in $k$ Durchläufen nicht fertig zu werden, ist $\leq \frac{1}{\alpha} \cdot \frac{1}{\alpha} \cdot\ ... = \frac{1}{\alpha^k}$.
+
+    \vspace{0.3cm}
+    \textsf{\textbf{Beispiel}}: Gegeben ist begrenzte Zeit $t \underbrace{>>}_{\substack{\text{viel} \\ \text{größer}}} L$
+    \begin{itemize}
+        \item Wie soll $\alpha$ gewählt werden?
+        \item Für gegebenes $\alpha$ können maximal $\frac{t}{\alpha \cdot l}$ Runden durchlaufen werden.
+    \end{itemize}
+
+
+\end{document}
