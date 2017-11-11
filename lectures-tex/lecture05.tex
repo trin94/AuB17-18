@@ -12,13 +12,18 @@
 \usepackage{listings}
 \usepackage{tikz}
 \usepackage{pgfplots}
+\pgfplotsset{ticks=none}
+\pgfplotsset{width=10cm, compat=1.5.1}
 \usetikzlibrary{shapes.misc}
+\usetikzlibrary{shapes.arrows,calc,quotes,babel}
+\usetikzlibrary{positioning,arrows,chains,scopes,fit}
 \usetikzlibrary{matrix,backgrounds}
 \usetikzlibrary{trees}
 \usetikzlibrary{calc}
 \usepackage[all,dvips,arc,curve,color,frame]{xy}
 \usepackage[yyyymmdd,hhmm]{datetime}
-
+\usepackage{float}
+\usepackage{pgfplots}
 
 \lstset{basicstyle=\ttfamily}
 \lstset{literate=%
@@ -32,10 +37,15 @@
 }
 
 \newtheorem{theorem}{Theorem}
-
 \newcommand{\includepic}[2]{\includegraphics[width=#2\textwidth,height=#2\textheight,keepaspectratio]{#1}}
+\newcommand\circlearound[1]{%
+\tikz[baseline]\node[draw,shape=circle,anchor=base] {#1} ;}
+\newcommand\underbracetext[1]{\raisebox{1ex}{\ensuremath{\underbrace{\hphantom{\text{#1}}}_{\text{\normalsize #1}}}}}
 
 \usepackage[yyyymmdd,hhmm]{datetime}
+\usepackage{tabularx}
+\usepackage[table]{xcolor,colortbl}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}} % zentriert mit Breitenangabe
 
 % Base path of images
 \usepackage{graphicx}
@@ -63,7 +73,38 @@
     Eine einfache Optimierung erschließt sich beim Betrachten der Skizze: Ist bereits bekannt, dass sich das $k$-te Element nicht im betrachteten Abschnitt der Datenstruktur aufhält, so muss dieser Teil nicht sortiert werden (gelb).
     \begin{figure}[htb]
         \centering
-        \includepic{lec_05_a}{0.4}
+        Unsortiertes Array $A$
+
+        \begin{tabular}{|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|}
+            \hline
+            & & & & & & $k$ & & & \\
+            \hline
+        \end{tabular}
+
+        \begin{tikzpicture}
+            \node (A) at (0,1) {\empty};
+            \node (B) at (0,0) {\empty};
+            \draw[thick,->] (A) -- (B) node[midway,sloped,right,rotate=90] {Pivotisieren};
+        \end{tikzpicture}
+
+        \begin{tabular}{|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|}
+            \hline
+            \cellcolor{yellow!20} & \cellcolor{yellow!20} & \cellcolor{yellow!20} & \cellcolor{yellow!20} & \cellcolor{yellow!20} & \cellcolor{green!20} & \cellcolor{green!20} $k$ & \cellcolor{green!20} & \cellcolor{green!20} & \cellcolor{green!20} \\ \hline
+            \multicolumn{5}{c}{\underbracetext{\phantom{we are} Rekursion \phantom{we are}}} & \multicolumn{5}{c}{\underbracetext{\phantom{we are} Rekursion \phantom{we are}}} \\
+        \end{tabular}
+
+        \begin{tikzpicture}
+            \node (A) at (0,1) {\empty};
+            \node (B) at (0,0) {\empty};
+            \draw[thick,->] (A) -- (B) node[midway,sloped,right,rotate=90] {\ldots};
+        \end{tikzpicture}
+
+        \begin{tabular}{|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|}
+            \hline
+            \cellcolor{green!20} & \cellcolor{green!20} $k$ & \cellcolor{yellow!20} & \cellcolor{yellow!20} & \cellcolor{yellow!20} \\ \hline
+            \multicolumn{2}{c}{\underbracetext{\phantom{aa} \ldots \phantom{aa}}} & \multicolumn{3}{c}{\underbracetext{\phantom{aaaa} \ldots \phantom{aaaa}}} \\
+        \end{tabular}
+
     \end{figure}
 
     \begin{lstlisting}[escapeinside={(;}{;)}]
@@ -99,8 +140,7 @@
     so soll das Pivotelement nun nach einem festen Ablauf ermittelt werden.
     Dabei ist es wichtig, dass das Pivotelement nicht perfekt gewählt sein muss, sondern nur \textit{ausreichend gut}.
 
-    \vspace{0.3cm}
-    \textsf{\textbf{Wahl des Pivotelements}}:
+    \subsection*{Wahl des Pivotelements}
     \begin{enumerate}
         \item Man gruppiere die Elemente der Eingabestruktur zu je 5 Elementen.
         \item Man berechnet in jeder Gruppe den Median (geht in sechs Vergleichen: $\mathcal{O}(n)$).
@@ -109,7 +149,7 @@
         \item Der Median der Gruppenmediane wird als Pivotelement verwendet
     \end{enumerate}
 
-    \subsubsection*{Pivotelement gut genug}
+    \subsection*{Pivotelement gut genug}
     \begin{itemize}
         \item Sei $M$ der Median der Gruppenmediane.
         Von den $\frac{n}{5}$ Gruppenmedianen sind die Hälfte $(\frac{n}{5}:2=\frac{n}{10})$ größer bzw. kleiner als $M$.
@@ -122,7 +162,8 @@
         \item [$\Rightarrow$] Wählt man also nach dieser Methode das Pivotelement, so erhält man mindestens einen $30\%-70\%$ Split.
     \end{itemize}
 
-    \subsubsection*{Pivotelement schnell genug gefunden}
+
+    \subsection*{Pivotelement schnell genug gefunden}
     Für die Laufzeit ergibt sich
     \begin{equation*}
         T(n) \leq \underbrace{T(\dfrac{n}{5})}_{\substack{\text{Median} \\ \text{der} \\ \text{Mediane}}}
@@ -142,25 +183,134 @@
 
     \textbf{\textsf{Nebeneffekt:}} Der Median wird in Linearzeit berechnet (im Beispiel des Quick-Sort-Pivots).
 
+    \subsection*{Beispiel: Select ($A$, 12)}
+    \tikzset{my arrow/.style={blue!60!black,-latex},
+    set@com@col/.style={},set@com@col@aryarg/.style={column #1/.style={set@com@col}},
+    set@com@row/.style={},set@com@row@aryarg/.style={row #1/.style={set@com@row}},
+    set common column/.style 2 args={set@com@col/.style={#2}, set@com@col@aryarg/.list={#1}},
+    set common row/.style 2 args={set@com@row/.style={#2}, set@com@row@aryarg/.list={#1}},
+    }
+
+    \begin{figure}[H]
+        \centering
+        \begin{tabular}{|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|}
+            \hline
+            82 & 56 & 49 & 34 & 27 & 9 & 37 & 50 & 59 & 26 & 58 & 11 & 89 & 61 & 94\\
+            \hline
+        \end{tabular}
+        \begin{tikzpicture}
+            \node (A) at (0,1) {\empty};
+            \node (B) at (0,0) {\empty};
+            \draw[thick,->] (A) -- (B) node[midway,sloped,right,rotate=90] {\circlearound{1} 5-er Gruppen bilden};
+        \end{tikzpicture}
+
+        \begin{tikzpicture}
+            \matrix [matrix of nodes,row sep=0mm,
+            set common column={1,...,5}{nodes={rectangle,draw,minimum width=2.5em}},
+            set common column={7,...,11}{nodes={rectangle,draw,minimum width=2.5em}},
+            set common column={13,...,17}{nodes={rectangle,draw,minimum width=2.5em}},
+            set common row={0,0}{nodes={draw=none}},
+            nodes in empty cells
+            ] (O)
+            {
+            82 & 56 & 49 & 34 & 27 & \empty & 9 & 37 & 50 & 59 & 26 & \empty & 58 & 11 & 89 & 61 & 94 & \\
+            };
+        \end{tikzpicture}
+        \begin{tikzpicture}
+            \node (A) at (0,1) {\empty};
+            \node (B) at (0,0) {\empty};
+            \draw[thick,->] (A) -- (B) node[midway,sloped,right,rotate=90] {\circlearound{2} Mittleren Wert (Median) in der Gruppe bestimmen};
+        \end{tikzpicture}
+
+        \begin{tikzpicture}
+            \matrix [matrix of nodes,row sep=0mm,
+            set common column={1,...,5}{nodes={rectangle,draw,minimum width=2.5em}},
+            set common column={7,...,11}{nodes={rectangle,draw,minimum width=2.5em}},
+            set common column={13,...,17}{nodes={rectangle,draw,minimum width=2.5em}},
+            set common row={0,0}{nodes={draw=none}},
+            nodes in empty cells
+            ] (O)
+            {
+            82 & 56 & |[draw,fill=blue!20]| 49 & 34 & 27 & \empty & 9 & |[draw,fill=blue!20]| 37 & 50 & 59 & 26 & \empty & 58 & 11 & 89 & |[draw,fill=blue!20]| 61 & 94 & \\
+            };
+        \end{tikzpicture}
+        \begin{tikzpicture}
+            \node (A) at (0,1) {\empty};
+            \node (B) at (0,0) {\empty};
+            \draw[thick,->] (A) -- (B) node[midway,sloped,right,rotate=90] {\circlearound{3} Median der Gruppenmediane bestimmen};
+        \end{tikzpicture}
+
+        \begin{tabular}{|C{1.5em}|C{1.5em}|C{1.5em}|}
+            \hline
+            \cellcolor{red!20} 49 & \cellcolor{blue!20} 37 & \cellcolor{blue!20} 61 \\
+            \hline
+        \end{tabular}
+
+        \begin{tikzpicture}
+            \node (A) at (0,1) {\empty};
+            \node (B) at (0,0) {\empty};
+            \draw[thick,->] (A) -- (B) node[midway,sloped,right,rotate=90] {\circlearound{4} Pivotieren};
+        \end{tikzpicture}
+
+        \begin{tabular}{|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|}
+            \hline
+            34 & 27 & 9 & 37 & 26 & 11 & \cellcolor{red!20} 49 & \cellcolor{green!20} 82 & \cellcolor{green!20}56 & \cellcolor{green!20}50 & \cellcolor{green!20}59 & \cellcolor{green!20}58 & \cellcolor{green!20}89 & \cellcolor{green!20}61 & \cellcolor{green!20}94 \\
+            \hline
+            \multicolumn{6}{c}{\underbracetext{\phantom{we must stud} $<49$ \phantom{we must stud}}}  & \multicolumn{1}{c}{}& \multicolumn{8}{c}{\underbracetext{\phantom{we must study mor} $>49$ \phantom{we must study mor}}}  \\
+            \multicolumn{6}{c}{}  & \multicolumn{1}{c}{}& \multicolumn{8}{c}{\textbf{\textsf{$\Rightarrow \text{Select}(\uparrow, [12-7])$}}} \\
+        \end{tabular}
+
+    \end{figure}
+
+    \newpage
     \section*{Concentration Bounds}\label{sec:concentrationBounds}
     Bisher wurden hauptsächlich Analysen mithilfe des Erwartungswerts durchgeführt.
     Der Erwartungswert macht jedoch keine Aussage über die Verteilung.
 
     \begin{figure}[htb]
         \centering
-        \includepic{lec_05_b}{0.5}
+
+        \begin{tikzpicture}
+            \begin{axis}[
+            axis y line = middle,
+            axis x line = middle,
+            samples = 190,
+            domain = -6:6,
+            xmin = -7.5, xmax = 7.5,
+            ymin = 0, ymax = 6.5,
+            yticklabels={,,}
+            ]
+                \addplot[green, thick, mark=none, ] {2}; ;
+                \addplot[orange, thick, mark=none, ] {0.5 * -log2(\x) + 3.3};
+                \addplot[orange, thick, mark=none, ] {0.5 * -log2(-\x) + 3.3};
+                \addplot[blue, thick, mark=none, ] {0.4 * (-(\x-3)^2 + 9});
+                \addplot[blue, thick, mark=none, ] {0.4 * (-(\x+3)^2 + 9});
+            \end{axis}
+        \end{tikzpicture}
     \end{figure}
 
     Man kann die Verteilung eines Algorithmus mit Erwartungswert $L$ generisch analysieren: Der Algorithmus läuft $\alpha \cdot L$ Schritte.
-    Ist er danach nicht fertig, wird er einfach neugestartet.
-    Die Wahrscheinlichkeit, in einem Durchlauf nicht fertig zu werden, ist $<\frac{1}{\alpha}$.
-    Die Wahrscheinlichkeit, in $k$ Durchläufen nicht fertig zu werden, ist $\leq \frac{1}{\alpha} \cdot \frac{1}{\alpha} \cdot\ ... = \frac{1}{\alpha^k}$.
+    Ist er danach nicht fertig, wird er neugestartet.
 
-    \vspace{0.3cm}
-    \textsf{\textbf{Beispiel}}: Gegeben ist begrenzte Zeit $t \underbrace{>>}_{\substack{\text{viel} \\ \text{größer}}} L$
+    \begin{itemize}
+        \item [$\rightarrow$] Die Wahrscheinlichkeit, in einem Durchlauf nicht fertig zu werden, ist $<\frac{1}{\alpha}$.
+        \item [$\rightarrow$]   Die Wahrscheinlichkeit, in $k$ Durchläufen nicht fertig zu werden, ist $\leq \frac{1}{\alpha} \cdot \frac{1}{\alpha} \cdot\ ... = \frac{1}{\alpha^k}$.
+    \end{itemize}
+
+    \subsubsection*{Beispiel 1}
+    Gegeben ist begrenzte Zeit $t \underbrace{>>}_{\substack{\text{viel} \\ \text{größer}}} L$
     \begin{itemize}
         \item Wie soll $\alpha$ gewählt werden?
         \item Für gegebenes $\alpha$ können maximal $\frac{t}{\alpha \cdot l}$ Runden durchlaufen werden.
+    \end{itemize}
+    \subsubsection*{Beispiel 2}
+    \begin{itemize}
+        \item Seien $\alpha = 2 \text{ und } k=\log(n)$: Dann beträgt die erwartete Laufzeit $\frac{1}{n}$.
+        \item Seien $\alpha = 2 \text{ und } k= 2\cdot\log(n) $: Dann beträgt die erwartete Laufzeit $\frac{1}{n^2}$.
+        \item [] Für den zweiten Fall liefert Markov:
+        \begin{equation*}
+            P(\text{Algorithmus braucht länger als } 2\cdot\alpha\cdot L \cdot \log(n)) \leq \frac{1}{2\cdot\alpha\cdot \log(n)}
+        \end{equation*}
     \end{itemize}
 
 
