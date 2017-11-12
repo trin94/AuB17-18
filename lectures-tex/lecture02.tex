@@ -16,10 +16,34 @@
 
 \usepackage[yyyymmdd,hhmm]{datetime}
 
+\lstset{basicstyle=\ttfamily}
+\lstset{literate=%
+{Ö}{{\"O}}1
+{Ä}{{\"A}}1
+{Ü}{{\"U}}1
+{ß}{{\ss}}1
+{ü}{{\"u}}1
+{ä}{{\"a}}1
+{ö}{{\"o}}1
+}
+
 % Base path of images
 \usepackage{graphicx}
 \graphicspath{ {../lectures-img/} }
 
+\usepackage{tikz}
+\usepackage{float}
+\usepackage{subcaption}
+\usetikzlibrary{shapes}
+\usetikzlibrary{positioning}
+\definecolor{amethyst}{rgb}{0.6, 0.4, 0.8}
+\definecolor{babyblue}{rgb}{0.54, 0.81, 0.94}
+\definecolor{anti-flashwhite}{rgb}{0.95, 0.95, 0.96}
+\definecolor{buff}{rgb}{0.94, 0.86, 0.51}
+\tikzset{node blue/.style={circle,fill=babyblue!100,draw,minimum size=0.5cm,inner sep=0pt},}
+\tikzset{node purp/.style={circle,fill=amethyst!100,draw,minimum size=0.5cm,inner sep=0pt},}
+\tikzset{node whit/.style={circle,fill=anti-flashwhite!100,draw,minimum size=0.7cm,inner sep=0pt},}
+\tikzset{node yell/.style={circle,fill=buff!100,draw,minimum size=0.7cm,inner sep=2pt},}
 \begin{document}
     % ----------------------------------------------------------------------------
     \subject{Vorlesungsmitschrieb}
@@ -29,11 +53,11 @@
     \maketitle
     % ----------------------------------------------------------------------------
 
-    \subsection*{Min-Cut-Problem}
-    \label{subsec:mincutproblem}
+    \section*{Min-Cut-Problem}
+    \label{sec:mincutproblem}
 
-    \subsubsection*{Cut}
-    \label{subsubsec:cut}
+    \subsection*{Cut}
+    \label{subsec:cut}
 
     Ein Cut im Graphen unterteilt einen Graphen in zwei Hälften.
     Das heißt, es gibt Kanten, bei denen ein Knoten in einer
@@ -41,54 +65,147 @@
 
     \begin{figure}[htb]
         \centering
-        \includepic{lec_02_a}{0.35}
+
+        \begin{tikzpicture}[thick, scale=0.5]
+            \node[node purp] (n1) at (1,0) {};
+            \node[node purp] (n2) at (0,3) {};
+            \node[node blue] (n3) at (4,4) {};
+            \node[node blue] (n4) at (7,2) {};
+            \node[node blue] (n5) at (5,0) {};
+
+            \foreach \from/\to in {n1/n2,n2/n3,n3/n4,n4/n5,n5/n1,n2/n5,n3/n5}
+            \draw[very thick] (\from) -- (\to);
+
+
+            \coordinate (c1) at (2,-1);
+            \coordinate (c2) at (1.5,5);
+
+            \draw [ultra thick, red, dashed] (c1) to [bend right=20] (c2);
+            %            \draw [ultra thick, red, dashed] (2,-1) to[out=-15,in=-15] (1.5,5);
+            %            \draw [ultra thick, red, dashed] plot [smooth, tension=2] coordinates {(2,-1) (2.5,2)(1.5,5)};
+        \end{tikzpicture}
         \caption{Ein Cut mit Wert 3}
     \end{figure}
 
-    Der Wert des $Cut(A,G)$ ist seine Kardinalität |cut(A,G)|.
-
-    \subsubsection*{Min-Cut}
-    \label{subsubsec:mincut}
+    \subsection*{Min-Cut}
+    \label{subsec:mincut}
     Der Min-Cut beschreibt den Cut, bei dem am wenigsten Kanten "`geschnitten"' werden müssen,
     um den Graphen in zwei Hälften zu teilen.
 
-    \begin{figure}[htb]
+    \begin{figure}[H]
         \centering
-        \includepic{lec_02_b}{0.35}
-        \caption{Der Min-Cut mit Wert 2 (hier nicht eindeutig)}
+        \begin{subfigure}{.5\textwidth}
+            \centering
+            \begin{tikzpicture}[thick, scale=0.5]
+                \node[node purp] (n1) at (1,0) {};
+                \node[node purp] (n2) at (0,3) {};
+                \node[node purp] (n3) at (4,4) {};
+                \node[node blue] (n4) at (7,2) {};
+                \node[node purp] (n5) at (5,0) {};
+
+                \foreach \from/\to in {n1/n2,n2/n3,n3/n4,n4/n5,n5/n1,n2/n5,n3/n5}
+                \draw[very thick] (\from) -- (\to);
+
+
+                \coordinate (c1) at (6.5,-1);
+                \coordinate (c2) at (6,5);
+
+                \draw [ultra thick, red, dashed] (c1) to [bend left=20] (c2);
+                %            \draw [ultra thick, red, dashed] (2,-1) to[out=-15,in=-15] (1.5,5);
+                %            \draw [ultra thick, red, dashed] plot [smooth, tension=2] coordinates {(2,-1) (2.5,2)(1.5,5)};
+            \end{tikzpicture}
+        \end{subfigure}%
+        \begin{subfigure}{.5\textwidth}
+            \centering
+
+            \begin{tikzpicture}[thick, scale=0.5]
+            \node[node purp] (n1) at (1,0) {};
+            \node[node blue] (n2) at (0,3) {};
+            \node[node blue] (n3) at (4,4) {};
+            \node[node blue] (n4) at (7,2) {};
+            \node[node blue] (n5) at (5,0) {};
+
+            \foreach \from/\to in {n1/n2,n2/n3,n3/n4,n4/n5,n5/n1,n2/n5,n3/n5}
+            \draw[very thick] (\from) -- (\to);
+
+
+            \coordinate (c1) at (3.5,-1);
+            \coordinate (c2) at (-1.5,2);
+
+            \draw [ultra thick, red, dashed] (c1) to [bend right=35] (c2);
+            %            \draw [ultra thick, red, dashed] (2,-1) to[out=-15,in=-15] (1.5,5);
+            %            \draw [ultra thick, red, dashed] plot [smooth, tension=2] coordinates {(2,-1) (2.5,2)(1.5,5)};
+        \end{tikzpicture}
+        \end{subfigure}
+        \caption{Min-Cut mit Wert 2 (hier nicht eindeutig)}
     \end{figure}
+    \newpage
 
-    Ein realer Anwendungsfall wäre durch ein Netzwerk beschrieben,
-    in dem Daten von einem Knoten zum anderen übertragen werden müssen.
-    Siehe dazu auch \url{https://en.wikipedia.org/wiki/Max-flow_min-cut_theorem}
-
-    \subsubsection*{Kargers Min-Cut Algorithmus}
-    \label{subsubsec:kargersMincutAlgorithmus}
+    \section*{Kargers Min-Cut-Algorithmus}
+    \label{sec:kargersMincutAlgorithmus}
 
     Kargers-Min-Cut-Algorithmus beschreibt einen randomisierten Algorithmus, der mit einer
     Wahrscheinlichkeit von $\frac{1}{n^2}$ das richtige Ergebnis berechnet.
     Als zentrale Operation dient hier die Kantenkontraktion:
 
-    \begin{figure}[htb]
+    \begin{figure}[H]
         \centering
-        \includepic{lec_02_c}{0.7}
+        \begin{subfigure}{.45\textwidth}
+            \centering
+            \begin{tikzpicture}[thick, scale=0.5]
+                \node[node whit] (n1) at (0,0) {};
+                \node[node whit] (n2) at (4,3) {};
+                \node[node whit] (n3) at (8,0) {};
+                \node[node whit] (n4) at (4,-3) {};
+                \node[node yell] (n5) at (3,0) {v};
+                \node[node yell] (n6) at (5,0) {w};
+
+                \foreach \from/\to in {n1/n5,n2/n5,n2/n6,n3/n6,n4/n5,n4/n6,n5/n6}
+                \draw[very thick] (\from) -- (\to);
+            \end{tikzpicture}
+        \end{subfigure}%
+        \begin{subfigure}{.1\textwidth}
+            \centering
+            $\Rightarrow$
+        \end{subfigure}%
+        \begin{subfigure}{.45\textwidth}
+            \centering
+
+            \begin{tikzpicture}[thick, scale=0.5]
+                \node[node whit] (n1) at (0,0) {};
+                \node[node whit] (n2) at (4,3) {};
+                \node[node whit] (n3) at (8,0) {};
+                \node[node whit] (n4) at (4,-3) {};
+                \node[node yell] (n5) at (4,0) {v, w};
+
+                \foreach \from/\to in {n1/n5,n3/n5}
+                \draw[very thick] (\from) -- (\to);
+
+                \draw [very thick] (n2) to [bend right=20] (n5);
+                \draw [very thick] (n2) to [bend left=20] (n5);
+                \draw [very thick] (n4) to [bend right=20] (n5);
+                \draw [very thick] (n4) to [bend left=20] (n5);
+            \end{tikzpicture}
+        \end{subfigure}
         \caption{Kantenkontraktion der Knoten $v, w$}
     \end{figure}
 
     Der Algorithmus lässt sich wie folgt beschreiben:
 
-    \begin{lstlisting}
-        for i = 1 to n-2:
-            Kontrahiere random Kante
+    \begin{lstlisting}[escapeinside={(;}{;)}]
+        for (;$i = 1$;) to (;$n-2$;):
+            Kontrahiere zufällige Kante
         return Kantenmenge,
             die einem der beiden verbleibenden Knoten entspricht
     \end{lstlisting}
 
-    Es bleiben zwei große Knoten mit einigen Kanten dazwischen übrig.
-    Der Wert des Min-Cut-Problems ist die Anzahl der Kanten zwischen diesen Knoten.
+    Es bleiben zwei große Knoten mit einigen Kanten zwischen ihnen übrig.
+    Der errechnete Min-Cut ist die Anzahl der Kanten zwischen diesen Knoten.
+
+    \subsection*{Analyse von Kargers Min-Cut-Algorithmus}\label{subsec:analyseVonKargersMincut-algorithmus}
 
     \textbf{\textsf{Annahme:}}  Min-Cut ist eindeutig.
-
+    \newline
     \textbf{\textsf{Beobachtung:}} Algorithmus berechnet genau dann das richtige Ergebnis, wenn er nie eine der Min-Cut-Kanten kontrahiert.
 
     Sei $k$ die Größe des Min-Cuts, $m$ die Anzahl der Kanten.
@@ -120,6 +237,7 @@
 
     Falls $E_1, E_2, ..., E_i$ eingetroffen sind, existieren vor dem $i+1$-Schritt mindestens $\frac{k \cdot (n-i)}{2}$ Kanten:
     $P_r(E_{i+1})  \geq 1 - \frac{2}{n-i}$.
+    \newpage
 
     \begin{equation*}
         P_r(\bigcap_{i+1}^{n-2}) = P_r(E_1) \cdot P_r(E_2|E_1) \cdot P_r(E_3| E_1 \land E_2) ...
