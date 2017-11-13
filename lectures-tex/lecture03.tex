@@ -11,6 +11,9 @@
 \usepackage{mathrsfs}
 \usepackage{mathtools}
 \usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{trees}
+
 
 \lstset{basicstyle=\ttfamily}
 \lstset{literate=%
@@ -32,7 +35,7 @@
 % Base path of images
 \usepackage{graphicx}
 \graphicspath{ {../lectures-img/} }
-
+\setlength{\parindent}{0pt}
 \begin{document}
     % ----------------------------------------------------------------------------
     \subject{Vorlesungsmitschrieb}
@@ -85,7 +88,20 @@
 
         \begin{figure}[htb]
             \centering
-            \includepic{lec_03_a}{0.3}
+
+            \begin{tikzpicture}[level distance=1.5cm,
+            level 1/.style={sibling distance=5cm},
+            level 2/.style={sibling distance=1.5cm}]
+                \node {Vergleich $e_1 \& e_2$}
+                child {node {Vergleich $e_3 \& e_5$}
+                child {node {\ldots}}
+                child {node {\ldots}}
+                }
+                child {node {Vergleich $e_4 \& e_6$}
+                child {node {\ldots}}
+                child {node {\ldots}}
+                };
+            \end{tikzpicture}
             \caption{Exemplarische Vergleiche beim vergleichsbasierten Sortieren}
         \end{figure}
 
@@ -151,8 +167,8 @@
     \begin{lstlisting}
         1. Lasse Algorithmus laufen
         2. Überprüfe Ergebnis mit Checker
-            Falls korrekt, dann fertig
-            Falls nicht korrekt, zurück zu 1.
+        Falls korrekt, dann fertig
+        Falls nicht korrekt, zurück zu 1.
     \end{lstlisting}
 
     Die erwartete Laufzeit $\mathcal{R}$ ist dann
@@ -160,10 +176,10 @@
     \begin{equation*}
         \begin{flalign}
             \mathcal{R} &= p(n) \cdot (f(n) + g(n))&&\\\nonumber
-                        &\quad + ((1 - p(n)) \cdot p(n) \cdot (f(n) + g(n))) \cdot 2&&\\\nonumber
-                        &\quad + ((1 - p(n))^2 \cdot p(n) \cdot (f(n) + g(n))) \cdot 3&&\\\nonumber
-                        &\quad +\ ...&&\\\nonumber
-                        &=\left( f(n) + g(n)) \cdot p(n) \cdot \sum^{\infty}_{i=1}((1-p(n))^i < \frac{f(n) + g(n)}{p(n)}) \cdot (i+1)\right)
+            &\quad + ((1 - p(n)) \cdot p(n) \cdot (f(n) + g(n))) \cdot 2&&\\\nonumber
+            &\quad + ((1 - p(n))^2 \cdot p(n) \cdot (f(n) + g(n))) \cdot 3&&\\\nonumber
+            &\quad +\ ...&&\\\nonumber
+            &=\left( f(n) + g(n)) \cdot p(n) \cdot \sum^{\infty}_{i=1}((1-p(n))^i < \frac{f(n) + g(n)}{p(n)}) \cdot (i+1)\right)
         \end{flalign}
     \end{equation*}
 
