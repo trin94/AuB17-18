@@ -44,6 +44,7 @@
 \tikzset{node purp/.style={circle,fill=amethyst!100,draw,minimum size=0.5cm,inner sep=0pt},}
 \tikzset{node whit/.style={circle,fill=anti-flashwhite!100,draw,minimum size=0.7cm,inner sep=0pt},}
 \tikzset{node yell/.style={circle,fill=buff!100,draw,minimum size=0.7cm,inner sep=2pt},}
+\setlength{\parindent}{0pt}
 \begin{document}
     % ----------------------------------------------------------------------------
     \subject{Vorlesungsmitschrieb}
@@ -76,7 +77,6 @@
             \foreach \from/\to in {n1/n2,n2/n3,n3/n4,n4/n5,n5/n1,n2/n5,n3/n5}
             \draw[very thick] (\from) -- (\to);
 
-
             \coordinate (c1) at (2,-1);
             \coordinate (c2) at (1.5,5);
 
@@ -84,7 +84,7 @@
             %            \draw [ultra thick, red, dashed] (2,-1) to[out=-15,in=-15] (1.5,5);
             %            \draw [ultra thick, red, dashed] plot [smooth, tension=2] coordinates {(2,-1) (2.5,2)(1.5,5)};
         \end{tikzpicture}
-        \caption{Ein Cut mit Wert 3}
+        \caption*{Ein Cut mit Wert 3}
     \end{figure}
 
     \subsection*{Min-Cut}
@@ -137,7 +137,7 @@
             %            \draw [ultra thick, red, dashed] plot [smooth, tension=2] coordinates {(2,-1) (2.5,2)(1.5,5)};
         \end{tikzpicture}
         \end{subfigure}
-        \caption{Min-Cut mit Wert 2 (hier nicht eindeutig)}
+        \caption*{Min-Cut mit Wert 2 (hier nicht eindeutig)}
     \end{figure}
     \newpage
 
@@ -187,7 +187,7 @@
                 \draw [very thick] (n4) to [bend left=20] (n5);
             \end{tikzpicture}
         \end{subfigure}
-        \caption{Kantenkontraktion der Knoten $v, w$}
+        \caption*{Kantenkontraktion der Knoten $v, w$}
     \end{figure}
 
     Der Algorithmus lässt sich wie folgt beschreiben:
