@@ -34,6 +34,7 @@
 
 % Base path of images
 \usepackage{graphicx}
+\usepackage{subcaption}
 \graphicspath{ {../lectures-img/} }
 \setlength{\parindent}{0pt}
 \begin{document}
@@ -102,7 +103,7 @@
                 child {node {\ldots}}
                 };
             \end{tikzpicture}
-            \caption{Exemplarische Vergleiche beim vergleichsbasierten Sortieren}
+            \caption*{Exemplarische Vergleiche beim vergleichsbasierten Sortieren}
         \end{figure}
 
         Ein Blatt in diesem Baum heißt im Prinzip: Der Algorithmus hat fertig sortiert.
@@ -167,8 +168,8 @@
     \begin{lstlisting}
         1. Lasse Algorithmus laufen
         2. Überprüfe Ergebnis mit Checker
-        Falls korrekt, dann fertig
-        Falls nicht korrekt, zurück zu 1.
+            Falls korrekt, dann fertig
+            Falls nicht korrekt, zurück zu 1.
     \end{lstlisting}
 
     Die erwartete Laufzeit $\mathcal{R}$ ist dann
