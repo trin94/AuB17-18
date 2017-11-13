@@ -2,15 +2,28 @@
 \usepackage[margin=2.5cm]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[ngerman]{babel}
+%\usepackage[ngerman]{babel}
 \usepackage{lmodern}
-\usepackage{hyperref}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{cancel}
-\usepackage{mathrsfs}
-\usepackage{mathtools}
+%\usepackage{mathrsfs}
+%\usepackage{mathtools}
 \usepackage{listings}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{ticks=none}
+\pgfplotsset{width=10cm, compat=1.5.1}
+\usetikzlibrary{shapes.misc}
+\usetikzlibrary{shapes.arrows,calc,quotes,babel}
+\usetikzlibrary{positioning,arrows,chains,scopes,fit}
+\usetikzlibrary{matrix,backgrounds}
+\usetikzlibrary{trees}
+\usetikzlibrary{calc}
+\usepackage[all,dvips,arc,curve,color,frame]{xy}
+\usepackage[yyyymmdd,hhmm]{datetime}
+\usepackage{float}
+\usepackage{pgfplots}
 
 \lstset{basicstyle=\ttfamily}
 \lstset{literate=%
@@ -24,15 +37,23 @@
 }
 
 \newtheorem{theorem}{Theorem}
-
 \newcommand{\includepic}[2]{\includegraphics[width=#2\textwidth,height=#2\textheight,keepaspectratio]{#1}}
+\newcommand\circlearound[1]{%
+\tikz[baseline]\node[draw,shape=circle,anchor=base] {#1} ;}
+\newcommand\underbracetext[1]{\raisebox{1ex}{\ensuremath{\underbrace{\hphantom{\text{#1}}}_{\text{\normalsize #1}}}}}
 
 \usepackage[yyyymmdd,hhmm]{datetime}
+\usepackage{tabularx}
+\usepackage[table]{xcolor,colortbl}
+\usepackage{subcaption}
+\definecolor{anti-flashwhite}{rgb}{0.95, 0.95, 0.96}
+\tikzset{node whit/.style={circle,fill=anti-flashwhite!100,draw,minimum size=0.7cm,inner sep=0pt},}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}} % zentriert mit Breitenangabe
 
 % Base path of images
 \usepackage{graphicx}
 \graphicspath{ {../lectures-img/} }
-
+\setlength{\parindent}{0pt}
 \begin{document}
     % ----------------------------------------------------------------------------
     \subject{Vorlesungsmitschrieb}
@@ -54,8 +75,16 @@
 
     \begin{figure}[htb]
         \centering
-        \includepic{lec_04_a}{0.45}
-        \caption{Einfügen eines Elements an der \textit{richtigen} Stelle}
+
+        \begin{tabular}{|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|}
+            \hline
+            \multicolumn{4}{|c|}{} & \cellcolor{blue!40} & \multicolumn{3}{c|}{}\\
+            \hline
+            \multicolumn{4}{c}{\underbracetext{\phantom{we dod } $<A[p]$ \phantom{we dod }}}  & \multicolumn{1}{c}{}& \multicolumn{3}{c}{\underbracetext{\phantom{wed } $>A[p]$ \phantom{wed }}}  \\
+            \multicolumn{4}{c}{$=A_L$}  & \multicolumn{1}{c}{}& \multicolumn{3}{c}{$=A_R$} \\
+        \end{tabular}
+
+        \caption*{Einfügen eines Elements an der \textit{richtigen} Stelle}
     \end{figure}
     Der Algorithmus wird dann für die linke Seite $RQS(A_l)$ bzw. $RQS(A_r)$ rekursiv aufgerufen.
     Um $p$ \textit{zufällig gleichverteilt} aufzurufen, können verschiedene Ansätze gewählt werden.
@@ -71,10 +100,38 @@
     \end{equation*}
     Daraus folgt, dass die Tiefe des Rekursionsbaums  $\mathcal{O}(\log(n))$ sein muss.
 
-    \begin{figure}[htb]
+    \begin{figure}[H]
         \centering
-        \includepic{lec_04_b}{0.45}
-        \caption{Die Gesamtlaufzeit ergibt sich somit als $\mathcal{O}(n \cdot \log(n))$}
+
+        \begin{tikzpicture}[level distance=2cm,
+        level 1/.style={sibling distance=4cm},
+        level 2/.style={sibling distance=2cm},
+        nodes={circle, draw, thick}
+        ]
+            \node {$A_C$}
+            child {node {$A_L$}
+            child {node[fill=red!15] {$A_{LL}$}}
+            child {node[fill=red!15] {$A_{LR}$}}
+            }
+            child {node {$A_R$}
+            child {node[fill=red!15] {$A_{RL}$}}
+            child {node[fill=red!15] {$A_{RR}$}}
+            };
+
+            \node[draw=none,fill=none](A) at (5,1) {\empty};
+            \node[draw=none,fill=none] (B) at (5,-2) {\empty};
+            \node[draw=none,fill=none] (C) at (5,-2) {\empty};
+            \node[draw=none,fill=none] (D) at (5,-5) {\empty};
+            \node[draw=none,fill=none] (E) at (-5,-5) {\empty};
+            \node[draw=none,fill=none] (F) at (5, -5) {\empty};
+            \node[draw=none,fill=none, below] (G) at (0, -5) {$\mathcal{O}(n)$};
+
+
+            \draw[thick, fill=none,<-] (A) -- (B) node[draw=none, rectangle] {$\mathcal{O}(\log(n))$};
+            \draw[thick, fill=none,->] (C) -- (D) node[draw=none, rectangle] {};
+            \draw[thick, fill=none,<->] (E) -- (F) node[draw=none, rectangle, above, center] {};
+        \end{tikzpicture}
+        \caption*{Die Gesamtlaufzeit ergibt sich somit als $\mathcal{O}(n \cdot \log(n))$}
     \end{figure}
 
     Dieser Ansatz der Analyse kann nicht richtig sein,
@@ -102,7 +159,8 @@
     Die zu sortierenden Elemente sind $s_1, s_2, s_3, ..., s_n$ und außerdem gilt $s_1 < s_2 < s_3 < ... < s_n$.
     Die Zufallsvariable wird festgelegt als
 
-    \begin{equation*}X_{ij}=
+    \begin{equation*}
+        X_{ij}=
         \[ \begin{cases}
                1 & \text{falls während des Alorithmus } s_i \text{ mit } s_j \text{ verglichen} \\
                0 & \text{sonst}
@@ -116,25 +174,76 @@
         \begin{flalign}
             \sum_{i<j}X_{ij}        &= \sum_{i=1}^{n-1} \cdot \sum_{j=i+1}^{n} X_{ij}&&\\\nonumber
             E\left(\sum_{i<j}X_{ij}\right)  &= \sum_{i<j}E(X_{ij}) \text{\quad (Linearität des Erwartungswerts)}&&\\\nonumber
-                                            &= \sum_{i<j}(0 \cdot P(X_{ij} = 0) + 1 \cdot P(X_{ij} = 1))\\\nonumber
-                                            &= \sum_{i<j}\underbrace{P(X_{ij}=1)}_{P_{ij}}
+            &= \sum_{i<j}(0 \cdot P(X_{ij} = 0) + 1 \cdot P(X_{ij} = 1))\\\nonumber
+            &= \sum_{i<j}\underbrace{P(X_{ij}=1)}_{P_{ij}}
         \end{flalign}
     \end{equation*}
 
     Als Nächstes soll nun $P_{ij}$ berechnet werden, wobei folgende Überlegungen zu beachten sind:
     \begin{itemize}
         \item Elemente mit großer Rangdifferenz werden nur mit geringer Wahrscheinlichkeit miteinander verglichen,
-                da viele Chancen bestehen, dass sie im Rekursionsbaum getrennt werden.
+        da viele Chancen bestehen, dass sie im Rekursionsbaum getrennt werden.
         \item Elemente mit kleiner Rangdifferenz werden mit größerer Wahrschenlichkeit miteinander verglichen.
         \item Elemente mit der Rangdifferenz von $1$ müssen miteinander verglichen werden.
     \end{itemize}
-    \newpage
 
     In folgendem Ablauf des Random Quicksorts entspricht ein Knoten einem Pivotelement im entsprechenden Aufruf.
     \begin{figure}[htb]
         \centering
-        \includepic{lec_04_c}{0.45}
-        \caption{Die erzeugte Permutation ist $\pi = s_{70}, s_{30}, s_{90}, s_{11}, s_{37}, s_{76}, s_{106} $}
+
+        \begin{tikzpicture}[level distance=2cm,
+        level 1/.style={sibling distance=4cm},
+        level 2/.style={sibling distance=2cm},
+        nodes={circle, draw, thick}
+        ]
+            \node {$s_{70}$}
+            child {node {$s_{30}$}
+            child {node {$s_{11}$}}
+            child {node {$s_{37}$}}
+            }
+            child {node {$s_{90}$}
+            child {node {$s_{76}$}}
+            child {node {$s_{99}$}}
+            };
+
+            \coordinate (co) at (-3,0);
+            \coordinate (c0) at (-0.5,0);
+            \coordinate (c1) at (0.5,0);
+            \coordinate (c2) at (0.5,-1);
+            \coordinate (c3) at (-2.5,-1);
+            \coordinate (c4) at (-2.5,-2);
+            \coordinate (c5) at (-1.5,-2);
+            \coordinate (c6) at (1.5,-2);
+            \coordinate (c7) at (2.5,-2);
+            \coordinate (c8) at (2.5,-3);
+            \coordinate (c9) at (-3.5,-3);
+            \coordinate (c10) at (-3.5,-4);
+            \coordinate (c11) at (-2.5,-4);
+            \coordinate (c12) at (-1.5,-4);
+            \coordinate (c13) at (-0.5,-4);
+            \coordinate (c14) at (0.5,-4);
+            \coordinate (c15) at (1.5,-4);
+            \coordinate (c16) at (2.5,-4);
+            \coordinate (c17) at (3.5,-4);
+            \coordinate (c18) at (4,-4);
+
+            \draw [ultra thick, orange!50, dashed, ->] (co) to (c0);
+            \draw [ultra thick, orange!50, dashed] (c1) to [bend left=75] (c2);
+            \draw [ultra thick, orange!50, dashed] (c2) to (c3);
+            \draw [ultra thick, orange!50, dashed, ->] (c3) to [bend right=75] (c4);
+            \draw [ultra thick, orange!50, dashed, ->] (c5) to (c6);
+            \draw [ultra thick, orange!50, dashed] (c7) to [bend left=75] (c8);
+            \draw [ultra thick, orange!50, dashed] (c8) to (c9);
+            \draw [ultra thick, orange!50, dashed, ->] (c9) to [bend right=75] (c10);
+            \draw [ultra thick, orange!50, dashed, ->] (c11) to (c12);
+            \draw [ultra thick, orange!50, dashed, ->] (c13) to (c14);
+            \draw [ultra thick, orange!50, dashed, ->] (c15) to (c16);
+            \draw [ultra thick, orange!50, dashed, ->] (c17) to (c18);
+
+
+        \end{tikzpicture}
+
+        \caption*{Die erzeugte Permutation ist $\pi = s_{70}, s_{30}, s_{90}, s_{11}, s_{37}, s_{76}, s_{99} $}
     \end{figure}
 
     \textit{Anmerkung: $\pi$ ist nicht zufällig gleichverteilt, da manche Permutationen gar nicht vorkommen können.}
@@ -151,17 +260,17 @@
     \end{equation*}
 
     Damit kann nun die Laufzeit eingeordnet werden:
-%\sum_{i<j}X_{ij}        &= \sum_{i=1}^{n-1} \cdot \sum_{j=i+1}^{n} X_{ij}&&\\\nonumber
+    %\sum_{i<j}X_{ij}        &= \sum_{i=1}^{n-1} \cdot \sum_{j=i+1}^{n} X_{ij}&&\\\nonumber
     \begin{equation*}
         \begin{flalign}
             E\left(\sum_{r<j}X_{ij}\right)  &= \sum_{i+1}^{n-1} \cdot \sum_{j=i+1}^{n}E(X_{ij})&&\\\nonumber
-                                            &= \sum_{i+1}^{n-1} \cdot \sum_{j=i+1}^{n}P_{ij}&&\\\nonumber
-                                            &= \underbrace{\sum_{i+1}^{n-1} \cdot \sum_{j=i+1}^{n}\frac{2}{j-i+1}}_{\frac{2}{2}+\frac{2}{3}+\frac{2}{4}+\frac{2}{5}+\ ...}&&\\\nonumber
-                                            &\leq \sum_{i=1}^{n-1} \cdot \sum_{l=2}^{n}\frac{2}{l}&&\\\nonumber
-                                            &= \sum_{i=1}^{n-1}2 \cdot \sum_{l=2}^{n} \frac{1}{l}&&\\\nonumber
-                                            &= \sum_{i=1}^{n-1}2 \cdot \mathcal{O}(H_n)&&\\\nonumber
-                                            &= \sum_{i=1}^{n-1}2 \cdot \mathcal{O}(\log(n))&&\\\nonumber
-                                            &= \mathcal{O}(n \cdot \log(n))
+            &= \sum_{i+1}^{n-1} \cdot \sum_{j=i+1}^{n}P_{ij}&&\\\nonumber
+            &= \underbrace{\sum_{i+1}^{n-1} \cdot \sum_{j=i+1}^{n}\frac{2}{j-i+1}}_{\frac{2}{2}+\frac{2}{3}+\frac{2}{4}+\frac{2}{5}+\ ...}&&\\\nonumber
+            &\leq \sum_{i=1}^{n-1} \cdot \sum_{l=2}^{n}\frac{2}{l}&&\\\nonumber
+            &= \sum_{i=1}^{n-1}2 \cdot \sum_{l=2}^{n} \frac{1}{l}&&\\\nonumber
+            &= \sum_{i=1}^{n-1}2 \cdot \mathcal{O}(H_n)&&\\\nonumber
+            &= \sum_{i=1}^{n-1}2 \cdot \mathcal{O}(\log(n))&&\\\nonumber
+            &= \mathcal{O}(n \cdot \log(n))
         \end{flalign}
     \end{equation*}
     \textit{Anmerkung: $H_n$ beschreibt die $n-$te harmonische Zahl.}
@@ -222,9 +331,8 @@
         Das hätte er auch selber herausfinden können.
     \end{proof}
 
-%    \hrulefill
+    \hrulefill
 
-    \newpage
     \section*{Anhang}
     \label{sec:anhang}
 
@@ -244,8 +352,33 @@
 
     \begin{figure}[htb]
         \centering
-        \includepic{lec_04_d}{0.8}
-        \caption{Die Graphen $G_3$ und $G_4$}
+
+        \begin{subfigure}{.5\textwidth}
+            \centering
+            \begin{tikzpicture}[thick, scale=1]
+                \node[node whit] (n1) at (-2,0) {1};
+                \node[node whit] (n2) at (2,0) {2};
+                \node[node whit] (n3) at (0,2) {3};
+                \node[node whit] (n4) at (0,-2) {4};
+
+                \foreach \from/\to in {n1/n2,n1/n3,n1/n4,n2/n3,n2/n4}
+                \draw[very thick] (\from) -- (\to);
+            \end{tikzpicture}
+            \subcaption*{Graph $G_3$}
+        \end{subfigure}%
+        \begin{subfigure}{.5\textwidth}
+            \centering
+            \begin{tikzpicture}[thick, scale=1]
+                \node[node whit] (n1) at (-2,0) {A};
+                \node[node whit] (n2) at (2,0) {C};
+                \node[node whit] (n3) at (0,2) {B};
+                \node[node whit] (n4) at (0,-2) {D};
+
+                \foreach \from/\to in {n1/n3,n1/n4,n2/n3,n2/n4,n3/n4}
+                \draw[very thick] (\from) -- (\to);
+            \end{tikzpicture}
+            \subcaption*{Graph $G_4$}
+        \end{subfigure}
     \end{figure}
 
     Die folgende Tabelle zeigt die Isomorphie zwischen $v \in V_3$ und $\phi(v)$.
@@ -271,22 +404,102 @@
         \end{flalign}
     \end{equation*}
 
-    \newpage
     Es folgen weitere Beispiele:
-    \begin{figure}[htb]
+    \begin{figure}[H]
         \centering
-        \includepic{lec_04_e}{0.8}
-        \caption{Die nicht isomorphen Graphen $G_5$ und $G_6$}
+
+        \begin{subfigure}{.5\textwidth}
+            \centering
+            \begin{tikzpicture}[thick, scale=1]
+                \node[node whit] (n1) at (-1.5,0) {1};
+                \node[node whit] (n2) at (1.5,0) {2};
+                \node[node whit] (n3) at (1.5,-1) {3};
+
+                \foreach \from/\to in {n1/n2,n2/n3}
+                \draw[very thick] (\from) -- (\to);
+            \end{tikzpicture}
+            \subcaption*{Graph $G_5$}
+        \end{subfigure}%
+        \begin{subfigure}{.5\textwidth}
+            \centering
+            \begin{tikzpicture}[thick, scale=1]
+                \node[node whit] (n1) at (-1.5,0) {A};
+                \node[node whit] (n2) at (1.5,0) {B};
+                \node[node whit] (n3) at (1.5,-1) {C};
+
+                \foreach \from/\to in {n2/n3}
+                \draw[very thick] (\from) -- (\to);
+
+            \end{tikzpicture}
+            \subcaption*{Graph $G_6$}
+        \end{subfigure}
+        \caption*{Die nicht isomorphen Graphen $G_5$ und $G_6$}
     \end{figure}
-    \begin{figure}[htb]
+    \begin{figure}[H]
         \centering
-        \includepic{lec_04_f}{0.8}
-        \caption{Die isomorphen Graphen $G_7$ und $G_8$}
+
+        \begin{subfigure}{.5\textwidth}
+            \centering
+            \begin{tikzpicture}[thick, scale=1]
+                \node[node whit] (n1) at (-1.5,0) {1};
+                \node[node whit] (n2) at (0,-3) {2};
+                \node[node whit] (n3) at (1.5,0) {3};
+                \node[node whit] (n4) at (0,-1) {4};
+
+                \foreach \from/\to in {n1/n2,n1/n3,n2/n3,n2/n4,n3/n4}
+                \draw[very thick] (\from) -- (\to);
+            \end{tikzpicture}
+            \subcaption*{Graph $G_7$}
+        \end{subfigure}%
+        \begin{subfigure}{.5\textwidth}
+            \centering
+            \begin{tikzpicture}[thick, scale=1]
+                \node[node whit] (n1) at (-1.5,0) {A};
+                \node[node whit] (n3) at (1.5,0) {B};
+                \node[node whit] (n4) at (1.5,-2) {C};
+                \node[node whit] (n2) at (0,-3) {D};
+
+                \foreach \from/\to in {n1/n2,n1/n3,n2/n3,n2/n4,n3/n4}
+                \draw[very thick] (\from) -- (\to);
+
+            \end{tikzpicture}
+            \subcaption*{Graph $G_8$}
+        \end{subfigure}
+        \caption*{Die isomorphen Graphen $G_7$ und $G_8$}
     \end{figure}
-    \begin{figure}[htb]
+    \begin{figure}[H]
         \centering
-        \includepic{lec_04_g}{0.8}
-        \caption{Die nicht isomorphen Graphen $G_9$ und $G_{10}$ ($D$ hat Grad $4$, $2$ hat Grad $3$)}
+
+        \begin{subfigure}{.5\textwidth}
+            \centering
+            \begin{tikzpicture}[thick, scale=1]
+                \node[node whit] (n1) at (-3,0) {1};
+                \node[node whit] (n2) at (0,0) {2};
+                \node[node whit] (n3) at (0,-3) {3};
+                \node[node whit] (n4) at (-3,-3) {4};
+                \node[node whit] (n5) at (3,0) {5};
+
+                \foreach \from/\to in {n1/n2,n2/n3,n3/n4,n4/n1,n1/n3,n2/n5}
+                \draw[very thick] (\from) -- (\to);
+            \end{tikzpicture}
+            \subcaption*{Graph $G_9$}
+        \end{subfigure}%
+        \begin{subfigure}{.5\textwidth}
+            \centering
+            \begin{tikzpicture}[thick, scale=1]
+                \node[node whit] (n1) at (-3,0) {A};
+                \node[node whit] (n2) at (0,0) {B};
+                \node[node whit] (n3) at (0,-3) {C};
+                \node[node whit] (n4) at (-3,-3) {D};
+                \node[node whit] (n5) at (-4.5,-4.5) {E};
+
+                \foreach \from/\to in {n1/n2,n2/n3,n3/n4,n4/n1,n4/n5,n2/n4}
+                \draw[very thick] (\from) -- (\to);
+
+            \end{tikzpicture}
+            \subcaption*{Graph $G_{10}$}
+        \end{subfigure}
+        \caption*{Die nicht isomorphen Graphen $G_9$ und $G_{10}$ ($D$ hat Grad $4$, $2$ hat Grad $3$)}
     \end{figure}
 
     \textit{Anmerkung: Bis zum Jahr 2015 dachten Informatiker, Graphenisomorphie läge in \textbf{\textsf{NP-schwer}}.
