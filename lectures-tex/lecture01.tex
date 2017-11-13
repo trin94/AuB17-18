@@ -7,17 +7,25 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{hyperref}
-
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{float}
 \newtheorem{theorem}{Lemma}
 
 \newcommand{\includepic}[2]{\includegraphics[width=#2\textwidth,height=#2\textheight,keepaspectratio]{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 
 \usepackage[yyyymmdd,hhmm]{datetime}
+\usepackage{tikz}
+
+\tikzset{node black/.style={circle,fill=black!100,draw,minimum size=0.05cm,inner sep=0pt},}
+\usepackage[thinlines]{easytable}
 
 % Base path of images
 \usepackage{graphicx}
 \graphicspath{ {../lectures-img/} }
 
+\setlength{\parindent}{0pt}
 \begin{document}
     % ----------------------------------------------------------------------------
     \subject{Vorlesungsmitschrieb}
@@ -81,8 +89,25 @@
 
     \begin{figure}[htb]
         \centering
-        \includepic{lec_01_a}{0.25}
-        \label{fig:CP_a}
+        \framebox        {
+        \begin{tikzpicture}[thick, scale=0.5]
+            \node[node black] (n1) at (1,0) {};
+            \node[node black] (n2) at (1,1.2) {};
+            \node[node black] (n3) at (0,3) {};
+            \node[node black] (n4) at (1.5,3) {};
+            \node[node black] (n5) at (4.1,4.8) {};
+            \node[node black] (n6) at (4,4.3) {};
+            \node[node black] (n7) at (7.1,2.4) {};
+            \node[node black] (n8) at (6.9,1.3) {};
+            \node[node black] (n9) at (7,3,3) {};
+            \node[node black] (n10) at (6,2.3) {};
+            \node[node black] (n11) at (5,0) {};
+            \node[node black] (n11) at (3,2.3) {};
+        \end{tikzpicture}
+
+        }
+
+
     \end{figure}
 
     \textbf{\textsf{Ziel:}} Finde das Paar mit dem kleinsten Abstand zueinander.
@@ -140,8 +165,19 @@
 
     \begin{figure}[h]
         \centering
-        \includepic{lec_01_b}{0.35}
-        \label{fig:CP_b}
+        \begin{table}[H]
+            \centering
+            \scalebox{2}{%
+            \begin{tabular}{l|l|l|l|l|l|l}
+                & & & & $\cdot$ & &  \\ \hline
+                & \cellcolor{yellow!50}&\cellcolor{yellow!50} &\cellcolor{yellow!50}$\cdot$ & & $\cdot$ &  \\ \hline
+                &\cellcolor{yellow!50} & \cellcolor{orange!75}$\cdot$ &\cellcolor{yellow!50} & & $\cdot$ &  \\ \hline
+                & \cellcolor{yellow!50}$\cdot$ &\cellcolor{yellow!50} &\cellcolor{yellow!50} & & &  \\ \hline
+                & $\cdot$ & & & & &  \\ \hline
+                & & & $\cdot$ & & &
+            \end{tabular}
+            }
+        \end{table}
     \end{figure}
 
     \newpage
@@ -235,6 +271,6 @@
     \end{equation*}
 
     Für $Y$ also: $\frac{1}{6} \cdot 1 + \frac{1}{6} \cdot 2 + \frac{1}{6} \cdot 3 +
-    \frac{1}{6} \cdot 4 + \frac{1}{6} \cdot 5 + \frac{1}{6} \cdot 6  = 3,5$
+    \frac{1}{6} \cdot 4 + \frac{1}{6} \cdot 5 + \frac{1}{6} \cdot 6 = 3,5$
 
 \end{document}
