@@ -1,8 +1,6 @@
 # AuB 17-18
 
-**Mithilfe ist erwünscht!** // Mitschriebe zur *Vorlesung AuB17/18*
-
-Mitschriebe bisher:
+Mitschriebe zur Vorlesung *AuB17/18* der Uni Stuttgart.
 
 |Vorlesung      | Datum der VL |PDF                                    |
 |---------------|--------------|---------------------------------------|
@@ -12,6 +10,9 @@ Mitschriebe bisher:
 |04             | 27.10.2017   |[klick](lectures-pdf/lecture04.pdf)    |
 |05             | 07.11.2017   |[klick](lectures-pdf/lecture05.pdf)    |
 |06             | 10.11.2017   |[klick](lectures-pdf/lecture06.pdf)    |
+|07             | 14.11.2017   |[klick](lectures-pdf/lecture07.pdf)    |
+## Mitmachen
+Hilfe ist gern gesehen. Ob Grafiken, Mitschriften der Vorlesung in Text- oder Texform oder einfach nur Korrektur.
 
 ## Installation
 - Latex installieren: (Tex-Live, Miktex)
@@ -25,14 +26,13 @@ Die gerenderte PDF bitte ins `lectures-pdf`-Verzeichnis kopieren, und in der Rea
 
     ```
     cd scripts
-    python updater.py all // Erzeugt alle PDFs erneut
-    python updater.py 1 // Erzeugt z.B. nur die erste Vorlesungseinheit-PDF
+    python updater.py 1 # Erzeugt die erste Vorlesungseinheit-PDF neu
+    python updater.py all # Erzeugt alle PDFs neu
     ```
-
     Das Script generiert die PDFs und verschiebt sie ins `lectures-pdf` - Verzeichnis.
 
 ## Links
+- Inspiration: https://github.com/dipdi/aub-skript
 - Vorlage: https://komascript.de/node/1692
 
-Inspiration: https://github.com/dipdi/aub-skript
 

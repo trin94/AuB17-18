@@ -1,0 +1,376 @@
+\documentclass{scrartcl}% siehe <http://www.komascript.de>
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+%\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{cancel}
+%\usepackage{mathrsfs}
+%\usepackage{mathtools}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{ticks=none}
+\pgfplotsset{width=10cm, compat=1.5.1}
+\usetikzlibrary{tikzmark}
+
+\usetikzlibrary{shapes.misc}
+\usetikzlibrary{shapes.arrows,calc,quotes,babel}
+\usetikzlibrary{positioning,arrows,chains,scopes,fit}
+\usetikzlibrary{matrix,backgrounds}
+\usetikzlibrary{trees}
+\usetikzlibrary{calc}
+\usepackage[all,dvips,arc,curve,color,frame]{xy}
+\usepackage[yyyymmdd,hhmm]{datetime}
+\usepackage{float}
+\usepackage{pgfplots}
+\usepackage{footnote}
+\usepackage{hyperref}
+\usepackage{multicol}
+\usepackage{subcaption}
+
+\lstset{basicstyle=\ttfamily}
+\lstset{literate=%
+{Ö}{{\"O}}1
+{Ä}{{\"A}}1
+{Ü}{{\"U}}1
+{ß}{{\ss}}1
+{ü}{{\"u}}1
+{ä}{{\"a}}1
+{ö}{{\"o}}1
+}
+
+\newtheorem{theorem}{Theorem}
+\newcommand{\includepic}[2]{\includegraphics[width=#2\textwidth,height=#2\textheight,keepaspectratio]{#1}}
+\newcommand\tikzmark[1]{\tikz[remember picture,overlay]\coordinate (#1);}
+\newcommand\circlearound[1]{%
+\tikz[baseline]\node[draw,shape=circle,anchor=base] {#1} ;}
+\newcommand\underbracetext[1]{\raisebox{1ex}{\ensuremath{\underbrace{\hphantom{\text{#1}}}_{\text{\normalsize #1}}}}}
+
+\tikzset{node black/.style={circle,draw,minimum size=0.5cm,inner sep=0pt},}
+
+\usepackage[yyyymmdd,hhmm]{datetime}
+\usepackage{tabularx}
+\usepackage[table]{xcolor,colortbl}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}} % zentriert mit Breitenangabe
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}} % rechtsbündig mit Breitenangabe
+
+% Base path of images
+\usepackage{graphicx}
+\usepackage{stackengine}
+\newcommand{\uparrow}[0]{\rlap{\scalebox{1.6}{$\uparrow$}}}
+
+
+\graphicspath{ {../lectures-img/} }
+\setlength{\parindent}{0pt}
+\begin{document}
+    % ----------------------------------------------------------------------------
+    \subject{Vorlesungsmitschrieb}
+    \title{Algorithmen und Berechenbarkeit}
+    \subtitle{Vorlesung 07}
+    \date{Letztes Update: \today \ - \currenttime \ Uhr}
+    \maketitle
+    % ----------------------------------------------------------------------------
+
+    \section*{Hashing}\label{sec:hashing}
+    \subsection*{Einleitung}\label{subsec:einleitung}
+    Bei der Implementierung des Algorithmus vom Closest-Pair Problem wird überlicherweise auf Hashing zurückgegriffen.
+    Hashing beschreibt dabei eine Funktion bzw. Abbildung, \textit{die eine große Eingabemenge (die Schlüssel)
+    auf eine kleinere Zielmenge (die Hashwerte) abbildet}\footnote{\url{https://de.wikipedia.org/wiki/Hashfunktion}}.
+
+    Auch bei Telefon- und Wörterbüchern (vgl. dazu \textit{Wörterbuchproblem}) oder für Anwendungen,
+    die OpenStreetMap-Daten verwenden, wird oft auf Hashing zurückgegriffen.
+
+    \begin{figure}[H]
+        \centering
+        \framebox {
+        \begin{tikzpicture}[thick, scale=1]
+            \node[node black, label={[label distance=0cm]30:10}] (n1) at (0,0) {};
+            \node[node black, label={[label distance=0cm]270:1000}] (n1) at (2,2) {};
+            \node[node black, label={[label distance=0cm]150:$4 \cdot 10^{9}$}] (n1) at (4,0) {};
+
+            \node[draw=none, blue] (n1) at (0.1,1.2) {ID};
+            \coordinate (c1) at (0.1,1);
+            \coordinate (c2) at (0.5,0.65);
+
+            \draw [thick, blue, ->] (c1) to (c2);
+        \end{tikzpicture}
+        }
+    \end{figure}
+
+    Beim Closest-Pair-Algorithmus kann mittels Hashing die Gitterzelle errechnet werden. Jede Gitterzelle erhält Koordinaten.
+    \begin{figure}[H]
+        \centering
+        \scalebox{1}{%
+        \begin{tabular}{C{0.1cm}|C{0.15cm}|C{0.15cm}|C{0.15cm}|C{0.15cm}|C{0.15cm}|C{0.15cm}}
+            & $\cdot$& & & $\cdot$ & &  \\ \hline
+            $\cdot$ & & & & & $\cdot$ &  \\ \hline
+            & &$\cdot$ & & & $\cdot$ &  \\ \hline
+            & & $\cdot$& & & &  \\ \hline
+            & $\cdot$ & $\cdot$& & & $\cdot$&  \\ \hline
+            & $\cdot$& & $\cdot$ & & $\cdot$& \\
+            \multicolumn{1}{c}{\uparrow}& \multicolumn{1}{l}{}&\multicolumn{1}{l}{\uparrow} & \multicolumn{1}{l}{}& \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{}\\
+            \multicolumn{1}{p{0.15cm}}{\tiny{$(0,0)$}}& \multicolumn{1}{C{0.1cm}}{}&\multicolumn{1}{C{0.15cm}}{\tiny{$(2,0)$}} & \multicolumn{1}{l}{}& \multicolumn{1}{l}{} & \multicolumn{1}{l}{} & \multicolumn{1}{l}{}\\
+        \end{tabular}
+        }
+    \end{figure}
+    Die Maschenweite des Gitters sei $w$.
+    Dann fällt ein Punkt $P(p_x,p_y)$ in die Gitterzelle
+    \begin{equation*}
+        \begin{array}{lll}
+            & \left(\left\lfloor\frac{P_x}{w}\right\rfloor,\left\lfloor\frac{P_y}{w}\right\rfloor\right) &\\
+            & \swarrow\;\;\;& \\
+            \mbox{\tiny{abgerundet}} & & \phantom{\mbox{abgerundet}}
+        \end{array}
+
+    \end{equation*}
+
+    \subsubsection*{Beispiel}
+    Sie $w=\frac{1}{2}$ und $P(p_x,p_y)=\left(\frac{15}{10}, \frac{7}{10}\right)$.
+    Man erhält für das Gitter die Koordinaten
+    \begin{equation*}
+        \left(\left\lfloor\frac{P_x}{w}\right\rfloor,\left\lfloor\frac{P_y}{w}\right\rfloor\right)
+        =  \left(\left\lfloor\frac{\frac{15}{10}}{\frac{1}{2}}\right\rfloor,\left\lfloor\frac{\frac{7}{10}}{\frac{1}{2}}\right\rfloor\right) = (3,1)
+    \end{equation*}
+
+    Diese Koordinaten müssen noch gehasht werden.
+
+    \subsection*{Hashing formal}\label{subsec:hashingFormal}
+    Gegeben sei \textbf{\textsf{erstens}} das \textit{Universum} $U$, das immer sehr groß gewählt wird und
+    typischerweise eine Teilmenge der natürlichen Zahlen darstellt, \textbf{\textsf{zweitens}} sei auch die vergleichsweise kleine Menge $S\subseteq U$ gegeben.
+    Daraus folgt \textbf{\textsf{drittens}} $n=|S|$, also die Anzahl der Elemente in $S$.
+
+    Das Ziel ist nun
+    \begin{equation*}
+        \begin{flalign}
+            \text{Finde } h:&\ U \rightarrow \{0,1,\ldots,m-1\} \\\nonumber
+            \text{ sodass } \forall\ 0 \leq i < m:&\ \biggl|\ \{x \in S\ |\ h(x) = i \}\ \biggl| \leq \left\lceil \frac{n}{2}\right\rceil\\\nonumber
+        \end{flalign}
+    \end{equation*}
+
+    Man sucht also eine Funktion $h$, sodass keine zwei Elemente aus $S$ auf dieselbe Zahl zeigen.
+
+    \subsubsection*{Beispiel}
+    Seien $U=\mathbb{N}, S=\{1,7,23,99\}, n=4$ und $m=5$ gegeben.
+    Dann ist die Funktion
+    \begin{equation*}
+        h(x) = x\text{ mod }5
+    \end{equation*}
+    eine sehr gute Hashfunktion für $S$.
+    \begin{itemize}
+        \itemsep0pt
+        \item [$\rightarrow$] $h(1) = 1$
+        \item [$\rightarrow$] $h(7) = 2$
+        \item [$\rightarrow$] $h(23) = 3$
+        \item [$\rightarrow$] $h(99) = 4$
+    \end{itemize}
+    Für die Menge $S'=\{2,17,22,32\}$ ist $h(x)$ aber eine sehr schlechte Hashfunktion.
+    \begin{itemize}
+        \itemsep0pt
+        \item [$\rightarrow$] $h(2) = 2$
+        \item [$\rightarrow$] $h(17) = 2$
+        \item [$\rightarrow$] $h(22) = 2$
+        \item [$\rightarrow$] $h(32) = 2$
+    \end{itemize}
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Satz:}} Seien $U,m$ und $h$ gegeben, und sei $k=|U|$ sowie $n=|S| \Rightarrow S \in \binom{U}{n}$.
+    Dann gibt es für jedes $n$ mit $1 \leq n \leq \frac{k}{m}$ ein $S\subseteqU$, sodass alle Elemente aus $S$ von $h$ auf denselben Wert in $\{0,1,\cdots,m-1\}$ abgebildet werden.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Nach Schubfachsystem existiert ein $i$ mit $0 \leq i < m$, sodass $\underbrace{|k^{-1}(i)|}_{x \in U\ |\ h(x)=i} \supseteq \frac{|U|}{m} = \frac{k}{m}$.
+    Nach Annahme ist $\frac{k}{m}\geq n$.
+    Man kann nun $S \subseteq n^{-1}(i)$ mit $|S|=n$ wählen für ein beliebiges $i$ mit $k^{-1}(i)\geq \frac{U}{m}$.
+
+    Um eine gute Hashfunktion zu finden, müssen also immer auch die Daten betrachtet werden, die mit dieser Funktion gehasht werden.
+    \newpage
+    \subsection*{Datenstruktur}\label{subsec:datenstruktur}
+    Man betrachte die Datenstruktur \textit{Wörterbuch}, die folgende Operationen unterstützt.
+
+    \begin{figure}[H]
+        \centering
+        \scalebox{1}{%
+        \begin{tabular}{>{\tt}p{3cm}p{13cm}}
+            makeset() & Erzeugt ein leeres Wörterbuch \\
+            insert(x, S) & Fügt $\underbrace{\text{Item }x}_{\substack{\text{Key +} \\ \text{Information}}}$ in Wörterbuch ein, überschreibt falls vorhanden\\
+            delete(x, S) & Löscht Item $x$ aus S\\
+            lookup(x, S) & Gibt Item $x=\underbrace{(x,\text{Info})}_{\text{Paar}}$ aus, falls vorhanden\\
+        \end{tabular}
+        }
+    \end{figure}
+    Man sucht eine Datenstruktur, die Zugriffe in $\mathcal{O}(1)$ erlaubt und dabei nicht mehr als $\mathcal{O}(n)$ Platz verbraucht.
+
+    \subsubsection*{Implementierungsansatz 1: Array für Items, Zähler für $|S|$}
+    \begin{figure}[H]
+        \centering
+        \begin{tabular}{|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|C{1.5em}|}
+            \hline
+            $i_0$&$i_1$&$i_2$&$i_3$&$i_4$&$\cdots$& $i_n$ \\
+            \hline
+        \end{tabular}
+    \end{figure}
+    \begin{itemize}
+        \itemsep0pt
+        \item \texttt{makeset()} Diese Operation gelingt in $\mathcal{O}(1)$.
+        \item \texttt{insert(x,S)} kostet $\mathcal{O}(1)$, falls bekannt ist, dass noch kein Item mit demselben Schlüssel in $S$ existiert.
+        Ansonsten muss zuerst in $\mathcal{O}(n)$ geprüft werden, ob der Schlüssel bereits enthalten ist, bevor das Item in $\mathcal{O}(1)$ eingefügt werden kann.
+        \item \texttt{delete(x,S)} Da nicht mithilfe des Index gelöscht wird, müssen die Einträge von $S$ durchlaufen werden, um das Item zu löschen.
+        Das braucht $\mathcal{O}(n)$.
+        \item \texttt{lookup(x,S)} Es müssen wie bei \texttt{delete(x,S)} die Einträge durchlaufen werden, um das gesuchte Element zu finden.
+        Das braucht ebenfalls $\mathcal{O}(n)$.
+    \end{itemize}
+    \begin{figure}[H]
+        \centering
+        \begin{tabular}{p{7cm}|p{7cm}}
+            \textsf{\textbf{Vorteile}} & \textsf{\textbf{Nachteile}} \\ \hline
+            \textbullet\ Einfach & \textbullet\ Performance bei \texttt{delete(x, S)} \\
+            \textbullet\ Platzsparend & \textbullet\  Performance bei \texttt{lookup(x, S)}\\
+        \end{tabular}
+    \end{figure}
+
+    \subsubsection*{Implementierungsansatz 2: Einfach/doppelt verkettete Listen}
+    \begin{figure}[H]
+        \centering
+        \tikzset{ arrow/.style={-latex, shorten >=0ex, shorten <=0ex}}
+        \scalebox{1}{%
+        \begin{tikzpicture}[draw, minimum width=1cm, minimum height=0.6cm]
+            \node[draw] (n1) at (0,0) {$i_0$};
+            \node[draw] (n2) at (2,0) {$i_1$};
+            \node[draw] (n3) at (4,0) {$i_2$};
+            \node[draw] (n4) at (6,0) {$i_3$};
+            \node[draw] (n5) at (8,0) {$i_4$};
+            \node[draw] (n6) at (10,0) {$\cdots$};
+            \node[draw] (n7) at (12,0) {$i_n$};
+            \node[draw=none] (n8) at (14,0) {$\cdots$};
+
+            \draw [arrow, bend left] (n1) to (n2);
+            \draw [arrow, bend left] (n2) to (n1);
+            \draw [arrow, bend left] (n2) to (n3);
+            \draw [arrow, bend left] (n3) to (n2);
+            \draw [arrow, bend left] (n3) to (n4);
+            \draw [arrow, bend left] (n4) to (n3);
+            \draw [arrow, bend left] (n4) to (n5);
+            \draw [arrow, bend left] (n5) to (n4);
+            \draw [arrow, bend left] (n5) to (n6);
+            \draw [arrow, bend left] (n6) to (n5);
+            \draw [arrow, bend left] (n6) to (n7);
+            \draw [arrow, bend left] (n7) to (n6);
+            \draw [arrow, bend left] (n7) to (n8);
+            \draw [arrow, bend left] (n8) to (n7);
+        \end{tikzpicture}
+        }
+    \end{figure}
+    Im Allgemeinen verhält sich diese Datenstruktur für den Wörterbuchansatz recht ähnlich wie das Array aus dem ersten Ansatz.
+
+    \subsubsection*{Implementierungsansatz 3: Direkte Adressierung}
+    Für diese Datenstruktur wird angenommen, dass das Schlüsseluniversum endlich und nicht zu groß ist:
+    \begin{equation*}
+        U:=\{0,1,2,\cdots,n-1\}
+    \end{equation*}
+    Man legt nun wie im ersten Ansatz ein Array an, diesmal mit der Größe $k$.
+    An Position $i$ steht die Information für Schlüssel $i$, falls eine Information für diesen Schlüssel abgelegt wurde.
+    Ansonsten erhält man \texttt{NIL}.
+    \begin{figure}[H]
+        \centering
+        \begin{tabular}{p{7cm}|p{7cm}}
+            \textsf{\textbf{Vorteil}} & \textsf{\textbf{Nachteil}} \\ \hline
+            \textbullet\ Alle Operationen bis auf \texttt{makeset()} in $\mathcal{O}(1)$ & \textbullet\ Platz und Größe des Schlüsseluniversums (nicht der Menge $S$)  \\
+        \end{tabular}
+    \end{figure}
+
+    \subsubsection*{Implementierungsansatz 4: Suchstrukturen wie (2,3,4)-, AvL- oder RS-Bäume}
+    \begin{figure}[H]
+        \centering
+        \begin{tabular}{p{7cm}|p{7cm}}
+            \textsf{\textbf{Vorteil}} & \textsf{\textbf{Nachteil}} \\ \hline
+            \textbullet\ Platzverbrauch tatsächlich $\mathcal{O}(n)$ & \textbullet\ Zugriffszeit nur in $\mathcal{O}(\log(n))$ \\
+        \end{tabular}
+    \end{figure}
+
+    \subsection*{Hashing mit Verkettung}\label{subsec:hashingMitVerkettung}
+    Angenommen, ein gewähltes $h$ ist nicht injektiv für $S$, das bedeutet, es gibt mehrere Elemente in $x,y \in S$ für die gilt $h(x)=h(y)$.
+    Man kann damit dennoch eine Hashdatenstruktur bauen:
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}{.4\textwidth}
+            \raggedleft
+            $h: U \in x \rightarrow$
+        \end{subfigure}%
+        \begin{subfigure}{.6\textwidth}
+            \raggedright
+            \begin{tabular}{>{\tiny}R{2cm}|p{3cm}|}
+                \cline{2-2}
+                $0$ &  \\ \cline{2-2}
+                $1$&  \\ \cline{2-2}
+                $2$ & \\ \cline{2-2}
+                $\cdots$ &  \\ \cline{2-2}
+                $m-1$&  \\ \cline{2-2}
+            \end{tabular}
+        \end{subfigure}
+    \end{figure}
+    Jeder Hasheintrag ist Kopf einer einfach verketteten Liste, $x \in S$ wird in der $h(x)-$ten verketteten Liste gespeichert.
+    \begin{itemize}
+        \item \textsf{\textbf{Platzbedarf}}:
+        \begin{equation*}
+            \mathcal{O}(m+n) =  \mathcal{O}\left(n \cdot \left(1+\frac{1}{B}\right)\right)
+        \end{equation*}
+        $B=\frac{n}{m}$ ist der \textit{Belegungsfaktor}.
+        Je kleiner $B$, desto ineffizienter ist die Datenstruktur, aber möglicherweise ist es dann einfacher, eine \textit{gute} Hashfunktion zu finden.
+        \item \textsf{\textbf{Zugriffszeit}}: Man nimmt an, $h(x)$ kann in $\mathcal{O}(n)$ ausgewertet werden.
+        Dann ist der Zugriff $x \in S$ in
+        \begin{equation*}
+            \mathcal{O}(1 + \text{Position von $x$ in Liste } L_{h(x)})
+        \end{equation*}
+        und der Zugriff auf $x \in U\setminus S$ in
+        \begin{equation*}
+            \mathcal{O}(1 + \text{Länge von } L_{h(x)})
+        \end{equation*}
+    \end{itemize}
+
+    \newpage
+    \subsection*{Erwartete Suchzeit}\label{subsec:erwarteteSuchzeit}
+    Man nimmt an, $h$ verteilt $U$ gleichmäßig über $\{0,1,2,\cdots,m-1 \}$, dass bedeutet
+    \begin{equation*}
+        \forall i \in \{0,1,2,\cdots,m-1 \}: | \{k \in U | h(x)=i\} | \leq \left\lceil\frac{|U|}{m}\right\rceil
+    \end{equation*}
+    Zum Beispiel $h(x)=x\ \text{mod } m$
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Satz:}} Sei $x$ ein zufälliges (gleichverteiltes) Element aus $U\setminus S$ und $h \leq \frac{|U|}{2}$.
+    Die erwartete Suchzeit nach Element $x$ ist dann $\mathcal{O}(1+B)$
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis (erster Teil):}} Sei $l_i$ die Anzahl der Elemente aus $S$, die $i-L_i$ gespeichert wurde $=|L_i|$.
+    Es gilt $\sum_{i=0}^{m-1}l_i=n=|S|$.
+    Die erwartete Suchzeit ist damit
+    \begin{equation*}
+        E:=\left(\sum_{i=0}^{m-1}\underbrace{\colorbox{green!30}{$\text{Pr}(h(i)=i)$}}_{\substack{\text{Beweis-} \\ \text{Einschub}}} \cdot\ l_i\right) + 1
+    \end{equation*}
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis (Einschub):}}
+    \begin{equation*}
+        \begin{flalign}
+            \colorbox{green!30}{$\text{Pr}(h(x)=i)$} &= \dfrac{|U_i\setminus S|}{|U\setminus S|}\\\nonumber
+            & \leq \dfrac{|U_i|}{|\underbrace{U\setminus S|}_{\geq \dfrac{U}{2}}}\\\nonumber
+            &\leq \dfrac{\left\lceil\dfrac{|U|}{m}\right\rceil}{\dfrac{|U|}{2}}\\\nonumber
+            &\leq \dfrac{\dfrac{|U|}{m} + 1}{\dfrac{|U|}{2}}\\\nonumber
+            &= \dfrac{2}{m} + \underbrace{\dfrac{2}{|U|}}_{n \leq \dfrac{|U|}{2}} \leq \underbrace{\colorbox{blue!30}{$\dfrac{2}{m} + \dfrac{1}{n}$}}_{\substack{\text{Im zwei-} \\ \text{ten Teil} \\ \text{einsetzen}}}
+        \end{flalign}
+    \end{equation*}
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis (zweiter Teil):}}
+    \begin{equation*}
+        \begin{flalign}
+            E & :=\left(\sum_{i=0}^{m-1}\colorbox{green!30}{$\text{Pr}(h(i)=i)$} \cdot l_i\right) + 1 \\\nonumber
+            & \leq \left(\sum_{i=0}^{m-1}\left(\colorbox{blue!30}{$\dfrac{2}{m} + \dfrac{1}{n}$}\right) \cdot l_i\right) + 1 \\\nonumber
+            & =  1 + \frac{2}{m} \sum_{i=0}^{m-1}l_i + \frac{1}{n} \sum_{i=0}^{m-1}l_i \\\nonumber
+            & =  1 + \frac{2n}{m} +1 \\\nonumber
+            & = 2 + \frac{2n}{m} \\\nonumber
+            & = \mathcal{O}(1+B)
+        \end{flalign}
+    \end{equation*}
+\end{document}
