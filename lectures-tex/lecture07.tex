@@ -1,78 +1,13 @@
 \documentclass{scrartcl}% siehe <http://www.komascript.de>
-\usepackage[margin=2.5cm]{geometry}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-%\usepackage[ngerman]{babel}
-\usepackage{lmodern}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{cancel}
-%\usepackage{mathrsfs}
-%\usepackage{mathtools}
-\usepackage{listings}
-\usepackage{tikz}
-\usepackage{pgfplots}
+\input{../lectures-tex/configuration}
+
 \pgfplotsset{ticks=none}
 \pgfplotsset{width=10cm, compat=1.5.1}
-\usetikzlibrary{tikzmark}
-
-\usetikzlibrary{shapes.misc}
-\usetikzlibrary{shapes.arrows,calc,quotes,babel}
-\usetikzlibrary{positioning,arrows,chains,scopes,fit}
-\usetikzlibrary{matrix,backgrounds}
-\usetikzlibrary{trees}
-\usetikzlibrary{calc}
-\usepackage[all,dvips,arc,curve,color,frame]{xy}
-\usepackage[yyyymmdd,hhmm]{datetime}
-\usepackage{float}
-\usepackage{pgfplots}
-\usepackage{footnote}
-\usepackage{hyperref}
-\usepackage{multicol}
-\usepackage{subcaption}
-
-\lstset{basicstyle=\ttfamily}
-\lstset{literate=%
-{Ö}{{\"O}}1
-{Ä}{{\"A}}1
-{Ü}{{\"U}}1
-{ß}{{\ss}}1
-{ü}{{\"u}}1
-{ä}{{\"a}}1
-{ö}{{\"o}}1
-}
-
-\newtheorem{theorem}{Theorem}
-\newcommand{\includepic}[2]{\includegraphics[width=#2\textwidth,height=#2\textheight,keepaspectratio]{#1}}
-\newcommand\tikzmark[1]{\tikz[remember picture,overlay]\coordinate (#1);}
-\newcommand\circlearound[1]{%
-\tikz[baseline]\node[draw,shape=circle,anchor=base] {#1} ;}
-\newcommand\underbracetext[1]{\raisebox{1ex}{\ensuremath{\underbrace{\hphantom{\text{#1}}}_{\text{\normalsize #1}}}}}
 
 \tikzset{node black/.style={circle,draw,minimum size=0.5cm,inner sep=0pt},}
 
-\usepackage[yyyymmdd,hhmm]{datetime}
-\usepackage{tabularx}
-\usepackage[table]{xcolor,colortbl}
-\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}} % zentriert mit Breitenangabe
-\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}} % rechtsbündig mit Breitenangabe
-
-% Base path of images
-\usepackage{graphicx}
-\usepackage{stackengine}
-\newcommand{\uparrow}[0]{\rlap{\scalebox{1.6}{$\uparrow$}}}
-
-
-\graphicspath{ {../lectures-img/} }
-\setlength{\parindent}{0pt}
 \begin{document}
-    % ----------------------------------------------------------------------------
-    \subject{Vorlesungsmitschrieb}
-    \title{Algorithmen und Berechenbarkeit}
-    \subtitle{Vorlesung 07}
-    \date{Letztes Update: \today \ - \currenttime \ Uhr}
-    \maketitle
-    % ----------------------------------------------------------------------------
+    \headerline{Algorithmen und Berechenbarkeit}{Vorlesungsmitschrieb}{Vorlesung 07}
 
     \section*{Hashing}\label{sec:hashing}
     \subsection*{Einleitung}\label{subsec:einleitung}

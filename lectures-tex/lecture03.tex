@@ -1,50 +1,8 @@
 \documentclass{scrartcl}% siehe <http://www.komascript.de>
-\usepackage[margin=2.5cm]{geometry}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage[ngerman]{babel}
-\usepackage{lmodern}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{cancel}
-\usepackage{hyperref}
-\usepackage{mathrsfs}
-\usepackage{mathtools}
-\usepackage{listings}
-\usepackage{tikz}
-\usetikzlibrary{trees}
+\input{../lectures-tex/configuration}
 
-
-\lstset{basicstyle=\ttfamily}
-\lstset{literate=%
-{Ö}{{\"O}}1
-{Ä}{{\"A}}1
-{Ü}{{\"U}}1
-{ß}{{\ss}}1
-{ü}{{\"u}}1
-{ä}{{\"a}}1
-{ö}{{\"o}}1
-}
-
-\newtheorem{theorem}{Aussage}
-
-\newcommand{\includepic}[2]{\includegraphics[width=#2\textwidth,height=#2\textheight,keepaspectratio]{#1}}
-
-\usepackage[yyyymmdd,hhmm]{datetime}
-
-% Base path of images
-\usepackage{graphicx}
-\usepackage{subcaption}
-\graphicspath{ {../lectures-img/} }
-\setlength{\parindent}{0pt}
 \begin{document}
-    % ----------------------------------------------------------------------------
-    \subject{Vorlesungsmitschrieb}
-    \title{Algorithmen und Berechenbarkeit}
-    \subtitle{Vorlesung 03}
-    \date{Letztes Update: \today \ - \currenttime \ Uhr}
-    \maketitle
-    % ----------------------------------------------------------------------------
+    \headerline{Algorithmen und Berechenbarkeit}{Vorlesungsmitschrieb}{Vorlesung 03}
 
     \subsection*{Laufzeiten}
     \label{subsec:laufzeiten}

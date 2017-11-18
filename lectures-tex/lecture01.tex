@@ -1,39 +1,9 @@
 \documentclass{scrartcl}% siehe <http://www.komascript.de>
-\usepackage[margin=2.5cm]{geometry}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage[ngerman]{babel}
-\usepackage{lmodern}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{hyperref}
-\usepackage{xcolor}
-\usepackage{colortbl}
-\usepackage{float}
-\newtheorem{theorem}{Lemma}
-
-\newcommand{\includepic}[2]{\includegraphics[width=#2\textwidth,height=#2\textheight,keepaspectratio]{#1}}
-\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
-
-\usepackage[yyyymmdd,hhmm]{datetime}
-\usepackage{tikz}
+\input{../lectures-tex/configuration}
 
 \tikzset{node black/.style={circle,fill=black!100,draw,minimum size=0.05cm,inner sep=0pt},}
-\usepackage[thinlines]{easytable}
-
-% Base path of images
-\usepackage{graphicx}
-\graphicspath{ {../lectures-img/} }
-
-\setlength{\parindent}{0pt}
 \begin{document}
-    % ----------------------------------------------------------------------------
-    \subject{Vorlesungsmitschrieb}
-    \title{Algorithmen und Berechenbarkeit}
-    \subtitle{Vorlesung 01}
-    \date{Letztes Update: \today \ - \currenttime \ Uhr}
-    \maketitle
-    % ----------------------------------------------------------------------------
+    \headerline{Algorithmen und Berechenbarkeit}{Vorlesungsmitschrieb}{Vorlesung 01}
     \section*{Organisatorisches}
     \label{sec:organisatorisches}
 
@@ -116,8 +86,8 @@
     \label{subsec:naiveransatz}
 
     \begin{itemize}
-        \item Betrachte $P_1$ und berechne Distanzen zu $P_2, P_3, ..., P_n$
-        \item Betrachte $P_2$ und berechne Distanzen zu $P_3, P_4, ..., P_n$
+        \item Betrachte $P_1$ und berechne Distanzen zu $P_2, P_3, \dots, P_n$
+        \item Betrachte $P_2$ und berechne Distanzen zu $P_3, P_4, \dots, P_n$
     \end{itemize}
 
     Das würde eine Laufzeit von
@@ -151,7 +121,7 @@
     (Varianten: Glück & Pech) hat eine Laufzeit von $O(n)$.
     Er wird aus folgendem inkrementellen Ansatz hergeleitet:
 
-    Zuerst wird die Datenmenge $P = \{ P_1, P_2, P_3, ..., P_n \}$ betrachtet.
+    Zuerst wird die Datenmenge $P = \{ P_1, P_2, P_3, \dots, P_n \}$ betrachtet.
     Sei nun $\delta_i$ die CP-Distanz in der Menge $P$.
     Es kommt nun ein weiterer Punkt $P_{i+1}$ hinzu.
 
@@ -210,11 +180,8 @@
         = \sum^{n}_{i=1}O(1) = O(n)
     \end{equation*}
 
-    \begin{theorem}
-        Die Wahrscheinlichkeit, beim Einfügen von $P_{i+1}$ das Gitter neu aufbauen zu müssen, ist $< \frac{2}{i+1}$.
-    \end{theorem}
-
-    \begin{proof}[\textbf{Beweis}]
+    \newproof{Die Wahrscheinlichkeit, beim Einfügen von $P_{i+1}$ das Gitter neu aufbauen zu müssen, ist $< \frac{2}{i+1}$. }
+    {
         Das Gitter muss genau dann neu aufgebaut werden, wenn $P_{i+1}$
         einer der beiden Punkte ist, welche das CP in der Menge der ersten $i+1$ Punkte bestimmen.
         Jeder der ersten $i+1$ Punkte ist mit gleicher Wahrscheinlichkeit der $P_{i+1}$.
@@ -226,8 +193,7 @@
 
         \textbf{\textsf{Wichtig:}} Wenn der Algorithmus länger braucht, hat das nichts mit der Eingabe zu tun.
         Der randomisierte Closest-Pair-Algorithmus berechnet immer ein korrektes Resultat.
-
-    \end{proof}
+    }
 
     \subsubsection*{Closest Pair mit deterministischem Algorithmus}
     \label{subsec:closestPairmitdeterministischemAlgorithmus}

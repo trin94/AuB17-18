@@ -1,41 +1,6 @@
 \documentclass{scrartcl}% siehe <http://www.komascript.de>
-\usepackage[margin=2.5cm]{geometry}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage[ngerman]{babel}
-\usepackage{lmodern}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{cancel}
-\usepackage{hyperref}
-\usepackage{listings}
+\input{../lectures-tex/configuration}
 
-\newtheorem{theorem}{Lemma}
-
-\newcommand{\includepic}[2]{\includegraphics[width=#2\textwidth,height=#2\textheight,keepaspectratio]{#1}}
-
-\usepackage[yyyymmdd,hhmm]{datetime}
-
-\lstset{basicstyle=\ttfamily}
-\lstset{literate=%
-{Ö}{{\"O}}1
-{Ä}{{\"A}}1
-{Ü}{{\"U}}1
-{ß}{{\ss}}1
-{ü}{{\"u}}1
-{ä}{{\"a}}1
-{ö}{{\"o}}1
-}
-
-% Base path of images
-\usepackage{graphicx}
-\graphicspath{ {../lectures-img/} }
-
-\usepackage{tikz}
-\usepackage{float}
-\usepackage{subcaption}
-\usetikzlibrary{shapes}
-\usetikzlibrary{positioning}
 \definecolor{amethyst}{rgb}{0.6, 0.4, 0.8}
 \definecolor{babyblue}{rgb}{0.54, 0.81, 0.94}
 \definecolor{anti-flashwhite}{rgb}{0.95, 0.95, 0.96}
@@ -46,13 +11,7 @@
 \tikzset{node yell/.style={circle,fill=buff!100,draw,minimum size=0.7cm,inner sep=2pt},}
 \setlength{\parindent}{0pt}
 \begin{document}
-    % ----------------------------------------------------------------------------
-    \subject{Vorlesungsmitschrieb}
-    \title{Algorithmen und Berechenbarkeit}
-    \subtitle{Vorlesung 02}
-    \date{Letztes Update: \today \ - \currenttime \ Uhr}
-    \maketitle
-    % ----------------------------------------------------------------------------
+    \headerline{Algorithmen und Berechenbarkeit}{Vorlesungsmitschrieb}{Vorlesung 02}
 
     \section*{Min-Cut-Problem}
     \label{sec:mincutproblem}
@@ -212,18 +171,15 @@
     Die Wahrscheinlichkeit im ersten Kontraktionsschritt einen Fehler zu machen, beträgt $\frac{k}{m}$,
     die Wahrscheinlichkeit keinen Fehler zu machen $1-\frac{k}{m}$.
 
-    \begin{theorem}
-        Betrachte einen Multigraphen (Mehrfachkanten zwischen Knoten erlaubt) $G(V,E)$ mit einem Min-Cut mit Wert $k$.
-        Dann gilt: G hat mindestens $\frac{k \cdot n}{2}$ Kanten.
-    \end{theorem}
-
-    \begin{proof}[\textbf{Beweis}]
+    \newproof{Betrachte einen Multigraphen (Mehrfachkanten zwischen Knoten erlaubt) $G(V,E)$ mit einem Min-Cut mit Wert $k$.
+        Dann gilt: G hat mindestens $\frac{k \cdot n}{2}$ Kanten.}
+    {
         Jeder Knoten hat Grad größer gleich $k$.
 
         \begin{equation*}
             Knoten = \frac{\sum_{}^{}(grad(v))}{2} \geq \frac{k \cdot n}{2}
         \end{equation*}
-    \end{proof}
+    }
 
     Sei $E_i$ das Ereignis, dass im $i$-ten Kontraktionsschritt keine Min-Cut-Kante erwischt wurde.
     Wir wissen, dass die Wahrscheinlichkeit dafür $1-\frac{k}{m} \geq 1 - \frac{2}{n}$

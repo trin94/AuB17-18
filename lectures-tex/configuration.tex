@@ -1,0 +1,112 @@
+% packages ---------------------------------------------------------------------------------------------------- packages
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{cancel}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{hhline}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage[all,dvips,arc,curve,color,frame]{xy}
+\usepackage[yyyymmdd,hhmm]{datetime}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage[table]{xcolor,colortbl}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{tabularx}
+\usepackage{footnote}
+\usepackage{multicol}
+\usepackage{stackengine}
+
+
+% pgf plotsets -------------------------------------------------------------------------------------------- pgf plotsets
+\pgfplotsset{ticks=none}
+\pgfplotsset{width=10cm, compat=1.5.1}
+
+% tikz libraries ---------------------------------------------------------------------------------------- tikz libraries
+\usetikzlibrary{shapes}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes.misc}
+\usetikzlibrary{shapes.arrows,calc,quotes,babel}
+\usetikzlibrary{positioning,arrows,chains,scopes,fit}
+\usetikzlibrary{matrix,backgrounds}
+\usetikzlibrary{trees}
+\usetikzlibrary{calc}
+\usetikzlibrary{tikzmark}
+
+
+% commands ---------------------------------------------------------------------------------------------------- commands
+\newcommand{\includepic}[2]{\includegraphics[width=#2\textwidth,height=#2\textheight,keepaspectratio]{#1}}
+\newcommand\circlearound[1]{%
+\tikz[baseline]\node[draw,shape=circle,anchor=base] {#1} ;}
+\newcommand{\emptyrow}[0]{\multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} &
+\multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} &
+\multicolumn{1}{c}{} & \multicolumn{1}{c|}{} & & \\}
+\newcommand\underbracetext[1]{\raisebox{1ex}{\ensuremath{\underbrace{\hphantom{\text{#1}}}_{\text{\normalsize #1}}}}}
+\newcommand{\headerline}[3]{
+\subject{#2}
+\title{#1}
+\subtitle{#3}
+\date{Letztes Update: \today \ - \currenttime \ Uhr}
+\maketitle
+}
+\newcommand{\newproof}[2]{
+\vspace*{0.3cm} \textbf{\textsf{Satz:}} #1
+
+\vspace*{0.3cm} \textbf{\textsf{Beweis:}} #2 \vspace*{0.3cm}
+}
+\newcommand{\uparrow}[0]{\rlap{\scalebox{1.6}{$\uparrow$}}}
+
+% colors -------------------------------------------------------------------------------------------------------- colors
+\definecolor{amethyst}{rgb}{0.6, 0.4, 0.8}
+\definecolor{anti-flashwhite}{rgb}{0.95, 0.95, 0.96}
+\definecolor{applegreen}{rgb}{0.55, 0.71, 0.0}
+\definecolor{babyblue}{rgb}{0.54, 0.81, 0.94}
+\definecolor{bistre}{rgb}{0.24, 0.17, 0.12}
+\definecolor{buff}{rgb}{0.94, 0.86, 0.51}
+\definecolor{dodgerblue}{rgb}{0.12, 0.56, 1.0}
+\definecolor{icterine}{rgb}{0.99, 0.97, 0.37}
+
+% listing colors
+\definecolor{listingBlue}{rgb}{0.13,0.13,1}
+\definecolor{listingGreen}{rgb}{0,0.5,0}
+\definecolor{listingRed}{rgb}{0.9,0,0}
+\definecolor{listingGrey}{rgb}{0.46,0.45,0.48}
+
+% listings ---------------------------------------------------------------------------------------------------- listings
+\lstset{basicstyle=\ttfamily}
+\lstset{literate=%
+{Ö}{{\"O}}1
+{Ä}{{\"A}}1
+{Ü}{{\"U}}1
+{ß}{{\ss}}1
+{ü}{{\"u}}1
+{ä}{{\"a}}1
+{ö}{{\"o}}1
+}
+\lstset{language=Java,
+showspaces=false,
+showtabs=false,
+breaklines=true,
+showstringspaces=false,
+breakatwhitespace=true,
+commentstyle=\color{listingGreen},
+keywordstyle=\color{listingBlue},
+stringstyle=\color{listingRed},
+basicstyle=\ttfamily,
+moredelim=[il][\textcolor{listingGrey}]{$$},
+moredelim=[is][\textcolor{listingGrey}]{\%\%}{\%\%}
+}
+
+% misc ------------------------------------------------------------------------------------------------------------ misc
+\graphicspath{ {../lectures-img/} }
+\setlength{\parindent}{0pt}
+
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}} % zentriert mit Breitenangabe
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}} % rechtsbündig mit Breitenangabe
