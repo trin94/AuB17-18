@@ -1,6 +1,6 @@
 # AuB 17-18
 
-Mitschriebe zur Vorlesung *AuB17/18* der Uni Stuttgart.
+Mitschrift zur Vorlesung *AuB17/18* der Uni Stuttgart.
 
 |Vorlesung      | Datum der VL |PDF                                    |
 |---------------|--------------|---------------------------------------|
