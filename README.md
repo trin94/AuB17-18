@@ -1,6 +1,9 @@
 # AuB 17-18
 
-Mitschriebe zur Vorlesung *AuB17/18* der Uni Stuttgart.
+Mitschriften zur Vorlesung *AuB17/18* der Uni Stuttgart.
+
+<table>
+<tr><td>
 
 |Vorlesung      | Datum der VL |PDF                                    |
 |---------------|--------------|---------------------------------------|
@@ -11,11 +14,47 @@ Mitschriebe zur Vorlesung *AuB17/18* der Uni Stuttgart.
 |05             | 07.11.2017   |[klick](lectures-pdf/lecture05.pdf)    |
 |06             | 10.11.2017   |[klick](lectures-pdf/lecture06.pdf)    |
 |07             | 14.11.2017   |[klick](lectures-pdf/lecture07.pdf)    |
+|08             | 21.11.2017   |                                       |
+|09             |              |                                       |
+|10             |              |                                       |
+</td><td>
+
+|Vorlesung      | Datum der VL |PDF                                    |
+|---------------|--------------|---------------------------------------|
+| 11            |              |                                       |
+| 12            |              |                                       |
+| 13            |              |                                       |
+| 14            |              |                                       |
+| 15            |              |                                       |
+| 16            |              |                                       |
+| 17            |              |                                       |
+| 18            |              |                                       |
+| 19            |              |                                       |
+| 20            |              |                                       |
+
+</td>
+<!-- <td>
+
+|Vorlesung      | Datum der VL |PDF                                    |
+|---------------|--------------|---------------------------------------|
+| 21            |              |                                       |
+| 22            |              |                                       |
+| 23            |              |                                       |
+| 24            |              |                                       |
+| 25            |              |                                       |
+| 26            |              |                                       |
+| 27            |              |                                       |
+| 28            |              |                                       |
+| 29            |              |                                       |
+| 30            |              |                                       |
+
+</td> --></tr> </table>
+
 ## Mitmachen
 Hilfe ist gern gesehen. Ob Grafiken, Mitschriften der Vorlesung in Text- oder Texform oder einfach nur Korrektur.
 
 ## Installation
-- Latex installieren: (Tex-Live, Miktex)
+- Latex installieren: (z.B.: Tex-Live, Miktex)
 - Latex-Editor der Wahl installieren (z.B.: IntelliJ + TeXiFy-Plugin)
 
 ## PDF erzeugen
