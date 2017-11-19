@@ -253,7 +253,7 @@
         \end{equation*}
         $B=\frac{n}{m}$ ist der \textit{Belegungsfaktor}.
         Je kleiner $B$, desto ineffizienter ist die Datenstruktur, aber möglicherweise ist es dann einfacher, eine \textit{gute} Hashfunktion zu finden.
-        \item \textsf{\textbf{Zugriffszeit}}: Man nimmt an, $h(x)$ kann in $\mathcal{O}(n)$ ausgewertet werden.
+        \item \textsf{\textbf{Zugriffszeit}}: Man nimmt an, $h(x)$ kann in $\mathcal{O}(1)$ ausgewertet werden.
         Dann ist der Zugriff $x \in S$ in
         \begin{equation*}
             \mathcal{O}(1 + \text{Position von $x$ in Liste } L_{h(x)})
@@ -277,7 +277,7 @@
     Die erwartete Suchzeit nach Element $x$ ist dann $\mathcal{O}(1+B)$
 
     \vspace*{0.3cm}
-    \textbf{\textsf{Beweis (erster Teil):}} Sei $l_i$ die Anzahl der Elemente aus $S$, die $i-L_i$ gespeichert wurde $=|L_i|$.
+    \textbf{\textsf{Beweis (erster Teil):}} Sei $l_i$ die Anzahl der Elemente aus $S$, die in $L_i$ gespeichert wurde $=|L_i|$.
     Es gilt $\sum_{i=0}^{m-1}l_i=n=|S|$.
     Die erwartete Suchzeit ist damit
     \begin{equation*}
@@ -286,6 +286,9 @@
 
     \vspace*{0.3cm}
     \textbf{\textsf{Beweis (Einschub):}}
+		
+		Hierbei sind die Elemente $U_i$ diejenigen Elemente aus $U$, welche auf $i$ gehashed werden.
+		
     \begin{equation*}
         \begin{flalign}
             \colorbox{green!30}{$\text{Pr}(h(x)=i)$} &= \dfrac{|U_i\setminus S|}{|U\setminus S|}\\\nonumber
@@ -302,7 +305,7 @@
         \begin{flalign}
             E & :=\left(\sum_{i=0}^{m-1}\colorbox{green!30}{$\text{Pr}(h(i)=i)$} \cdot l_i\right) + 1 \\\nonumber
             & \leq \left(\sum_{i=0}^{m-1}\left(\colorbox{blue!30}{$\dfrac{2}{m} + \dfrac{1}{n}$}\right) \cdot l_i\right) + 1 \\\nonumber
-            & =  1 + \frac{2}{m} \sum_{i=0}^{m-1}l_i + \frac{1}{n} \sum_{i=0}^{m-1}l_i \\\nonumber
+            & =  1 + \frac{2}{m} \underbrace{\sum_{i=0}^{m-1}l_i}_{n} + \frac{1}{n} \underbrace{\sum_{i=0}^{m-1}l_i}_{n} \\\nonumber
             & =  1 + \frac{2n}{m} +1 \\\nonumber
             & = 2 + \frac{2n}{m} \\\nonumber
             & = \mathcal{O}(1+B)
