@@ -61,14 +61,24 @@ Hilfe ist gern gesehen. Ob Grafiken, Mitschriften der Vorlesung in Text- oder Te
 * *IntelliJ + TeXiFy-Plugin*: Rechtsklick auf die Tex-Datei, dann auf "Run" klicken. Eine PDF-Datei sollte im *out*-Verzeichnis erscheinen.
 Die gerenderte PDF bitte ins `lectures-pdf`-Verzeichnis kopieren, und in der Readme eintragen.
 
-* *Falls `pdflatex` und **Python 3.6** installiert:* Im Rootverzeichnis dieses Projekts folgende Befehle ausführen:
+* *Falls `pdflatex` und **Python 3.6** installiert:*
 
+    **Alte Methode**:
     ```
     cd scripts
     python updater.py 1 # Erzeugt die erste Vorlesungseinheit-PDF neu
     python updater.py all # Erzeugt alle PDFs neu
     ```
-    Das Script generiert die PDFs und verschiebt sie ins `lectures-pdf` - Verzeichnis.
+
+    oder
+
+    **Neue Methode**:
+    ```
+    cd scripts
+    python ud.py 1 # Erzeugt die erste Vorlesungseinheit-PDF neu
+    ```
+
+    Die Scripte generieren die PDFs und verschieben sie ins `lectures-pdf` - Verzeichnis.
 
 ## Links
 - Inspiration: https://github.com/dipdi/aub-skript
