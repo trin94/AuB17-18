@@ -117,7 +117,7 @@
     \vspace*{0.3cm}
     \textbf{\textsf{Beweis:}} Nach Schubfachsystem existiert ein $i$ mit $0 \leq i < m$, sodass $\underbrace{|k^{-1}(i)|}_{x \in U\ |\ h(x)=i} \supseteq \frac{|U|}{m} = \frac{k}{m}$.
     Nach Annahme ist $\frac{k}{m}\geq n$.
-    Man kann nun $S \subseteq n^{-1}(i)$ mit $|S|=n$ wählen für ein beliebiges $i$ mit $k^{-1}(i)\geq \frac{U}{m}$.
+    Man kann nun $S \subseteq n^{-1}(i)$ mit $|S|=n$ wählen für ein beliebiges $i$ mit $k^{-1}(i)\geq \frac{U}{m}$.\proofend
 
     Um eine gute Hashfunktion zu finden, müssen also immer auch die Daten betrachtet werden, die mit dieser Funktion gehasht werden.
     \newpage
@@ -249,10 +249,10 @@
     \begin{itemize}
         \item \textsf{\textbf{Platzbedarf}}:
         \begin{equation*}
-            \mathcal{O}(m+n) =  \mathcal{O}\left(n \cdot \left(1+\frac{1}{B}\right)\right)
+            \mathcal{O}(m+n) =  \mathcal{O}\left(n \cdot \left(1+\frac{1}{\beta}\right)\right)
         \end{equation*}
-        $B=\frac{n}{m}$ ist der \textit{Belegungsfaktor}.
-        Je kleiner $B$, desto ineffizienter ist die Datenstruktur, aber möglicherweise ist es dann einfacher, eine \textit{gute} Hashfunktion zu finden.
+        $\beta=\frac{n}{m}$ ist der \textit{Belegungsfaktor}.
+        Je kleiner $\beta$, desto ineffizienter ist die Datenstruktur, aber möglicherweise ist es dann einfacher, eine \textit{gute} Hashfunktion zu finden.
         \item \textsf{\textbf{Zugriffszeit}}: Man nimmt an, $h(x)$ kann in $\mathcal{O}(1)$ ausgewertet werden.
         Dann ist der Zugriff $x \in S$ in
         \begin{equation*}
@@ -264,7 +264,6 @@
         \end{equation*}
     \end{itemize}
 
-    \newpage
     \subsection*{Erwartete Suchzeit}\label{subsec:erwarteteSuchzeit}
     Man nimmt an, $h$ verteilt $U$ gleichmäßig über $\{0,1,2,\cdots,m-1 \}$, dass bedeutet
     \begin{equation*}
@@ -274,7 +273,7 @@
 
     \vspace*{0.3cm}
     \textbf{\textsf{Satz:}} Sei $x$ ein zufälliges (gleichverteiltes) Element aus $U\setminus S$ und $h \leq \frac{|U|}{2}$.
-    Die erwartete Suchzeit nach Element $x$ ist dann $\mathcal{O}(1+B)$
+    Die erwartete Suchzeit nach Element $x$ ist dann $\mathcal{O}(1+\beta)$
 
     \vspace*{0.3cm}
     \textbf{\textsf{Beweis (erster Teil):}} Sei $l_i$ die Anzahl der Elemente aus $S$, die in $L_i$ gespeichert wurde $=|L_i|$.
@@ -284,7 +283,7 @@
         E:=\left(\sum_{i=0}^{m-1}\underbrace{\colorbox{green!30}{$\text{Pr}(h(i)=i)$}}_{\substack{\text{Beweis-} \\ \text{Einschub}}} \cdot\ l_i\right) + 1
     \end{equation*}
 
-    \vspace*{0.3cm}
+    \newpage
     \textbf{\textsf{Beweis (Einschub):}}
 		
 		Hierbei sind die Elemente $U_i$ diejenigen Elemente aus $U$, welche auf $i$ gehashed werden.
@@ -308,7 +307,8 @@
             & =  1 + \frac{2}{m} \underbrace{\sum_{i=0}^{m-1}l_i}_{n} + \frac{1}{n} \underbrace{\sum_{i=0}^{m-1}l_i}_{n} \\\nonumber
             & =  1 + \frac{2n}{m} +1 \\\nonumber
             & = 2 + \frac{2n}{m} \\\nonumber
-            & = \mathcal{O}(1+B)
+            & = \mathcal{O}(1+\beta)
         \end{flalign}
     \end{equation*}
+    \proofend
 \end{document}

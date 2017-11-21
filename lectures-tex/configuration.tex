@@ -6,6 +6,7 @@
 \usepackage{lmodern}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{amsfonts}
 \usepackage{cancel}
 \usepackage{listings}
 \usepackage{multirow}
@@ -23,6 +24,7 @@
 \usepackage{footnote}
 \usepackage{multicol}
 \usepackage{stackengine}
+\usepackage[norndcorners,customcolors,shade]{hf-tikz}
 
 
 % pgf plotsets -------------------------------------------------------------------------------------------- pgf plotsets
@@ -62,6 +64,8 @@
 \vspace*{0.3cm} \textbf{\textsf{Beweis:}} #2 \vspace*{0.3cm}
 }
 \newcommand{\uparrow}[0]{\rlap{\scalebox{1.6}{$\uparrow$}}}
+\newlength\dlf
+\newcommand{\proofend}[0]{\hfill $\square$}
 
 % colors -------------------------------------------------------------------------------------------------------- colors
 \definecolor{amethyst}{rgb}{0.6, 0.4, 0.8}
