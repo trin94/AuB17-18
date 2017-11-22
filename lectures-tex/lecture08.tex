@@ -70,7 +70,7 @@
 
     \vspace*{0.3cm}
     \textbf{\textsf{Beweis:}} Die Zeit für den Zugriff auf ein $x$
-    ist $ < 1 + \underbrace{\overbrace{\#}^{\text{Anzahl}}(y \in S \text{ mit }h(x)=h(y))}_{\text{Wird jetzt gezeigt}}$
+    ist $ < 1 + \underbrace{\overbrace{\#}^{\text{Anzahl}}(y \in S \text{ mit }h(x)=h(y))}_{\text{Wird jetzt gezeigt}}$.
     Dazu sei
     \begin{equation*}
         \delta_h(x,y) =
@@ -109,7 +109,7 @@
     \begin{equation*}
         \begin{align*}
             \frac{1}{|\mathcal{H}|} \sum_{h \in \mathcal{H}} \sum_{y \in S}\delta_h(x,y) &= \frac{1}{|\mathcal{H}|}\sum_{y \in S} \sum_{h \in \mathcal{H}}\delta_h(x,y) \\\nonumber
-            & \leq \sum_{y \in S}\left[\text{\texttt{if} $(x=y)$ $1$ \texttt{else} } \frac{c}{m}\right] \\\nonumber
+            & \leq \sum_{y \in S}\left[\text{\texttt{\textcolor{listingBlue}{if}} $(x=y)$ $1$ \texttt{\textcolor{listingBlue}{else}} } \frac{c}{m}\right] \\\nonumber
             & \leq \begin{cases}
                        1 + \frac{c \cdot (n-1)}{m} & x \in S \\
                        \frac{c}{m} \cdot n & x \notin
@@ -117,21 +117,21 @@
             & \leq 1 + c \cdot \beta \\\nonumber
         \end{align*}
     \end{equation*}
-    \textit{(Besser wäre nicht nur eine erwartete sondern auch eine Worst-Case-Zugriffszeit von $\mathcal{O}(1)$, aber das kommt später).}
+    \textit{Besser wäre nicht nur eine erwartete sondern auch eine Worst-Case-Zugriffszeit von $\mathcal{O}(1)$, aber das kommt später.}
     \proofend
 
     \subsection*{Perfektes Hashing}\label{subsec:perfektesHashing}
     Man möchte eine Hashfunktion $h$ mit $h(x) \neq h(y)$ für alle $x\neq y \in S$ finden.
     Außerdem soll $h$ eine Hashtafel der Größe $m=\mathcal{O}(|S|)=\mathcal{O}(n)$ bilden.
-    Zusammengefasst: Man möchte eine Hashfunktion finden, die zwei unterschiedliche Inputparamter auch auf zwei Unterschiedliche Werte mappt.
+    Zusammengefasst: Man möchte eine Hashfunktion finden, die zwei unterschiedliche Inputparamter auch auf zwei unterschiedliche Werte mappt.
     Außerdem soll nur linear viel Platz verbraucht werden.
 
     \subsubsection*{Ansatz 1: Einstufiges perfektes Hashing}
-    Die Anzahl der Kollisionen die eine Hashfunktion $h$ für eine Schlüsselmenge $S$ erzeugt, ist durch die folgende Funktion beschrieben:
+    Die Anzahl der Kollisionen, die eine Hashfunktion $h$ für eine Schlüsselmenge $S$ erzeugt, ist durch die folgende Funktion beschrieben:
     \begin{equation*}
         c_S(h) = \left| \{ x,y \} \in \binom{S}{2} : h(x)=h(y)\right|
     \end{equation*}
-    Das Ziel sind $0$ Kollisionen also
+    Das Ziel sind $0$ Kollisionen, also
     \begin{equation*}
         c_S(h)=0 \quad \Leftrightarrow \quad h \underbrace{|_s}_{\substack{\text{Einge-} \\ \text{schränkt}}} \text{ injektiv}
     \end{equation*}
@@ -172,7 +172,7 @@
     \begin{enumerate}
         \item Der obige Satz ist nicht konstruktiv:
         Ein zufällig gewähltes $\mathcal{H}$ könnte nur mit extrem geringer Wahrscheinlichkeit injektiv sein.
-        Das würde bedeuten, man bräuchte sehr viele Versuche, bis man ein injektives $h$ erwischt (\textit{Da lässt sich was machen.}).
+        Das würde bedeuten, man bräuchte sehr viele Versuche, bis man ein injektives $h$ erwischt (\textit{Da lässt sich was machen}).
         \item Ein Platzbedarf von $n^2$ ist schlecht (\textit{Dieser Nachteil bleibt bestehen}).
     \end{enumerate}
 
@@ -316,7 +316,7 @@
         \begin{align*}
             m &= \text{Größe der Primärhashtafel} \\\nonumber
             m_i &= \text{Größe der $i$-ten Sekundärhashtafel} \\\nonumber
-            l_i &= \text{Anzahl der Elemente, die von Primärhashfunktion auf $i$ gemappt wurden.} \\\nonumber
+            l_i &= \text{Anzahl der Elemente, die von der Primärhashfunktion $h$ auf $i$ gemappt wurden.} \\\nonumber
         \end{align*}
     \end{equation*}
 
@@ -328,7 +328,7 @@
     Der Platzverbrauch aller Sekundärhashtafeln ist
     \begin{equation*}
         \begin{align*}
-            \sum_{i=0}^{m-1} 2 \cdot c \cdot \binom{l_i}{2} &= 2c \cdot \sum_{i=0}^{m-1}\binom{l_i}{2} \\\nonumber
+            \sum_{i=0}^{m-1} 2c \cdot \binom{l_i}{2} &= 2c \cdot \sum_{i=0}^{m-1}\binom{l_i}{2} \\\nonumber
             &= 2c \cdot \text{ Anzahl der Kollisionen von } h \\\nonumber
             &= 2c \cdot c_S(h) \\\nonumber
         \end{align*}
