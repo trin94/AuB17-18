@@ -117,7 +117,7 @@ def begin():
         elif arg_first == "all":
             print("Building all files is not supported currently.".format(arg_first))
         else:
-            print("Use python updater.py <digit> to build a file.")
+            print("Use python ud.py <digit> to build a file.")
 
 
 def tools_available() -> bool:
