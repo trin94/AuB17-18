@@ -1,0 +1,348 @@
+\documentclass{scrartcl}% siehe <http://www.komascript.de>
+\input{../lectures-tex/configuration}
+
+\begin{document}
+    % ----------------------------------------------------------------------------
+    \subject{Vorlesungsmitschrift}
+    \title{Algorithmen und Berechenbarkeit}
+    \subtitle{Vorlesung 08}
+    \date{Letztes Update: \today \ - \currenttime \ Uhr}
+    \maketitle
+    % ----------------------------------------------------------------------------
+
+
+    \subsection*{Weitere Sätze zum Wörterbuchproblem / Hashing}\label{subsec:erwarteteSuchzeit}
+    \textbf{\textsf{Satz:}} Sei $x$ ein zufälliges (gleichverteiltes) Element aus $S$, dann ist die erwartete Suchzeit für $x$
+    \begin{equation*}
+        \mathcal{O}\left(1+\dfrac{1}{n} \sum_{i=0}^{m-1}\dfrac{l_i \cdot (l_i + 1)}{2}\right)
+    \end{equation*}
+    \textit{Besser wäre eine Schranke unabhängig von $l_i$, aber $\sum_{i}l_i = n$ sagt nichts über $\sum_{i}l_{i}^2$.}
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Wenn $x$ das $j$-te Element seiner Liste ist, ist die Suchzeit $\mathcal{O}(1+j)$.
+    Also ist die erwartete Suchzeit
+
+    \begin{equation*}
+        \mathcal{O} \left( \sum_{i=0}^{m-1}\sum_{j=1}^{l_i} \right) = \mathcal{O}\left( 1+ \frac{1}{n} \sum_{i=0}^{m-1} \frac{l_i - (l_i+1)}{2} \right)
+    \end{equation*}
+    \proofend
+
+    \vspace*{0.6cm}
+    \textbf{\textsf{Satz:}} Sei $S$ eine zufällige (gleichverteilte) Teilmenge aus $U$ der Größe $n$. Dann ist die erwartete Suchzeit für ein zufälliges $x \in S$
+    \begin{equation*}
+        \mathcal{O}\left(1+\beta \cdot \frac{3}{2} \cdot l^\beta\right)
+    \end{equation*}
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Wird nicht bewiesen.
+    \vspace*{0.3cm}
+
+    Die beiden letzten Fälle besagen im Prinzip: Falls $S \subseteq U$ zufällig gewählt wurde, ist alles gut.
+    Praktisch ist das aber nicht der Fall.
+
+    \section*{Perfektes Hashing}
+    \subsection*{Universelles Hashing}
+    Sei $\mathcal{H}$ eine Menge von Hashfunktionen von $U$ nach $\{0,1,\cdots, m-1\}$.
+    Für $c > 1$ heißt $\mathcal{H}$ nun $c$-universell, falls für alle $x, y \in U$ mit $ x \neq y$ gilt:
+    \begin{equation*}
+        \frac{|\{ h \in \mathcal{H}:\ h(x) = h(y) \} |}{\mathcal{H}} \leq \frac{c}{m}
+    \end{equation*}
+    Die Gleichung sagt also prinzipiell aus, dass der Anteil der Funktionen, die zwei Inputparameter auf denselben Wert abbildet, nicht \textit{zu} groß ist.
+    Es ist also ein Maß für die Qualität einer Menge von Hashfunktionen.
+
+    \textbf{\textsf{Satz:}} Seien $a,b \in \{ 0,1,\cdots,N-1 \}$ und sei $h_{a,b} \longmapsto ((ax + b)\text{ mod } N)\text{ mod } m$.
+    Dann ist die Klasse $\mathcal{H} = \{ h_{a,b}: 0 \leq a \leq N-1 \land 0 \leq b \leq N-1 \}$ $c$-universell mit
+    \begin{equation*}
+        c&= \frac{\left\lceil\frac{N}{m}\right\rceil}{\frac{N}{m}} \approx 1\\\nonumber
+    \end{equation*}
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Wird eine Übungsaufgabe.
+    \vspace*{0.6cm}
+
+    \textbf{\textsf{Satz:}} Benutzt man Hashing mit Verkettung und wählt $n \in \mathcal{H}$ zufällig gleichverteilt, wobei $\mathcal{H}$ $c$-universell ist, dann ist die erwartete Suchzeit
+    \begin{equation*}
+        \begin{align}
+            \mathcal{O}(1+ c \cdot \beta)
+        \end{align}
+    \end{equation*}
+    für beliebige Mengen $S \subseteq U$ und $|S| = n$.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Die Zeit für den Zugriff auf ein $x$
+    ist $ < 1 + \underbrace{\overbrace{\#}^{\text{Anzahl}}(y \in S \text{ mit }h(x)=h(y))}_{\text{Wird jetzt gezeigt}}$
+    Dazu sei
+    \begin{equation*}
+        \delta_h(x,y) =
+        \[ \begin{cases}
+               1 & \text{falls } h(x) = h(y) \\
+               0 & \text{sonst}
+        \end{cases}
+        \]
+    \end{equation*}
+
+    Dann ist
+
+    \begin{equation*}
+        \begin{align*}
+            \tikzmarkin[green!30]{a}(0,-0.6)(1.4,0.65) \frac{1}{|\mathcal{H}|} \sum_{h \in \mathcal{H}}\tikzmarkend{a}
+            \sum_{y \in S}\delta_h(x,y) &= \frac{1}{|\mathcal{H}|}\sum_{y \in S} \tikzmarkin[blue!30]{b}(0,-0.6)(2.1,0.65)\sum_{h \in \mathcal{H}}\delta_h(x,y)\tikzmarkend{b} \\\nonumber
+        \end{align*}
+    \end{equation*}
+
+    wobei
+
+    \begin{equation*}
+        \begin{align*}
+            \tikzmarkin[green!30]{a}(0,-0.5)(1.4,0.6) \frac{1}{|\mathcal{H}|} \sum_{h \in \mathcal{H}}\tikzmarkend{a}
+            &\Rightarrow \text{Berechnet den Erwartungswert über alle möglichen Hashfunktionen}  \\\nonumber
+            \tikzmarkin[blue!30]{b}(0,-0.5)(2.025,0.4)\sum_{h \in \mathcal{H}}\delta_h(x,y)\tikzmarkend{b}
+            &\Rightarrow \text{Anzahl der Hashfunktionen, die $x$ und $y$ auf denselben Wert hashen:} \\\nonumber
+            & \phantom{\Rightarrow} \rightarrow \text{Für } x = y: \qquad |\mathcal{H}|\\\nonumber
+            & \phantom{\Rightarrow} \rightarrow \text{Für } x \neq y: \qquad \frac{c}{m} \cdot |\mathcal{H}|,
+            \text{ da $\mathcal{H}\ c$-universell ist }\\\nonumber
+        \end{align*}
+    \end{equation*}
+
+    Also
+
+    \begin{equation*}
+        \begin{align*}
+            \frac{1}{|\mathcal{H}|} \sum_{h \in \mathcal{H}} \sum_{y \in S}\delta_h(x,y) &= \frac{1}{|\mathcal{H}|}\sum_{y \in S} \sum_{h \in \mathcal{H}}\delta_h(x,y) \\\nonumber
+            & \leq \sum_{y \in S}\left[\text{\texttt{if} $(x=y)$ $1$ \texttt{else} } \frac{c}{m}\right] \\\nonumber
+            & \leq \begin{cases}
+                       1 + \frac{c \cdot (n-1)}{m} & x \in S \\
+                       \frac{c}{m} \cdot n & x \notin
+            \end{cases} \\\nonumber
+            & \leq 1 + c \cdot \beta \\\nonumber
+        \end{align*}
+    \end{equation*}
+    \textit{(Besser wäre nicht nur eine erwartete sondern auch eine Worst-Case-Zugriffszeit von $\mathcal{O}(1)$, aber das kommt später).}
+    \proofend
+
+    \subsection*{Perfektes Hashing}\label{subsec:perfektesHashing}
+    Man möchte eine Hashfunktion $h$ mit $h(x) \neq h(y)$ für alle $x\neq y \in S$ finden.
+    Außerdem soll $h$ eine Hashtafel der Größe $m=\mathcal{O}(|S|)=\mathcal{O}(n)$ bilden.
+    Zusammengefasst: Man möchte eine Hashfunktion finden, die zwei unterschiedliche Inputparamter auch auf zwei Unterschiedliche Werte mappt.
+    Außerdem soll nur linear viel Platz verbraucht werden.
+
+    \subsubsection*{Ansatz 1: Einstufiges perfektes Hashing}
+    Die Anzahl der Kollisionen die eine Hashfunktion $h$ für eine Schlüsselmenge $S$ erzeugt, ist durch die folgende Funktion beschrieben:
+    \begin{equation*}
+        c_S(h) = \left| \{ x,y \} \in \binom{S}{2} : h(x)=h(y)\right|
+    \end{equation*}
+    Das Ziel sind $0$ Kollisionen also
+    \begin{equation*}
+        c_S(h)=0 \quad \Leftrightarrow \quad h \underbrace{|_s}_{\substack{\text{Einge-} \\ \text{schränkt}}} \text{ injektiv}
+    \end{equation*}
+
+    \vspace*{0.4cm}
+    \textbf{\textsf{Satz:}} Für ein zufälliges $h \in \mathcal{H}$, wobei $\mathcal{H}$ $c$-universell ist, gilt:
+    \begin{equation*}
+        E(c_S(h)) \leq \left \binom{n}{2} \cdot \frac{c}{m}\right
+    \end{equation*}
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Sei
+    \begin{equation*}
+        c_S(h)=\sum_{\{x,y \} \in \binom{S}{2}}^{}\delta_h(x,y)
+    \end{equation*}
+
+    und weiter
+    \begin{equation*}
+        \begin{align*}
+            E(c_S(h)) &=\sum_{\{x,y \} \in \binom{S}{2}}^{}E(\delta_h(x,y))=\sum_{\{x,y \} \in \binom{S}{2}}^{}\text{Pr}(\overbrace{\delta_h(x,y)=1}^{\leq \frac{c}{m}}) \\\nonumber
+            &\leq \binom{|S|}{2} \cdot \frac{c}{m} = \binom{n}{2} \cdot \frac{c}{m}
+        \end{align*}
+    \end{equation*}\proofend
+    \vspace*{0.6cm}
+
+    \textbf{\textsf{Kollorar:}} Für $m > c \cdot \binom{n}{s}$ existiert ein $h \in \mathcal{H}$ mit $h|_s$ injektiv.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{(Probabilistischer) Beweis:}} Durch Einsetzen erhält man
+    \begin{equation*}
+        E(c_S(h)) &\leq \binom{n}{2} \cdot \frac{c}{m} < 1
+    \end{equation*}
+    Das bedeutet, \textbf{es gibt mindestens eine Hashfunktion $h$ mit keinen Kollisionen}.
+    \proofend
+
+    \newpage
+    \subsubsection*{Probleme mit einstufigem perfekten Hashing}
+    \begin{enumerate}
+        \item Der obige Satz ist nicht konstruktiv:
+        Ein zufällig gewähltes $\mathcal{H}$ könnte nur mit extrem geringer Wahrscheinlichkeit injektiv sein.
+        Das würde bedeuten, man bräuchte sehr viele Versuche, bis man ein injektives $h$ erwischt (\textit{Da lässt sich was machen.}).
+        \item Ein Platzbedarf von $n^2$ ist schlecht (\textit{Dieser Nachteil bleibt bestehen}).
+    \end{enumerate}
+
+    %    \vspace*{0.3cm}
+    \textbf{\textsf{Kollorar zu Problem 1:}} Falls $m > 2 \cdot c \cdot \binom{n}{2}$, kann in erwarteter $\mathcal{O}(n+m)$ Zeit eine injektive Hashfunktion gefunden werden.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Man erhält
+    \begin{equation*}
+        \begin{align*}
+            E(c_S(h)) &\leq \binom{n}{2} \cdot \frac{c}{m} &< \cancel{\binom{n}{2}} \cdot \frac{\cancel{c}}{2 \cdot \cancel{c} \cdot \cancel{\binom{n}{2}}} \\\nonumber
+            & = \frac{1}{2}
+        \end{align*}
+    \end{equation*}
+    Mit der Markov-Ungleichung erhält man nun
+    \begin{equation*}
+        \begin{align*}
+            \text{Pr}(X \geq c) &\leq \frac{E(X)}{c} \\\nonumber
+            \text{Pr}(c_S(h) \geq 1) &\leq \frac{\frac{1}{2}}{1} = \frac{1}{2}
+        \end{align*}
+    \end{equation*}
+    Das bedeutet, man erhält mit einer Wahrscheinlichkeit von $\geq \frac{1}{2}$ eine Hashfunktion $h$, die keine Kollisionen provoziert.\proofend
+
+    \subsubsection*{Ansatz 2: Mehrstufiges perfektes Hashing}
+    Die Idee für ein mehrstufiges perfektes Hashing ist im Folgenden aufgezeichnet:
+
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}[thick, scale=1]
+                \node[node draw=none] (n00) at (-5,2.5) {$S \text{ mit } x $};
+                \draw[|->, thin] (-4,2.5) -- (-1.5,2.5) node [midway, sloped, above] {$h$};
+
+                % Primäry table
+                % Coordinates
+                \coordinate (c01) at (0,0);
+                \coordinate (c02) at (0,0.5);
+                \coordinate (c03) at (0,1);
+                \coordinate (c04) at (0,1.5);
+                \coordinate (c05) at (0,2);
+                \coordinate (c06) at (0,2.5);
+                \coordinate (c07) at (0,3);
+                \coordinate (c08) at (0,3.5);
+                \coordinate (c09) at (0,4);
+                \coordinate (c10) at (0,4.5);
+                \coordinate (c11) at (0,5);
+                \coordinate (c12) at (3,5);
+                \coordinate (c13) at (3,4.5);
+                \coordinate (c14) at (3,4);
+                \coordinate (c15) at (3,3.5);
+                \coordinate (c16) at (3,3);
+                \coordinate (c17) at (3,2.5);
+                \coordinate (c18) at (3,2);
+                \coordinate (c19) at (3,1.5);
+                \coordinate (c20) at (3,1);
+                \coordinate (c21) at (3,0.5);
+                \coordinate (c22) at (3,0);
+
+                \fill [fill=tan!20]
+                plot [] coordinates {
+                (c05) (c06) (c17) (c18)
+                }
+                plot [] coordinates {
+                (c08) (c09) (c14) (c15)
+                }
+                ;
+
+                \foreach \from/\to in {c01/c11, c11/c12, c12/c22, c22/c01, c05/c18, c06/c17, c09/c14, c08/c15}
+                    \draw[thin] (\from) -- (\to);
+
+                \foreach \from/\to in {c02/c21, c03/c20, c04/c19, c07/c16, c10/c13}
+                    \draw[thin, dashed] (\from) -- (\to);
+
+                \node[node draw=none] (n01) at (0.5,2.15) {$\cdots$};
+                \node[node draw=none] (n02) at (0.5,3.65) {$\cdots$};
+                \node[node draw=none] (n03) at (-0.2,4.65) {\tiny $0$};
+                \node[node draw=none] (n04) at (-0.2,4.15) {\tiny $1$};
+                \node[node draw=none] (n05) at (-0.2,3.65) {\tiny $2$};
+                \node[node draw=none] (n06) at (-0.2,3.15) {\tiny $\vdots$};
+                \node[node draw=none] (n07) at (-0.2,2.65) {};
+                \node[node draw=none] (n08) at (-0.2,2.15) {\tiny $i$};
+                \node[node draw=none] (n09) at (-0.2,1.65) {};
+                \node[node draw=none] (n10) at (-0.2,1.15) {\tiny $\vdots$};
+                \node[node draw=none] (n11) at (-0.2,0.65) {};
+                \node[node draw=none] (n12) at (-0.5,0.15) {\tiny $m-1$};
+
+                % Secondary table
+                % top
+                \coordinate (c30) at (5,3.5);
+                \coordinate (c31) at (5,3.75);
+                \coordinate (c32) at (5,4);
+                \coordinate (c33) at (5,4.25);
+                \coordinate (c34) at (5,4.5);
+                \coordinate (c35) at (6.5,4.5);
+                \coordinate (c36) at (6.5,4.25);
+                \coordinate (c37) at (6.5,4);
+                \coordinate (c38) at (6.5,3.75);
+                \coordinate (c39) at (6.5,3.5);
+
+                \foreach \from/\to in {c30/c34, c34/c35, c35/c39, c39/c30}
+                    \draw[thin] (\from) -- (\to);
+
+                \foreach \from/\to in {c31/c38, c32/c37, c33/c36}
+                    \draw[ultra thin, dashed] (\from) -- (\to);
+
+                % bottom
+
+                \coordinate (c40) at (5,1.5);
+                \coordinate (c41) at (5,1.75);
+                \coordinate (c42) at (5,2);
+                \coordinate (c43) at (5,2.25);
+                \coordinate (c44) at (5,2.5);
+                \coordinate (c45) at (6.5,2.5);
+                \coordinate (c46) at (6.5,2.25);
+                \coordinate (c47) at (6.5,2);
+                \coordinate (c48) at (6.5,1.75);
+                \coordinate (c49) at (6.5,1.5);
+
+                \foreach \from/\to in {c40/c44, c44/c45, c45/c49, c49/c40}
+                    \draw[thin] (\from) -- (\to);
+
+                \foreach \from/\to in {c41/c48, c42/c47, c43/c46}
+                    \draw[ultra thin, dashed] (\from) -- (\to);
+
+                % arrows between hash tables
+                \draw[|->, thin] (3.1,3.75) -- (4.9,4) node [midway, sloped, above] {};
+                \draw[|->, thin] (3.1,2.25) -- (4.9,2) node [midway, sloped, above] {$h_i$};
+
+                % Descriptions
+                \node[node draw=none] (n20) at (1.5,-0.5) {$\substack{\text{Primärhashtafel der} \\ \text{Größe } \mathcal{O}(n)}$  };
+                \node[node draw=none] (n20) at (5.75,-0.5) {$\substack{\text{Sekundär-} \\ \text{hashtafeln}}$ };
+
+            \end{tikzpicture}
+    \end{figure}
+    Man wählt eine Primärhashfunktion, sodass etwa linear viele Kollisionen erzeugt werden, also $c_S(h) = \mathcal{O}(n)$.
+    Zusätzlich erzeugt man für jeden Primärhashtafeleintrag $i$,
+    für den es mehr als einen Eintrag gibt, eine Sekundärhashfunktion $h_i$, die injektiv in eine Sekundärhashtafel hasht.
+
+    \vspace*{0.3cm}
+    Des Weiteren werden festgelegt:
+    \begin{equation*}
+        \begin{align*}
+            m &= \text{Größe der Primärhashtafel} \\\nonumber
+            m_i &= \text{Größe der $i$-ten Sekundärhashtafel} \\\nonumber
+            l_i &= \text{Anzahl der Elemente, die von Primärhashfunktion auf $i$ gemappt wurden.} \\\nonumber
+        \end{align*}
+    \end{equation*}
+
+    \newpage
+    Für einen Primärhashtafeleintrag mit $l_i$ Elementen wählt man $m_i > 2c \cdot \binom{l_i}{2}$.
+    Das bedeutet, man kann $h_i$ injektiv in $\mathcal{O}(\binom{l_i}{2})$-Zeit finden.
+
+    \vspace*{0.3cm}
+    Der Platzverbrauch aller Sekundärhashtafeln ist
+    \begin{equation*}
+        \begin{align*}
+            \sum_{i=0}^{m-1} 2 \cdot c \cdot \binom{l_i}{2} &= 2c \cdot \sum_{i=0}^{m-1}\binom{l_i}{2} \\\nonumber
+            &= 2c \cdot \text{ Anzahl der Kollisionen von } h \\\nonumber
+            &= 2c \cdot c_S(h) \\\nonumber
+        \end{align*}
+    \end{equation*}
+    Außerdem fällt auf
+    \begin{equation*}
+        \Rightarrow  c_S(h) &= \sum_{i=0}^{m-1}\binom{l_i}{2} \approx n
+    \end{equation*}
+
+    Für die Wahl $m=c \cdot n$ ergibt sich
+    \begin{equation*}
+        E(c_S(n)) \leq \binom{n}{2} \cdot \frac{c}{m} = \frac{\cancel{n} \cdot (n-1) \cdot \cancel{c}}{2 \cdot \cancel{n} \cdot \cancel{c}} = \frac{n-1}{2}
+    \end{equation*}
+
+    Das heißt, der Platz aller Sekundärhashtafeln entspricht der Anzahl der Kollisionen in der Primärhashtafel.
+
+\end{document}
