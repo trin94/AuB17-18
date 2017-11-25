@@ -73,6 +73,11 @@ per-mode = symbol
 \newcommand{\uparrow}[0]{\rlap{\scalebox{1.6}{$\uparrow$}}}
 \newlength\dlf
 \newcommand{\proofend}[0]{\hfill $\square$}
+\newcommand\drawbi[7][4pt]{%
+    \path(#2)--(#3)coordinate[at start](h1)coordinate[at end](h2);
+    \draw[#4]($(h1)!#1!90:(h2)$)-- node [auto=left] {#5} ($(h2)!#1!-90:(h1)$);
+    \draw[#6]($(h1)!#1!-90:(h2)$)-- node [auto=right] {#7} ($(h2)!#1!90:(h1)$);
+    }
 
 % colors -------------------------------------------------------------------------------------------------------- colors
 \definecolor{amethyst}{rgb}{0.6, 0.4, 0.8}
@@ -121,4 +126,5 @@ moredelim=[is][\textcolor{listingGrey}]{\%\%}{\%\%}
 \setlength{\parindent}{0pt}
 
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}} % zentriert mit Breitenangabe
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}} % rechtsbündig mit Breitenangabe
 \newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}} % rechtsbündig mit Breitenangabe

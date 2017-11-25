@@ -1,0 +1,348 @@
+\documentclass{scrartcl}% siehe <http://www.komascript.de>
+\input{../lectures-tex/configuration}
+
+\begin{document}
+    \headerline{Algorithmen und Berechenbarkeit}{Vorlesungsmitschrift}{Vorlesung 09}
+
+    \subsection*{Ansatz 2: Zweistufiges perfektes Hashing}
+    Die Idee für ein mehrstufiges perfektes Hashing ist im Folgenden aufgezeichnet:
+
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}[thick, scale=1]
+            \node[node draw=none] (n00) at (-5,2.5) {$S \text{ mit } x $};
+            \draw[|->, thin] (-4,2.5) -- (-1.5,2.5) node [midway, sloped, above] {$h$};
+
+            % Primäry table
+            % Coordinates
+            \coordinate (c01) at (0,0);
+            \coordinate (c02) at (0,0.5);
+            \coordinate (c03) at (0,1);
+            \coordinate (c04) at (0,1.5);
+            \coordinate (c05) at (0,2);
+            \coordinate (c06) at (0,2.5);
+            \coordinate (c07) at (0,3);
+            \coordinate (c08) at (0,3.5);
+            \coordinate (c09) at (0,4);
+            \coordinate (c10) at (0,4.5);
+            \coordinate (c11) at (0,5);
+            \coordinate (c12) at (3,5);
+            \coordinate (c13) at (3,4.5);
+            \coordinate (c14) at (3,4);
+            \coordinate (c15) at (3,3.5);
+            \coordinate (c16) at (3,3);
+            \coordinate (c17) at (3,2.5);
+            \coordinate (c18) at (3,2);
+            \coordinate (c19) at (3,1.5);
+            \coordinate (c20) at (3,1);
+            \coordinate (c21) at (3,0.5);
+            \coordinate (c22) at (3,0);
+
+            \fill [fill=tan!20]
+            plot [] coordinates {
+            (c05) (c06) (c17) (c18)
+            }
+            plot [] coordinates {
+            (c08) (c09) (c14) (c15)
+            }
+            ;
+
+            \foreach \from/\to in {c01/c11, c11/c12, c12/c22, c22/c01, c05/c18, c06/c17, c09/c14, c08/c15}
+            \draw[thin] (\from) -- (\to);
+
+            \foreach \from/\to in {c02/c21, c03/c20, c04/c19, c07/c16, c10/c13}
+            \draw[thin, dashed] (\from) -- (\to);
+
+            \node[node draw=none] (n01) at (0.5,2.15) {$\cdots$};
+            \node[node draw=none] (n02) at (0.5,3.65) {$\cdots$};
+            \node[node draw=none] (n03) at (-0.2,4.65) {\tiny $0$};
+            \node[node draw=none] (n04) at (-0.2,4.15) {\tiny $1$};
+            \node[node draw=none] (n05) at (-0.2,3.65) {\tiny $2$};
+            \node[node draw=none] (n06) at (-0.2,3.15) {\tiny $\vdots$};
+            \node[node draw=none] (n07) at (-0.2,2.65) {};
+            \node[node draw=none] (n08) at (-0.2,2.15) {\tiny $i$};
+            \node[node draw=none] (n09) at (-0.2,1.65) {};
+            \node[node draw=none] (n10) at (-0.2,1.15) {\tiny $\vdots$};
+            \node[node draw=none] (n11) at (-0.2,0.65) {};
+            \node[node draw=none] (n12) at (-0.5,0.15) {\tiny $m-1$};
+
+            % Secondary table
+            % top
+            \coordinate (c30) at (5,3.5);
+            \coordinate (c31) at (5,3.75);
+            \coordinate (c32) at (5,4);
+            \coordinate (c33) at (5,4.25);
+            \coordinate (c34) at (5,4.5);
+            \coordinate (c35) at (6.5,4.5);
+            \coordinate (c36) at (6.5,4.25);
+            \coordinate (c37) at (6.5,4);
+            \coordinate (c38) at (6.5,3.75);
+            \coordinate (c39) at (6.5,3.5);
+
+            \foreach \from/\to in {c30/c34, c34/c35, c35/c39, c39/c30}
+            \draw[thin] (\from) -- (\to);
+
+            \foreach \from/\to in {c31/c38, c32/c37, c33/c36}
+            \draw[ultra thin, dashed] (\from) -- (\to);
+
+            % bottom
+
+            \coordinate (c40) at (5,1.5);
+            \coordinate (c41) at (5,1.75);
+            \coordinate (c42) at (5,2);
+            \coordinate (c43) at (5,2.25);
+            \coordinate (c44) at (5,2.5);
+            \coordinate (c45) at (6.5,2.5);
+            \coordinate (c46) at (6.5,2.25);
+            \coordinate (c47) at (6.5,2);
+            \coordinate (c48) at (6.5,1.75);
+            \coordinate (c49) at (6.5,1.5);
+
+            \foreach \from/\to in {c40/c44, c44/c45, c45/c49, c49/c40}
+            \draw[thin] (\from) -- (\to);
+
+            \foreach \from/\to in {c41/c48, c42/c47, c43/c46}
+            \draw[ultra thin, dashed] (\from) -- (\to);
+
+            % arrows between hash tables
+            \draw[|->, thin] (3.1,3.75) -- (4.9,4) node [midway, sloped, above] {};
+            \draw[|->, thin] (3.1,2.25) -- (4.9,2) node [midway, sloped, above] {$h_i$};
+
+            % Descriptions
+            \node[node draw=none] (n20) at (1.5,-0.5) {$\substack{\text{Primärhashtafel der} \\ \text{Größe } \mathcal{O}(n)}$  };
+            \node[node draw=none] (n20) at (5.75,-0.5) {$\substack{\text{Sekundär-} \\ \text{hashtafeln}}$ };
+
+        \end{tikzpicture}
+    \end{figure}
+
+    Man wählt eine Primärhashfunktion $h$, sodass etwa linear viele Kollisionen erzeugt werden, also $c_S(h) = \mathcal{O}(n)$.
+    Zusätzlich erzeugt man für jeden Primärhashtafeleintrag $i$,
+    für den es mehr als einen Eintrag gibt, eine Sekundärhashfunktion $h_i$, die injektiv in eine Sekundärhashtafel hasht.
+
+    \vspace*{0.3cm}
+    Des Weiteren werden festgelegt:
+    \begin{equation*}
+        \begin{align*}
+            m &= \text{Größe der Primärhashtafel} \\\nonumber
+            m_i &= \text{Größe der $i$-ten Sekundärhashtafel} \\\nonumber
+            l_i &= \text{Anzahl der Elemente, die von der Primärhashfunktion $h$ auf $i$ gemappt wurden.} \\\nonumber
+        \end{align*}
+    \end{equation*}
+
+    %    Für einen Primärhashtafeleintrag mit $l_i$ Elementen wählt man $m_i > 2c \cdot \binom{l_i}{2}$.
+    %    Das bedeutet, man kann $h_i$ injektiv in $\mathcal{O}(\binom{l_i}{2})$-Zeit finden.
+    %
+    %    \vspace*{0.3cm}
+    %    Der Platzverbrauch aller Sekundärhashtafeln ist
+    %    \begin{equation*}
+    %        \begin{align*}
+    %            \sum_{i=0}^{m-1} 2c \cdot \binom{l_i}{2} &= 2c \cdot \sum_{i=0}^{m-1}\binom{l_i}{2} \\\nonumber
+    %            &= 2c \cdot \text{ Anzahl der Kollisionen von } h \\\nonumber
+    %            &= 2c \cdot c_S(h) \\\nonumber
+    %        \end{align*}
+    %    \end{equation*}
+    %    Außerdem fällt auf
+    %    \begin{equation*}
+    %        \Rightarrow  c_S(h) &= \sum_{i=0}^{m-1}\binom{l_i}{2} \approx n
+    %    \end{equation*}
+    %
+    %    Für die Wahl $m=c \cdot n$ ergibt sich
+    %    \begin{equation*}
+    %        E(c_S(n)) \leq \binom{n}{2} \cdot \frac{c}{m} = \frac{\cancel{n} \cdot (n-1) \cdot \cancel{c}}{2 \cdot \cancel{n} \cdot \cancel{c}} = \frac{n-1}{2}
+    %    \end{equation*}
+    %
+    %    Das heißt, der Platz aller Sekundärhashtafeln entspricht der Anzahl der Kollisionen in der Primärhashtafel.
+
+    \textbf{\textsf{Kollorar:}} Falls $m > \frac{n-1}{2} \cdot c$, dann existiert ein $h \in \mathcal{H}$ mit $c_S(h) \leq n$.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Für ein zufälliges $h \in \mathcal{H}$ gilt
+    \begin{equation*}
+        \begin{align*}
+            E(c_S(h)) &\leq \binom{n}{2} \cdot \frac{c}{m} \\\nonumber
+            & = \frac{1}{2} \cdot \frac{n \cdot (n-1)}{\frac{n-1}{2}} \\\nonumber
+            & = n
+        \end{align*}
+    \end{equation*}\proofend
+
+    \newpage
+    \textbf{\textsf{Kollorar:}} Falls $m > (n-1) \cdot 2$, dann gilt für mindestens die Hälfte aller $h \in \mathcal{H}$
+    \begin{equation*}
+        c_S(h) \leq n
+    \end{equation*}
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Wie letztes Mal.\proofend
+
+    \vspace*{0.6cm}
+    Damit ist gezeigt, dass eine Primärhashfunktion $h$ in erwarteter $\mathcal{O}(n+m)$ Zeit mit $c_S(h)\leq n$ gefunden werden kann. Die Hashtafelgröße ist dabei $m = \mathcal{O}(n)$.
+
+    \vspace*{0.3cm}
+    Seien nun alle Elemente aus $S$, die von der Primärhashfunktion $h$ in den $i$-ten Beutel gehasht werden folgendermaßen definiert:
+    \begin{equation*}
+        B_i(h) = h |^{-1}_S(i) = \{ x \in S\ |\ h(x)=i \}
+    \end{equation*}
+
+    Es gilt außerdem
+    \begin{equation*}
+        S_i(h) = \left| B_i(h) \right|
+    \end{equation*}
+
+    und
+    \begin{equation*}
+        c_S(h) = \sum_{i=0}^{m-1}\binom{S_i(h)}{2}
+    \end{equation*}
+
+    Da $h$ so gewählt wurde, dass $c_S(h) \leq n$, gilt auch
+    \begin{equation*}
+        \sum_{i=0}^{m-1}\binom{S_i(h)}{2} \leq n
+    \end{equation*}
+
+    Für jeden Hashbeutel $B_i(h)$ erzeugt man sowohl eine Sekundärhashfunktion
+    als auch eine Sekundärhashtafel mit der Größe $m_i > 2c \cdot \binom{S_i(h)}{2}$, die den Inhalt von $B_i(h)$ injektiv hasht.
+    Der Platzverbrauch und die Konstruktionszeit für einen Hashbeutel $B_i(h)$ ist
+    \begin{equation*}
+        \mathcal{O}\left( 2c \cdot \binom{S_i(h)}{2} \right) = \mathcal{O}\left( \binom{S_i(h)}{2} \right)
+    \end{equation*}
+
+    Damit kann nun die Gesamtgröße und -konstruktionszeit aller Sekundärhashtabellen und \mbox{-funktionen} eingeordnet werden
+    \begin{equation*}
+        \begin{align*}
+            \mathcal{O}\left( \sum_{i=0}^{m-1} c \cdot \binom{S_i(h)}{2} \right) &= \mathcal{O}\left(c \cdot \underbrace{\sum_{i=0}^{m-1} \binom{S_i(h)}{2}}_{c_S(h) < n} \right) \\\nonumber
+            & = \mathcal{O}(c \cdot n)
+        \end{align*}
+    \end{equation*}
+
+    \newpage
+    \section*{Hashing Zusammenfassung}
+    Es sind $S \leq U, |S| =n$ gegeben.
+    Außerdem kann man eine $c$-universelle Hashfunktion $h: U \rightarrow \{ 0,1, \cdots, m \}$ universell samplen.
+    Perfektes Hashing zusammengefasst ist
+
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{L{2cm}lL{8cm}R{2cm}}
+            \\ [-2.5ex]
+            Primär-hashing & 1. & Finde $h:U \rightarrow \{ 0,1, \cdots, c \cdot n \}$, die auf $S$ maximal $n$ Kollisionen produziert. & $\mathcal{O}(c \cdot n)$-Zeit \\
+            \\ [0ex]
+            & 2.& Bestimme für $i= \{ 0, 1, \cdots c \cdot n \}$ das $B_i(h) = \{ x \in S\ |\ h(x)=i \}$. & \\
+            \\[0ex]
+            Sekundär-hashing & 3.& Für jedes $i=0, 1, \cdots, c \cdot n$ mit $|B_i(h)| > 1$ finde $h_i$ mit
+            $U \rightarrow \left[ 0,1, \cdots, \binom{S_i(h)}{2} \cdot c \right]$, sodass $h_i$ injektiv ist für $B_i(h)$.& $\mathcal{O}(c \cdot n)$-Zeit\\
+        \end{tabular}
+    \end{table}
+
+    \section*{Operationen auf einer gehashten Datenstruktur}
+    \subsection*{Zugriff auf ein $x \in U$}
+    Man hasht $x$ mit der Primärhashfunktion $h: h(x)=i$.
+    \begin{itemize}
+        \item Falls der errechnete Platz $\leq 1$ Elemente enthält ($B_i(h)\leq1$), ist der Zugriff fertig (Man gibt das Element zurück oder man gibt zurück, dass sich kein Element an diesem Platz befindet).
+        \item Sonst wendet man die entsprechende Sekundärhashfunktion $h_i$ auf $x$ an. Unter $h_i(x)$ ist sicher ein Hashtafeleintrag mit $\leq1$ Elementen.
+    \end{itemize}
+    $\Rightarrow$ Die Zugriffskosten sind in $\mathcal{O}(1)$.
+
+    \subsection*{Einfügen eines $x \in U$}
+    Falls ein \texttt{insert} die Anzahl an Kollisionen der Primär- oder Sekundärhashfunktion zu sehr erhöht, wird alles komplett neu gehasht (Neukonstruktion).
+    Das ist sehr teuer. Man kann jedoch zeigen, dass das bei universellen Hashfunktionen nicht allzu oft passiert (etwa einmal pro Verdopplung der Schlüsselmenge).
+
+    $\Rightarrow$ Die amortisierten Kosten pro \texttt{insert} sind in $\mathcal{O}(1)$.
+
+    \subsection*{Entfernen eines $x \in U$}
+    Falls ein \texttt{remove} den Platzverbrauch relativ zu $|S|$ zu groß werden lässt, wird ebenfalls alles komplett neu gehasht. Das passiert etwa einmal pro Halbierung der Schlüsselmenge.
+
+    $\Rightarrow$ Die amortisierten Kosten pro \texttt{remove} sind in $\mathcal{O}(1)$.
+
+    \newpage
+    \section*{Cuckoo-Hashing}
+    Cuckoo-Hashing ist eine einfache Alternative zu Zweistufigem perfekten Hashing. Gegeben sind eine Hashtafel der Größe $m$
+    sowie zwei Hashfunktionen $h_1,h_2$ aus der c-universellen Familie von Hashfunktionen $\mathcal{H}$.
+    Jeder Hashtafeleintrag hat Platz für genau ein Element.
+
+    \subsection*{Einfügen eines Elements - \texttt{insert}}
+    Man hasht ein Element $x$  mit $h_1$ und überprüft, ob der Platz in der Hashtafel frei ist.
+    Falls der Platz frei ist, fügt man $x$ ein und ist fertig.
+    Falls ein Element $y$ den Platz schon belegt ($h_i(y) = h_1(x)$), wird $y$ rausgeworfen und $x$ nimmt seinen Platz ein.
+    Das Element $y$ wird nun mittels $h_{3-i}(y)$ (also jeweils der anderen Hashfunktion) ein neuer Platz zugewiesen.
+    Falls der errechnete Platz frei ist, fügt man $y$ ein und ist fertig.
+    Falls ein Element $z$ den Platz schon belegt (es also gilt: $h_j(z) = h_{3-i}(y)$), wird $z$ rausgeworfen und $y$ nimmt seinen Platz ein.
+    Nun wird wieder versucht, mit $h_{3-j}(z)$ einen neuen Platz für das Element $z$ zu finden $\ldots$
+
+    $\Rightarrow$ Die amortisierten Kosten pro \texttt{insert} sind in $\mathcal{O}(1)$.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Problem:}} Das Einfügen kann lange Tauschsequenzen beziehungsweise Zyklen zur Folge haben.
+    Wenn das passiert, muss alles neu gehasht werden.
+    Falls $h_1,h_2$ aus dem Beutel $c$-universeller Hashfunktionen gesampelt und die Hashtafel hinreichend groß
+    gewählt wurde ($m > 2n$), ist die Wahrscheinlichkeit sehr gering, dass neu gehasht werden muss.
+
+    \subsection*{Entfernen eines Elements - \texttt{remove}}
+    Man entfernt die Elemente bei $h_1(x)$ und $h_2(x)$.
+    Falls $|S|$ im Vergleich zum aktuellen $m$ zu groß wird, muss neu gehasht werden.
+
+    $\Rightarrow$ Die amortisierten Kosten pro \texttt{remove} sind in $\mathcal{O}(1)$.
+
+    \subsection*{Lookup eines Elements - \texttt{lookup}}
+    Man schaut bei $h_1(x)$ und $h_2(x)$ nach.
+
+    $\Rightarrow$ Die Kosten pro \texttt{lookup} sind in $\mathcal{O}(1)$.
+
+    \newpage
+    \section*{Routenplanung in Straßengraphen}
+    Gegeben ist ein Graph $G(V, E, c)$, bei dem wie gehabt $V$ die Menge der Knoten und $E$ die Menge der Kanten darstellt.
+    Im Gegensatz zum herkömmlichen Graph kommt hier noch die Reisezeit $c$ hinzu.
+    Ein Straßengraph kann wie im Folgenden dargestellt werden
+
+    \begin{figure}[htb]
+        \centering
+        \begin{tikzpicture}[myn/.style={circle,very thick,draw,inner sep=0.25cm,outer sep=3pt, fill=anti-flashwhite!100}]
+            \node[myn] (a) at (0,2) {};
+            \node[myn] (b) at (3,0) {};
+            \node[myn] (c) at (3,4) {};
+            \node[myn] (d) at (6,0) {};
+            \node[myn] (e) at (6,4) {};
+
+            \draw[->, very thick] (a) -- (b) node[midway,sloped, below] {\SI{3}{\m}};
+            \draw[->, very thick] (b) -- (c) node[midway,sloped, right, rotate=270] {\SI{3}{\m}};
+
+            \drawbi{a}{c}{->,very thick}{\SI{5}{\m}}{<-,very thick}{\SI{3}{\m}}
+            \drawbi{b}{d}{->,very thick}{\SI{5}{\m}}{<-,very thick}{\SI{4}{\m}}
+            \drawbi{c}{e}{->,very thick}{\SI{1}{\m}}{<-,very thick}{\SI{2}{\m}}
+            \drawbi{d}{e}{->,very thick}{\SI{1}{\m}}{<-,very thick}{\SI{2}{\m}}
+        \end{tikzpicture}
+    \end{figure}
+
+    Eine Anfrage beinhaltet einen Startknoten $s$ und einen Targetknoten $t$ wobei $s,t \in V$.
+    Das Ziel ist der kürzeste/schnellste Weg von $s$ nach $t$.
+    Für dieses Problem gibt es verschiedene Algorithmen, das Standardverfahren wäre \textit{Dijkstra}.
+    Bei einem Straßengraphen von Deutschland (Größenordnung: $|V| \approx 20 \text{\,Millionen}, |E| \approx 40 \text{\,Millionen}$) dauert eine Anfrage etwa \SI{5}{\s},
+    wenn der Dijkstra-Algorithmus ordentlich implementiert wurde.
+
+    \vspace*{0.3cm}
+    Im Nachfolgenden ist skizzenhaft dargestellt, welche Ausdehnung ausgewählte Graphalgorithmen erreichen, die dieses Problem lösen können.
+    \begin{figure}[htb]
+        \centering
+        \begin{tikzpicture}[circ/.style={thick,circle,inner sep=0pt}]
+            \node[] (a) at (0,0) {$\bullet_{s}$};
+            \node[] (b) at (2,0) {$\bullet_{t}$};
+
+            \node[circ, minimum size=2cm, draw=red] at (a)  {};
+            \node[circ, minimum size=2cm, draw=red] at (b)  {};
+            \node[circ, minimum size=3.85cm, draw=blue] at (a)  {};
+            \draw[draw=green] (0.925,0.05) ellipse [x radius=1,y radius=0.5];
+
+            \node (legend) [draw,align=left] at (5.5, 0) {\tikz\draw[blue, fill=blue] (0,0) circle (.5ex); Dijkstra\\
+            \tikz\draw[green, fill=green] (0,-1) circle (.5ex); \text{A*} \\
+            \tikz\draw[red, fill=red] (0,-1) circle (.5ex); Bidirectional};
+        \end{tikzpicture}
+    \end{figure}
+
+    Google wird wohl keinen dieser Algorithmen verwenden, da sie alle viel zu teuer wären.
+
+    \subsection*{Suchalgorithmen in den letzten 15 Jahren für dieses Problem}
+    Eine Anfrage wie oben beschrieben soll in wenigen $\SI{}{\ms}, \SI{}{\micro\s}$ bzw. $\SI{}{\ns}$ beantwortet werden.
+    Das Ganze soll auch beweisbar sein.
+    Da Straßennetze sich nicht sehr häufig ändern, wird ein Vorverarbeitungsschritt durchgeführt,
+    der für den Straßengraphen in einigen Minuten Hilfsinformationen berechnet.
+    Anfragen können mit diesen Hilfsinformationen dann in $\SI{500}{\micro\s} - \SI{1}{\ms}$ beantwortet werden.
+
+\end{document}
