@@ -1,0 +1,429 @@
+\documentclass{scrartcl}% siehe <http://www.komascript.de>
+\input{../lectures-tex/configuration}
+
+\begin{document}
+    \headerline{Algorithmen und Berechenbarkeit}{Vorlesungsmitschrift}{Vorlesung 10}
+
+    \section*{Routenplanung in Straßengraphen}
+    Gegeben ist ein Graph $G(V, E, c)$, bei dem wie gehabt $V$ die Menge der Knoten und $E$ die Menge der Kanten darstellt.
+    Im Gegensatz zum herkömmlichen Graph kommt hier noch die Reisezeit $c$ hinzu.
+    Ein Straßengraph kann wie im Folgenden dargestellt werden
+
+    \begin{figure}[htb]
+        \centering
+        \begin{tikzpicture}[myn/.style={circle,very thick,draw,inner sep=0.25cm,outer sep=3pt, fill=anti-flashwhite!100}]
+            \node[myn] (a) at (0,2) {};
+            \node[myn] (b) at (3,0) {};
+            \node[myn] (c) at (3,4) {};
+            \node[myn] (d) at (6,0) {};
+            \node[myn] (e) at (6,4) {};
+
+            \draw[->, very thick] (a) -- (b) node[midway,sloped, below] {\SI{3}{\m}};
+            \draw[->, very thick] (b) -- (c) node[midway,sloped, right, rotate=270] {\SI{3}{\m}};
+
+            \drawbi{a}{c}{->,very thick}{\SI{5}{\m}}{<-,very thick}{\SI{3}{\m}}
+            \drawbi{b}{d}{->,very thick}{\SI{5}{\m}}{<-,very thick}{\SI{4}{\m}}
+            \drawbi{c}{e}{->,very thick}{\SI{1}{\m}}{<-,very thick}{\SI{2}{\m}}
+            \drawbi{d}{e}{->,very thick}{\SI{1}{\m}}{<-,very thick}{\SI{2}{\m}}
+        \end{tikzpicture}
+    \end{figure}
+
+    Eine Anfrage beinhaltet einen Startknoten $s$ und einen Targetknoten $t$ wobei $s,t \in V$.
+    Das Ziel ist der kürzeste/schnellste Pfad von $s$ nach $t$.
+    Für dieses Problem gibt es verschiedene Algorithmen, das Standardverfahren wäre \textit{Dijkstra}.
+    Bei einem Straßengraphen von Deutschland (Größenordnung: $|V| \approx 20 \text{\,Millionen}, |E| \approx 40 \text{\,Millionen}$) dauert eine Anfrage etwa \SI{5}{\s},
+    wenn der Dijkstra-Algorithmus ordentlich implementiert wurde.
+
+    \vspace*{0.3cm}
+    Im Nachfolgenden ist skizzenhaft dargestellt, welche Ausdehnung ausgewählte Graphalgorithmen erreichen, die dieses Problem lösen können.
+    \begin{figure}[htb]
+        \centering
+        \begin{tikzpicture}[circ/.style={thick,circle,inner sep=0pt}]
+            \node[] (a) at (0,0) {$\bullet_{s}$};
+            \node[] (b) at (2,0) {$\bullet_{t}$};
+
+            \node[circ, minimum size=2cm, draw=red] at (a)  {};
+            \node[circ, minimum size=2cm, draw=red] at (b)  {};
+            \node[circ, minimum size=3.85cm, draw=blue] at (a)  {};
+            \draw[draw=green] (0.925,0.05) ellipse [x radius=1,y radius=0.5];
+
+            \node (legend) [draw,align=left] at (5.5, 0) {\tikz\draw[blue, fill=blue] (0,0) circle (.5ex); Dijkstra\\
+            \tikz\draw[green, fill=green] (0,-1) circle (.5ex); \text{A*} \\
+            \tikz\draw[red, fill=red] (0,-1) circle (.5ex); Bidirectional};
+        \end{tikzpicture}
+    \end{figure}
+
+    \section*{Contraction Hierarchies}\label{sec:contractionHierarchies}
+    \subsection*{Anreiz}
+
+    Für einen relativ statischen Graphen (wie das Straßennetz) ist es nicht sinnvoll und vor allem ineffizent,
+    für jede Suchanfrage eines kürzesten Pfads einen Dijkstra-Algorithmus laufen zu lassen.
+    Daher möchte man einen Vorverarbeitungsschritt einfügen, der anfangs einige Minuten Zeit benötigt,
+    hinterher aber jede Anfrage enorm (um den Faktor $100.000$) beschleunigt.
+
+    Ein naiver Ansatz hierfür wäre, alle paarweisen kürzesten Distanzen vorzuberechnen.
+    Theoretisch wäre die Antwortszeit auf eine Anfrage damit sehr schnell, praktisch scheitert es aber daran,
+    die Menge der paarweise kürzesten Pfade im Speicher zu halten.
+    Für $n=20 \cdot 10^6$ Knoten ergäbe das etwa einen Platzverbrauch von $\approx 400 \cdot 10^{12}$.
+
+    \subsection*{Idee: Vorverarbeitung}\label{subsec:idee:Vorverarbeitung}
+    \begin{itemize}
+        \item Der Graph wird um songenannte \textit{Shortcuts} erweitert.
+        Das sind zusätzliche Kanten, die \textit{kürzeste Wege} repräsentieren.
+        \item Zusätzlich wird jedem Knoten ein \textit{Level} zugeordnet.
+    \end{itemize}
+
+    \subsection*{Idee: Anfrage}
+    Eine Anfrage vom Startknoten $s$ zum Targetknoten $t$ folgt folgendem Muster:
+    \begin{enumerate}
+        \item Man lässt den Dijkstra-Algorithmus von $s$ laufen und berücksichtigt nur Kanten, die zu höherleveligen Knoten führen.
+        \item Man lässt den Dijkstra-Algorithmus von $t$ laufen und berücksichtigt nur Kanten, die zu höherleveligen Knoten führen.
+        \item Nun betrachtet man alle Knoten, die sowohl von $s$ als auch von $t$ besucht wurden. Die
+        \textit{Kürzeste-Weg-Distanz} $d$ ist bestimmt durch das $v$, für das
+        \begin{equation*}
+            d_s(v) + d_t(v) = \text{minimal}
+        \end{equation*}
+    \end{enumerate}
+
+    \subsection*{Vorverarbeitung: Knotenkontraktion}
+    Die zentrale Operation der Contraction Hierarchies ist die Knotenkontraktion. Angenommen, ein kleiner Ausschnitt aus dem Straßengraphen hätte die folgende Struktur:
+    \begin{figure}[htb]
+        \centering
+        \begin{tikzpicture}[myn/.style={circle,very thick,draw,inner sep=0.25cm,outer sep=0pt, fill=anti-flashwhite!100}]
+            \node[myn] (a) at (4.5,3.5) {\textsf{a}};
+            \node[myn] (b) at (5,1) {\textsf{b}};
+            \node[myn] (c) at (3,-1) {\textsf{c}};
+            \node[myn] (u) at (0,4) {\textsf{u}};
+            \node[myn] (v) at (2,2) {\textsf{v}};
+            \node[myn] (w) at (0,0) {\textsf{w}};
+
+
+            \draw[-, very thick] (a) -- (v) node[midway, below] {12};
+            \draw[-, very thick] (b) -- (v) node[midway, below] {9};
+            \draw[-, very thick] (c) -- (v) node[midway,right] {1};
+            \draw[-, very thick] (w) -- (v) node[midway, above] {5};
+            \draw[-, very thick] (u) -- (v) node[midway, below] {6};
+        \end{tikzpicture}
+    \end{figure}
+
+    \newpage
+    Nun möchte man den Knoten $v$ entfernen, die Kanten zum Platz, an dem $v$ sich befand, aber erhalten.
+
+    \begin{figure}[htb]
+        \centering
+        \begin{tikzpicture}[myn/.style={circle,very thick,draw,inner sep=0.25cm,outer sep=0pt, fill=anti-flashwhite!100}]
+            \node[myn] (a) at (4.5,3.5) {\textsf{a}};
+            \node[myn] (b) at (5,1) {\textsf{b}};
+            \node[myn] (c) at (3,-1) {\textsf{c}};
+            \node[myn] (u) at (0,4) {\textsf{u}};
+            \coordinate  (v) at (2,2);
+            \node[myn] (w) at (0,0) {\textsf{w}};
+
+
+            \draw[-, very thick] (a) -- (v) node[midway, below] {12};
+            \draw[-, very thick] (b) -- (v) node[midway, below] {9};
+            \draw[-, very thick] (c) -- (v) node[midway,right] {1};
+            \draw[-, very thick] (w) -- (v) node[midway, above] {5};
+            \draw[-, very thick] (u) -- (v) node[midway, below] {6};
+        \end{tikzpicture}
+    \end{figure}
+
+    Um jetzt die Kürzeste-Weg-Distanz zwischen zwei Knoten zu erhalten,
+    muss der Pfad über \textit{ehemals $v$} gegangen werden.
+    Die Idee ist nun, dass zwischen jedem Nachbarknotenpaar von $v$ eine neue Kante mit den Kosten \textit{Weg über $v$} eingefügt wird.
+    Ausschnittsweise also
+
+    \begin{figure}[htb]
+        \centering
+        \begin{tikzpicture}[myn/.style={circle,very thick,draw,inner sep=0.25cm,outer sep=0pt, fill=anti-flashwhite!100}]
+            \node[myn] (a) at (4.5,3.5) {\textsf{a}};
+            \node[myn] (b) at (5,1) {\textsf{b}};
+            \node[myn] (c) at (3,-1) {\textsf{c}};
+            \node[myn] (u) at (0,4) {\textsf{u}};
+            \coordinate  (v) at (2,2);
+            \node[myn] (w) at (0,0) {\textsf{w}};
+
+
+            \draw[-, very thick] (a) -- (v) node[midway, below] {12};
+            \draw[-, very thick] (b) -- (v) node[midway, below] {9};
+            \draw[-, very thick] (c) -- (v) node[midway,right] {1};
+            \draw[-, very thick] (w) -- (v) node[midway, above] {5};
+            \draw[-, very thick] (u) -- (v) node[midway, below] {6};
+            \draw [dashed, blue, very thick] (u) -- (w) node[midway, left] {11};
+            \draw [dashed, blue, very thick] (u)  to [bend angle=45, bend left] node[midway, above] {18}(a) ;
+            \draw [dashed, blue, very thick] (w)  to [bend angle=45, bend right, out=-70,in=-110, distance=3cm] node[midway, below] {14}(b) ;
+        \end{tikzpicture}
+    \end{figure}
+
+    Nun kann aber der Fall auftreten, dass es schon einen Pfad zwischen einem Nachbarknotenpaar von $v$ gibt, der kürzer ist als der neu eingefügte Pfad über $v$.
+
+    \begin{figure}[htb]
+        \centering
+        \begin{tikzpicture}[myn/.style={circle,very thick,draw,inner sep=0.25cm,outer sep=0pt, fill=anti-flashwhite!100}]
+            \node[myn] (u) at (0,0.5) {\textsf{u}};
+            \node[myn] (a) at (4.5,0) {\textsf{a}};
+            \node (n) at (1.1,1.25) {\textcolor{red}{\(\not\)}};
+            \node (n) at (3.68,0.75) {\textcolor{red}{\(\not\)}};
+
+
+            \draw [dashed, blue, very thick] (u)  to [bend angle=45, bend left] node[midway, above] {18} node[midway, red]{\(\not\)}(a);
+            \draw[-, very thick, gray] (u) -- (a) node[midway, below] {14};
+
+        \end{tikzpicture}
+    \end{figure}
+
+    Diese falschen \textit{Shortcuts} werden daher nicht eingefügt.
+
+    \vspace*{0.3cm}
+    Das Verfahren lässt sich damit so zusammenfassen: \textbf{\textsf{Man fügt Shortcuts zwischen zwei Knoten $x$ und $y$ ein, genau dann wenn ein}} \textit{kürzester Weg} \textbf{\textsf{zwischen $x$ und $y$ existiert}}.
+
+    \newpage
+    \begin{lstlisting}[escapeinside={(;}{;)}]
+        counter = 0
+        while ((;$|V| > 1$;))
+            Wähle ein (;$v \in V$;) und kontrahiere es
+            Füge ein Shortcut zu (;$E$;) hinzu
+            level[(;$v$;)] = counter++
+
+        return level[] und alle kreierten Shortcuts
+    \end{lstlisting}
+
+    \subsection*{Vorverarbeitung: Korrektheit der Knotenkontraktion}
+    Man betrachtet einen kürzesten Pfad von $s$ nach $t$, der die Knoten $v_1, v_2, \cdots, v_k$ passiert.
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}{.9\textwidth}
+            \centering
+            \begin{tikzpicture}[thick, scale=0.8, myn/.style={circle,thick,draw,inner sep=0.1cm,outer sep=0pt, fill=anti-flashwhite!100}]
+                \node[myn] (v2) at (3,0.5) {$v_2$};
+                \node[myn, fill=amethyst] (t) at (13.5,1) {t};
+                \node[myn, fill=applegreen] (s) at (0,1.5) {s};
+                \node[myn] (v7) at (10.5,2) {$v_7$};
+                \node[myn] (v3) at (4.5,2.5) {$v_3$};
+                \node[myn] (v1) at (1.5,3) {$v_1$};
+                \node[myn] (v5) at (7.5,3.5) {$v_5$};
+                \node[myn] (v8) at (12,4) {$v_8$};
+                \node[myn] (v4) at (6,4.5) {$v_4$};
+                \node[myn] (v6) at (9,5) {$v_6$};
+
+                \draw[-, thick] (s) -- (v1) node[midway, above left] {1};
+                \draw[-, thick] (v1) -- (v2) node[midway, above right] {2};
+                \draw[-, thick] (v2) -- (v3) node[midway, above left] {3};
+                \draw[-, thick] (v3) -- (v4) node[midway, above left] {4};
+                \draw[-, thick] (v4) -- (v5) node[midway, above] {5};
+                \draw[-, thick] (v5) -- (v6) node[midway, above left] {4};
+                \draw[-, thick] (v6) -- (v7) node[midway, above right] {3};
+                \draw[-, thick] (v7) -- (v8) node[midway, above left ] {2};
+                \draw[-, thick] (v8) -- (t) node[midway, above right] {1};
+            \end{tikzpicture}
+        \end{subfigure}%
+        \begin{subfigure}{.1\textwidth}
+            \centering
+            \begin{tikzpicture}[thick, scale=0.8]
+                \coordinate  (start) at (0,0);
+                \coordinate  (end) at (0,5);
+                \draw[->, very thick] (start) -- (end) node[midway, right] {Level};
+            \end{tikzpicture}
+        \end{subfigure}
+    \end{figure}
+
+    Die Verarbeitungsreihenfolge der Knoten entspricht der Ordnung der Knotenlevel:
+    \begin{equation*}
+        v_2 \rightarrow t \rightarrow s \rightarrow v_7 \rightarrow v_3 \rightarrow v_1 \rightarrow v_5 \rightarrow v_8 \rightarrow v_4 \rightarrow v_6
+    \end{equation*}
+
+    Als Erstes wird also der Knoten $v_2$ kontrahiert. Das ergibt
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}{.9\textwidth}
+            \centering
+            \begin{tikzpicture}[thick, scale=0.8, myn/.style={circle,thick,draw,inner sep=0.1cm,outer sep=0pt, fill=anti-flashwhite!100}]
+                \node[myn] (v2) at (3,0.5) {$v_2$};
+                \node[myn, fill=amethyst] (t) at (13.5,1) {t};
+                \node[myn, fill=applegreen] (s) at (0,1.5) {s};
+                \node[myn] (v7) at (10.5,2) {$v_7$};
+                \node[myn] (v3) at (4.5,2.5) {$v_3$};
+                \node[myn] (v1) at (1.5,3) {$v_1$};
+                \node[myn] (v5) at (7.5,3.5) {$v_5$};
+                \node[myn] (v8) at (12,4) {$v_8$};
+                \node[myn] (v4) at (6,4.5) {$v_4$};
+                \node[myn] (v6) at (9,5) {$v_6$};
+
+                \draw[-, thick] (s) -- (v1) node[midway, above left] {1};
+                \draw[-, thick] (v1) -- (v2) node[midway, above right] {2};
+                \draw[-, thick] (v2) -- (v3) node[midway, above left] {3};
+                \draw[-, thick] (v3) -- (v4) node[midway, above left] {4};
+                \draw[-, thick] (v4) -- (v5) node[midway, above] {5};
+                \draw[-, thick] (v5) -- (v6) node[midway, above left] {4};
+                \draw[-, thick] (v6) -- (v7) node[midway, above right] {3};
+                \draw[-, thick] (v7) -- (v8) node[midway, above left ] {2};
+                \draw[-, thick] (v8) -- (t) node[midway, above right] {1};
+                \draw [dashed, red, very thick] (v1) -- (v3) node[midway, above] {5};
+                %                \draw[-, thick] (s) -- (v1);
+            \end{tikzpicture}
+        \end{subfigure}%
+        \begin{subfigure}{.1\textwidth}
+            \centering
+            \begin{tikzpicture}[thick, scale=0.8]
+                \coordinate  (start) at (0,0);
+                \coordinate  (end) at (0,5);
+                \draw[->, very thick] (start) -- (end) node[midway, right] {Level};
+            \end{tikzpicture}
+        \end{subfigure}
+    \end{figure}
+
+    Danach werden die Knoten $s$ und $t$ kontrahiert. Da beide Randknoten sind, ändert sich jedoch nichts.
+    Es folgt $v_7$,  $v_3$ usw.
+
+    \vspace*{0.3cm}
+    Am Ende ergibt das folgendes Bild:
+
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}{.9\textwidth}
+            \centering
+            \begin{tikzpicture}[thick, scale=0.8, myn/.style={circle,thick,draw,inner sep=0.1cm,outer sep=0pt, fill=anti-flashwhite!100}]
+                \node[myn] (v2) at (3,0.5) {$v_2$};
+                \node[myn, fill=amethyst] (t) at (13.5,1) {t};
+                \node[myn, fill=applegreen] (s) at (0,1.5) {s};
+                \node[myn] (v7) at (10.5,2) {$v_7$};
+                \node[myn] (v3) at (4.5,2.5) {$v_3$};
+                \node[myn] (v1) at (1.5,3) {$v_1$};
+                \node[myn] (v5) at (7.5,3.5) {$v_5$};
+                \node[myn] (v8) at (12,4) {$v_8$};
+                \node[myn] (v4) at (6,4.5) {$v_4$};
+                \node[myn] (v6) at (9,5) {$v_6$};
+
+                \draw[-, thick] (s) -- (v1) node[midway, above left] {1};
+                \draw[-, thick] (v1) -- (v2) node[midway, above right] {2};
+                \draw[-, thick] (v2) -- (v3) node[midway, above left] {3};
+                \draw[-, thick] (v3) -- (v4) node[midway, above left] {4};
+                \draw[-, thick] (v4) -- (v5) node[midway, above] {5};
+                \draw[-, thick] (v5) -- (v6) node[midway, above left] {4};
+                \draw[-, thick] (v6) -- (v7) node[midway, above right] {3};
+                \draw[-, thick] (v7) -- (v8) node[midway, above left ] {2};
+                \draw[-, thick] (v8) -- (t) node[midway, above right] {1};
+                \draw [dashed, red, thick] (v1) -- (v3) node[midway, above] {5};
+                \draw [dashed, red, thick] (v1) -- (v4) node[midway, above] {9};
+                \draw [dashed, red, thick] (v1) -- (v4) node[midway, above] {9};
+                \draw [dashed, red, thick] (v4) -- (v6) node[midway, above] {9};
+                \draw [dashed, red, thick] (v6) -- (v8) node[midway, above] {5};
+                %                \draw[-, thick] (s) -- (v1);
+            \end{tikzpicture}
+        \end{subfigure}%
+        \begin{subfigure}{.1\textwidth}
+            \centering
+            \begin{tikzpicture}[thick, scale=0.8]
+                \coordinate  (start) at (0,0);
+                \coordinate  (end) at (0,5);
+                \draw[->, very thick] (start) -- (end) node[midway, right] {Level};
+            \end{tikzpicture}
+        \end{subfigure}
+    \end{figure}
+    \proofend
+
+    \subsection*{Anmerkungen zur Kontraktionsreihenfolge}
+    Man möchte möglichst wenige Shortcuts neu einfügen.
+    Es gibt daher verschiedene Ansätze, die Anzahl der neu eingefügten Shortcuts durch die Kontraktionsreihenfolge zu beeinflussen.
+
+    \subsubsection*{Ansatz 1: Edge-Difference}
+    Man berechnet für jeden Knoten die sogenannte \textit{Edge Difference}:
+    \begin{equation*}
+        \underbrace{\text{Edge Difference}}_{\tikz\draw[orange, fill=orange] (0,0) circle (.5ex); \phantom{ }} = \text{Anzahl neu einzufügender Shortcuts} - \text{Anzahl wegfallender Kanten}
+    \end{equation*}
+
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}[thick, scale=1,
+        mynab/.style={circle,thick,draw,inner sep=2pt,outer sep=0pt, fill=anti-flashwhite!100, label=above:\small\textcolor{orange}{#1}\strut},
+        mynbe/.style={circle,thick,draw,inner sep=2pt,outer sep=0pt, fill=anti-flashwhite!100, label=below:\small\textcolor{orange}{#1}\strut},
+        mynal/.style={circle,thick,draw,inner sep=2pt,outer sep=0pt, fill=anti-flashwhite!100, label=above left:\small\textcolor{orange}{#1}\strut},
+        ]
+            \node[mynab=-1] (v1) at (-4,-0.5) {};
+            \node[mynab=-1] (v2) at (-2,0.5) {};
+            \node[mynab=0] (v3) at (0,-0.5) {};
+            \node[mynab=-1] (v4) at (2,0.5) {};
+            \node[mynab=-1] (v5) at (4,-0.5) {};
+
+            \node[mynal=2] (v6) at (0,-2.5) {};
+            \node[mynab=-1] (v7) at (-2,-3) {};
+            \node[mynab=-1] (v8) at (2,-3) {};
+
+            \node[mynbe=-1] (v9) at (0,-5) {};
+
+            \draw[-,thick] (v1) -- (v2) node[midway, above] {\tiny1};
+            \draw[-,thick] (v2) -- (v3) node[midway, above] {\tiny1};
+            \draw[-,thick] (v3) -- (v4) node[midway, above] {\tiny1};
+            \draw[-,thick] (v4) -- (v5) node[midway, above] {\tiny1};
+
+            \draw[-,thick] (v3) -- (v6) node[midway, left] {\tiny1};
+            \draw[-,thick] (v6) -- (v7) node[midway, above] {\tiny1};
+            \draw[-,thick] (v6) -- (v8) node[midway, above] {\tiny1};
+
+            \draw[-,thick] (v6) -- (v9) node[midway, left] {\tiny1};
+
+        \end{tikzpicture}
+    \end{figure}%
+
+    Nun kontrahiert man immer einen Knoten mit der minimalen \textit{Edge Difference}.
+
+    \subsubsection*{Ansatz 2: Jeden zweiten Knoten kontrahieren}
+
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}[thick, scale=1, myn/.style={circle,thick,draw,inner sep=2pt,outer sep=0pt, fill=anti-flashwhite!100}, ]
+            \node[myn] (v0) at (-6,0) {};
+            \node[myn] (v1) at (-4,0) {};
+            \node[myn] (v2) at (-2,0) {};
+            \node[myn] (v3) at (0,-0) {};
+            \node[myn] (v4) at (2,0) {};
+            \node[myn] (v5) at (4,0) {};
+            \node[myn] (v6) at (6,0) {};
+
+            \draw[-,thick] (v0) -- (v1) node[midway, above] {\tiny1};
+            \draw[-,thick] (v1) -- (v2) node[midway, above] {\tiny1};
+            \draw[-,thick] (v2) -- (v3) node[midway, above] {\tiny1};
+            \draw[-,thick] (v3) -- (v4) node[midway, above] {\tiny1};
+            \draw[-,thick] (v4) -- (v5) node[midway, above] {\tiny1};
+            \draw[-,thick] (v5) -- (v6) node[midway, above] {\tiny1};
+
+            \draw [-,anchor=center, very thick, draw=red](v1) ellipse (0.3cm and 0.6cm);
+            \draw [-,anchor=center, very thick, draw=red](v3) ellipse (0.3cm and 0.6cm);
+            \draw [-,anchor=center, very thick, draw=red](v5) ellipse (0.3cm and 0.6cm);
+
+        \end{tikzpicture}
+    \end{figure}
+
+    \subsubsection*{Ansatz 3: Zufällige Reihenfolge}
+    Man kann die Knoten auch in zufälliger Reihenfolge kontrahieren.
+
+    \subsubsection*{Ansatz 4: In der Praxis sehr gut}
+    Man erlaubt Knoten, die nicht benachbart sind, dasselbe Level.
+    Eine \textit{Kontraktionsrunde} läuft dann nach folgendem Schema ab:
+
+    \begin{enumerate}
+        \item Man berechnet eine unabhängige Menge $I$ (also eine Teilmenge von Knoten, die nicht zueinander benachbart sind) von $G$.
+        \item Nun berechnet man wieder die \textit{Edge Differences} für alle $v \in I$.
+        \item Man kontrahiert alle $v \in I$ mit den $75\, \%$ kleinsten \textit{Edge Differences}.
+        \item Alle Knoten in dieser Runde erhalten dasselbe Level.
+    \end{enumerate}
+
+    \subsection*{Anmerkungenen und Notizen}\label{subsec:notizenZurContractionHierarchie}
+    \begin{itemize}
+        \item Für Deutschland benötigt die Vorverarbeitung etwa $4$ Minuten.
+        \item Am Anfang laufen viele kleine Dijkstra-Algorithmen, später wenige längere.
+        \item Die Kontraktionsstrategien eliminieren in aller Regel zuerst kleine Dörfer und Dorfstraßen,
+        danach Landstraßen, Bundesstraßen und erst zum Schluss Autobahnen. Die Strategie liefert also eine Art \textbf{\textsf{Level of Detail}} gleich mit.
+        \item Der ermittelte kürzeste Pfad enthält Shortcuts, die sehr einfach \textit{entpackt} werden können.
+        \item Anfragen benötigen nach der Vorverarbeitung etwa \SI{5}{\ms}. Diese Zeit kann durch diverse Tricks auf $<$ \SI{1}{\ms} reduziert werden.
+        \item Es gibt noch einige andere sehr schnelle Algorithmen für das Ermitteln des kürzesten Pfads in einem Graphen mit Vorverarbeitung:
+        \begin{itemize}
+            \item \textsf{Transit Nodes} $\quad$ benötigt etwa \SI{10}{\micro\s} für eine Anfrage
+            \item \textsf{Hublabels} $\quad$ benötigt etwa \SI{10}{\micro\s} für eine Anfrage
+            \item \textsf{CAP} $\quad$ benötigt etwa \SI{1}{\ms} für eine Anfrage
+        \end{itemize}
+        \item Für den Öffentlichen Verkehr gibt es spezielle Anforderungen. Hier arbeitet man mit Transit Patterns.
+    \end{itemize}
+
+
+\end{document}

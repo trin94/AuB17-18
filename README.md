@@ -16,7 +16,7 @@ Mitschriften zur Vorlesung *AuB17/18* der Uni Stuttgart.
 |07             | 14.11.2017   |[klick](lectures-pdf/lecture07.pdf)    |
 |08             | 21.11.2017   |[klick](lectures-pdf/lecture08.pdf)    |
 |09             | 24.11.2017   |[klick](lectures-pdf/lecture09.pdf)    |
-|10             |              |                                       |
+|10             | 28.11.2017   |[klick](lectures-pdf/lecture10.pdf)    |
 </td><td>
 
 |Vorlesung      | Datum der VL |PDF                                    |
