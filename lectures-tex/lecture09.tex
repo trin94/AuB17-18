@@ -233,7 +233,7 @@
     \end{table}
 
     \section*{Operationen auf einer gehashten Datenstruktur}
-    \subsection*{Zugriff auf ein $x \in U$}
+    \subsection*{Lookup eines Elements - \texttt{lookup}}
     Man hasht $x$ mit der Primärhashfunktion $h: h(x)=i$.
     \begin{itemize}
         \item Falls der errechnete Platz $\leq 1$ Elemente enthält ($B_i(h)\leq1$), ist der Zugriff fertig (Man gibt das Element zurück oder man gibt zurück, dass sich kein Element an diesem Platz befindet).
@@ -241,13 +241,13 @@
     \end{itemize}
     $\Rightarrow$ Die Zugriffskosten sind in $\mathcal{O}(1)$.
 
-    \subsection*{Einfügen eines $x \in U$}
+    \subsection*{Einfügen eines Elements - \texttt{insert}}
     Falls ein \texttt{insert} die Anzahl an Kollisionen der Primär- oder Sekundärhashfunktion zu sehr erhöht, wird alles komplett neu gehasht (Neukonstruktion).
     Das ist sehr teuer. Man kann jedoch zeigen, dass das bei universellen Hashfunktionen nicht allzu oft passiert (etwa einmal pro Verdopplung der Schlüsselmenge).
 
     $\Rightarrow$ Die amortisierten Kosten pro \texttt{insert} sind in $\mathcal{O}(1)$.
 
-    \subsection*{Entfernen eines $x \in U$}
+    \subsection*{Entfernen eines Elements - \texttt{remove}}
     Falls ein \texttt{remove} den Platzverbrauch relativ zu $|S|$ zu groß werden lässt, wird ebenfalls alles komplett neu gehasht. Das passiert etwa einmal pro Halbierung der Schlüsselmenge.
 
     $\Rightarrow$ Die amortisierten Kosten pro \texttt{remove} sind in $\mathcal{O}(1)$.
@@ -285,64 +285,5 @@
     Man schaut bei $h_1(x)$ und $h_2(x)$ nach.
 
     $\Rightarrow$ Die Kosten pro \texttt{lookup} sind in $\mathcal{O}(1)$.
-
-    \newpage
-    \section*{Routenplanung in Straßengraphen}
-    Gegeben ist ein Graph $G(V, E, c)$, bei dem wie gehabt $V$ die Menge der Knoten und $E$ die Menge der Kanten darstellt.
-    Im Gegensatz zum herkömmlichen Graph kommt hier noch die Reisezeit $c$ hinzu.
-    Ein Straßengraph kann wie im Folgenden dargestellt werden
-
-    \begin{figure}[htb]
-        \centering
-        \begin{tikzpicture}[myn/.style={circle,very thick,draw,inner sep=0.25cm,outer sep=3pt, fill=anti-flashwhite!100}]
-            \node[myn] (a) at (0,2) {};
-            \node[myn] (b) at (3,0) {};
-            \node[myn] (c) at (3,4) {};
-            \node[myn] (d) at (6,0) {};
-            \node[myn] (e) at (6,4) {};
-
-            \draw[->, very thick] (a) -- (b) node[midway,sloped, below] {\SI{3}{\m}};
-            \draw[->, very thick] (b) -- (c) node[midway,sloped, right, rotate=270] {\SI{3}{\m}};
-
-            \drawbi{a}{c}{->,very thick}{\SI{5}{\m}}{<-,very thick}{\SI{3}{\m}}
-            \drawbi{b}{d}{->,very thick}{\SI{5}{\m}}{<-,very thick}{\SI{4}{\m}}
-            \drawbi{c}{e}{->,very thick}{\SI{1}{\m}}{<-,very thick}{\SI{2}{\m}}
-            \drawbi{d}{e}{->,very thick}{\SI{1}{\m}}{<-,very thick}{\SI{2}{\m}}
-        \end{tikzpicture}
-    \end{figure}
-
-    Eine Anfrage beinhaltet einen Startknoten $s$ und einen Targetknoten $t$ wobei $s,t \in V$.
-    Das Ziel ist der kürzeste/schnellste Weg von $s$ nach $t$.
-    Für dieses Problem gibt es verschiedene Algorithmen, das Standardverfahren wäre \textit{Dijkstra}.
-    Bei einem Straßengraphen von Deutschland (Größenordnung: $|V| \approx 20 \text{\,Millionen}, |E| \approx 40 \text{\,Millionen}$) dauert eine Anfrage etwa \SI{5}{\s},
-    wenn der Dijkstra-Algorithmus ordentlich implementiert wurde.
-
-    \vspace*{0.3cm}
-    Im Nachfolgenden ist skizzenhaft dargestellt, welche Ausdehnung ausgewählte Graphalgorithmen erreichen, die dieses Problem lösen können.
-    \begin{figure}[htb]
-        \centering
-        \begin{tikzpicture}[circ/.style={thick,circle,inner sep=0pt}]
-            \node[] (a) at (0,0) {$\bullet_{s}$};
-            \node[] (b) at (2,0) {$\bullet_{t}$};
-
-            \node[circ, minimum size=2cm, draw=red] at (a)  {};
-            \node[circ, minimum size=2cm, draw=red] at (b)  {};
-            \node[circ, minimum size=3.85cm, draw=blue] at (a)  {};
-            \draw[draw=green] (0.925,0.05) ellipse [x radius=1,y radius=0.5];
-
-            \node (legend) [draw,align=left] at (5.5, 0) {\tikz\draw[blue, fill=blue] (0,0) circle (.5ex); Dijkstra\\
-            \tikz\draw[green, fill=green] (0,-1) circle (.5ex); \text{A*} \\
-            \tikz\draw[red, fill=red] (0,-1) circle (.5ex); Bidirectional};
-        \end{tikzpicture}
-    \end{figure}
-
-    Google wird wohl keinen dieser Algorithmen verwenden, da sie alle viel zu teuer wären.
-
-    \subsection*{Suchalgorithmen in den letzten 15 Jahren für dieses Problem}
-    Eine Anfrage wie oben beschrieben soll in wenigen $\SI{}{\ms}, \SI{}{\micro\s}$ bzw. $\SI{}{\ns}$ beantwortet werden.
-    Das Ganze soll auch beweisbar sein.
-    Da Straßennetze sich nicht sehr häufig ändern, wird ein Vorverarbeitungsschritt durchgeführt,
-    der für den Straßengraphen in einigen Minuten Hilfsinformationen berechnet.
-    Anfragen können mit diesen Hilfsinformationen dann in $\SI{500}{\micro\s} - \SI{1}{\ms}$ beantwortet werden.
 
 \end{document}
