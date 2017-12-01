@@ -26,7 +26,9 @@
 \usepackage{stackengine}
 \usepackage[norndcorners,customcolors,shade]{hf-tikz}
 \usepackage{siunitx}
-
+\usepackage{algorithm}
+\usepackage[]{algorithmic}
+% \usepackage[noend]{algorithmic}
 
 % pgf plotsets -------------------------------------------------------------------------------------------- pgf plotsets
 \pgfplotsset{ticks=none}
@@ -48,6 +50,15 @@ locale = DE ,
 per-mode = symbol
 }
 
+\algsetup{indent=2em}
+\newlength\myindent
+\setlength\myindent{2em}
+\newcommand\bindent{%
+    \begingroup
+    \setlength{\itemindent}{\myindent}
+    \addtolength{\algorithmicindent}{\myindent}
+}
+\newcommand\eindent{\endgroup}
 
 % commands ---------------------------------------------------------------------------------------------------- commands
 \setlength{\parindent}{0pt}
@@ -89,6 +100,7 @@ per-mode = symbol
 \definecolor{dodgerblue}{rgb}{0.12, 0.56, 1.0}
 \definecolor{icterine}{rgb}{0.99, 0.97, 0.37}
 \definecolor{tan}{rgb}{0.82, 0.71, 0.55}
+\definecolor{upforestgreen}{rgb}{0.0, 0.27, 0.13}
 
 % listing colors
 \definecolor{listingBlue}{rgb}{0.13,0.13,1}
@@ -119,6 +131,23 @@ stringstyle=\color{listingRed},
 basicstyle=\ttfamily,
 moredelim=[il][\textcolor{listingGrey}]{$$},
 moredelim=[is][\textcolor{listingGrey}]{\%\%}{\%\%}
+}
+\lstdefinelanguage{Kotlin}{
+  keywords={package, as, typealias, this, super, val, var, fun, for, null, true, false, is, in, throw, return, break, continue, object, if, try, else, while, do, when, yield, typeof, yield, typeof, class, interface, enum, object, override, public, private, get, set, import, abstract, },
+  keywordstyle=\color{listingBlue}\bfseries,
+  ndkeywords={@Deprecated, Iterable, Int, Integer, Float, Double, String, Runnable, dynamic},
+  ndkeywordstyle=\color{amethyst}\bfseries,
+  emph={println, return@, forEach,},
+  emphstyle={\color{orange}},
+  identifierstyle=\color{black},
+  sensitive=true,
+  commentstyle=\color{listingGreen}\ttfamily,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  stringstyle=\color{listingRed}\ttfamily,
+  morestring=[b]",
+  morestring=[s]{"""*}{*"""},
+  numbers=left,
 }
 
 % misc ------------------------------------------------------------------------------------------------------------ misc

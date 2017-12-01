@@ -68,16 +68,26 @@
     \end{equation*}
     Jede Turmetage wird mit dem nächsten Element des nächsten Turmes verbunden, der mindestens genauso groß ist.
 
-    \begin{lstlisting}[escapeinside={(;}{;)}]
-        Search((;$x$;)):
-            (;$v$;) := (;$-\infty$;)-Turm
-            (;$h$;) := (;$v$;).height
 
-            while((;$h$;) > (;$0$;) ):
-                while((;$x \leq v$;).forward[(;$h$;)] -> key):
-                    (;$v$;) <- (;$v$;).forward[(;$h$;)]
-            return (;$v$;)
-    \end{lstlisting}
+    \begin{algorithm}
+        \begin{algorithmic}
+            \STATE Search($x$)
+            \bindent
+            \STATE $v\gets -\infty\text{-Turm}$
+            \STATE $h\gets v.\text{height}$
+            \STATE
+            \WHILE{ $h > 0$}
+                \WHILE {$x \leq v.\text{forward}[h] \rightarrow \text{key}$}
+                    \STATE $v\gets v.\text{forward}[h]$
+                \ENDWHILE
+                \STATE $h\gets h-1$
+            \ENDWHILE
+            \STATE
+            \RETURN $v$
+            \eindent
+
+        \end{algorithmic}
+    \end{algorithm}
 
     \subsection*{Beispiel: Finde $44$}\label{subsec:beispiel:Finde}
     \begin{figure}[H]
@@ -171,6 +181,16 @@
             \draw [arrow] (n8_3) to (n9_3);
             \draw [arrow] (n8_2) to (n9_2);
             \draw [arrow] (n8_1) to (n9_1);
+
+            \draw [arrow] (n1_0) to (n2_0);
+            \draw [arrow] (n2_0) to (n3_0);
+            \draw [arrow] (n3_0) to (n4_0);
+            \draw [arrow] (n4_0) to (n5_0);
+            \draw [arrow] (n5_0) to (n6_0);
+            \draw [arrow] (n6_0) to (n7_0);
+            \draw [arrow] (n7_0) to (n8_0);
+            \draw [arrow] (n8_0) to (n9_0);
+
         \end{tikzpicture}
     \end{figure}
 
@@ -186,17 +206,24 @@
     \end{equation*}
 
     Besser wäre jedoch, eine Routine zu bauen, die dieselben Zellen besucht wie die Suche, jedoch einfacher zu analysieren ist.
-    \begin{lstlisting}[escapeinside={(;}{;)}]
-        (;$v$;) := (;$x$;)
-        (;$h$;) := (;$0$;)
 
-        while((;$v \neq -\infty $;) && (;$h \neq h_{\max}$;)):
-            if((;$v$;).height (;$> h$;)):
-                (;$h=h+1$;)
-            else:
-                (;$v=v$;).backward[(;$h$;)]
-        return (;$v$;)
-    \end{lstlisting}
+    \begin{algorithm}
+        \begin{algorithmic}
+            \STATE $v\gets x$
+            \STATE $h\gets 0$
+            \STATE
+            \WHILE{ $ v \neq-\infty$ \AND  $h \neq h_{max}$}
+                \IF{$v.\text{height} > h$}
+                    \STATE {$h=h+1$}
+                \ELSE
+                    \STATE{$v=v$.\text{backward[$h$]}}
+                \ENDIF
+            \ENDWHILE
+            \STATE
+            \RETURN $v$
+
+        \end{algorithmic}
+    \end{algorithm}
 
     Man muss sich also den \textbf{\textsf{Search($x$)}}-Algorithmus rückwärts vorstellen.
     Damit lässt sich beobachten
