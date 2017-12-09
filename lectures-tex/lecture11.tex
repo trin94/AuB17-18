@@ -1,0 +1,274 @@
+\documentclass{scrartcl}% siehe <http://www.komascript.de>
+\input{../lectures-tex/configuration}
+
+\definecolor{cadmiumred}{rgb}{0.89, 0.0, 0.13}
+\definecolor{cadmiumorange}{rgb}{0.93, 0.53, 0.18}
+\definecolor{cadmiumyellow}{rgb}{1.0, 0.96, 0.0}
+\definecolor{cadmiumgreen}{rgb}{0.0, 0.42, 0.24}
+\definecolor{blizzardblue}{rgb}{0.67, 0.9, 0.93}
+\definecolor{persianblue}{rgb}{0.11, 0.22, 0.73}
+\definecolor{darkviolet}{rgb}{0.58, 0.0, 0.83}
+
+\begin{document}
+    \headerline{Algorithmen und Berechenbarkeit}{Vorlesungsmitschrift}{Vorlesung 11}
+
+    \section*{Berechenbarkeit}\label{sec:berechenbarkeit}
+    Zentrale Fragen dieses zweiten großen Kapitels sind zum Beispiel:
+    \textit{Was kann man berechnen?}
+    \textit{Was sind geeignete Rechenmodelle?} oder
+    \textit{Was kann man effizient berechnen?}
+
+    \subsection*{Grundlagen: Notation}\label{subsec:grundlagen:Notation}
+    Für die Fragestellungen der Berechenbarkeit ist meist ein endliches Alphabet gegeben,
+    dass man als $\Sigma_i$ bezeichnet, also zum Beispiel $\Sigma = \{0,1\}$.
+    Die Menge aller Wörter der Länge $k$ über $\Sigma$ werden notiert als $\Sigma^k$. Für $\Sigma=\{0,1\},k=3$ also
+    \begin{equation*}
+        \{0,1\}^3 = \{ 000, 001, 010, 011, 100, 101, 110, 111 \}
+    \end{equation*}
+
+    \subsection*{Grundlagen: Probleme}\label{subsec:grundlagen:probleme}
+    \textit{Probleme} sind \textit{Aufgaben/Fragestellungen}, die mit einem Rechner gelöst/berechnet werden sollen.
+    Im Folgenden werden einige Probleme beispielhaft aufgezeigt.
+
+    \subsubsection*{Problem 1}
+    \begin{itemize}
+        \item [$\rightarrow$] Eingabe: eine binär kodierte Zahl $q \in \mathbb{N}$ für die außerdem gilt $q \geq 2$
+        \item [$\rightarrow$] Ausgabe: ein binär kodierter Primfaktor dieser Zahl
+        \item Beispiel: Für die Eingabe der Binärzahl \texttt{110} soll die Ausgabe also \texttt{011} bzw. \texttt{010} lauten.
+        \item [$\Rightarrow$]{
+        Dieses Problem entspricht der Relation
+        \begin{equation*}
+            \begin{align*}
+                R & \subseteq \{0,1\}^*\times\{0,1\}^q \\
+                R & = \{ (x,y) \in \{0,1\}^* \times \{0,1\}^* \ | \ & x&=\text{bin}(q)  \\
+                && y &=\text{bin}(p) \\
+                && q,p& \in \mathbb{N} \\
+                && q& \geq 2 \\
+                && p& \text{ teilt } q &\} \\
+            \end{align*}
+        \end{equation*}
+
+        }
+    \end{itemize}
+
+    \subsubsection*{Problem 2}
+    \begin{itemize}
+        \item [$\rightarrow$] Eingabe: zwei binär kodierte Zahlen $a,b \in \mathbb{N}$
+        \item [$\rightarrow$] Ausgabe: eine binär kodierte Zahl $c \in \mathbb{N}$ für die gilt: $c=a \cdot b$
+    \end{itemize}
+    Dieses Problem entspricht der Funktion
+    \begin{equation*}
+        \displaystyle f: \Sigma^* \rightarrow \Sigma^*
+    \end{equation*}
+    Binärzahlkonkatenationen sind unschön, da sie je nach Leseart unterschiedliche Werte annehmen können.
+    Die Zahl \texttt{1001011} kann zum Beispiel so verstanden werden:
+    $\underbrace{\texttt{100}}_{4}\underbrace{\texttt{1011}}_{11}$ oder $\underbrace{\texttt{1001}}_{9}\underbrace{\texttt{011}}_{3}$ ...
+    Zur Vereinfachung wird deshalb das Alphabet um ein Trennsymbol \# erweitert: $\Sigma = \{0,1,\#\}$.
+    Eine binär kodierte Eingabe ist dann: bin$(a)\#\text{bin}(b)$ und die ganze Aussage
+    \begin{equation*}
+        f(\text{bin}(a)\#\text{bin}(b)) = \text{bin}(c) \text{ mit } c=a\cdot b
+    \end{equation*}
+
+    \subsubsection*{Problem 3}
+    \textbf{\textsf{Graphkodierungen:}} Gegeben ist ein Graph $G(V,E)$ mit $|V| = n$.
+    Dieser Graph könnte als bin$(n)\#<n^2$ kodiert und seine und Adjazenzmatrix folgendermaßen aussehen:
+    \begin{table}[H]
+        \centering
+        \small
+        \begin{tabular}{r|ccccc}
+            & \textbf{\textsf{0}} & \textbf{\textsf{1}} & \textbf{\textsf{2}} & \textbf{\textsf{3}} & \textbf{\textsf{4}} \\
+            \hline \\ [-2ex]
+            \textbf{\textsf{0}} & & 1 & & &  \\
+            \textbf{\textsf{1}} & 1 & & & & 1 \\
+            \textbf{\textsf{2}} & & & & &  \\
+            \textbf{\textsf{3}} & & & & 1 &  \\
+            \textbf{\textsf{4}} & & 1 & & &
+        \end{tabular}
+    \end{table}
+
+    Jeder Graph hat eine solch eindeutige Kodierung aber nicht jeder String über $\{\texttt{0},\texttt{1},\#\}$ ist eine gültige Kodierung für einen Graphen.
+    Sei $\mathcal{G}$ die Menge aller Graphen, $\mathcal{G}_Z \subseteq \mathcal{G}$ die Menge aller zusammenhängender Graphen und code$(G)$ für $G \in \mathcal{G}$ die Kodierung eines Graphen $G$.
+
+    \begin{itemize}
+        \item [$\rightarrow$] Eingabe: Kodierung eines ungerichteten Graphen $G(V,E)$
+        \item [$\rightarrow$] Ausgabe: \texttt{1} falls zusammenhängend, \texttt{0} sonst
+    \end{itemize}
+
+    Die diesem Problem entsprechende Sprache kann dargestellt werden als
+    \begin{equation*}
+        L = \{ w \in \{\texttt{0}, \texttt{1},\#\}^* \ |\ \exists G(V,E) \in \mathcal{G}_Z \text{ mit } w=\text{code}(G) \}
+    \end{equation*}
+
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}{.5\textwidth}
+            \centering
+            \begin{tikzpicture}[thick]
+                \node[node] (n1) at (0,0)  [circle,draw] {0};
+                \node[node] (n2) at (2,1)  [circle,draw] {1};
+                \node[node] (n3) at (3,-0.5) [circle,draw] {2};
+                \node[node] (n4) at (5,1 ) [circle,draw] {3};
+
+                \foreach \from/\to in {n1/n2,n2/n4,n2/n3,n3/n4}
+                \draw[very thick] (\from) -- (\to);
+            \end{tikzpicture}
+        \end{subfigure}%
+        \begin{subfigure}{.5\textwidth}
+            \begin{table}[H]
+                \centering
+                \small
+                \begin{tabular}{r|ccccc}
+                    & \textbf{\textsf{0}} & \textbf{\textsf{1}} & \textbf{\textsf{2}} & \textbf{\textsf{3}} \\
+                    \hline \\ [-2ex]
+                    \textbf{\textsf{0}} & 0 & 1 & 0 & 0 \\
+                    \textbf{\textsf{1}} & 1 & 0 & 1 & 1 \\
+                    \textbf{\textsf{2}} & 0 & 1 & 0 & 1 \\
+                    \textbf{\textsf{3}} & 0 & 1 & 1 & 0
+                \end{tabular}
+            \end{table}
+            code$(G)$ = \texttt{100}\#\texttt{0100101101010110}
+        \end{subfigure}
+    \end{figure}
+
+    Die Sprache $L$ enthält also alle Eingaben, die einen zusammenhängenden Graphen kodieren.
+
+    \vspace*{0.3cm}
+    Das Komplement von L ist definiert als $I:= \Sigma^* \textbackslash L$ und enthält alle Eingaben,
+    die der Kodierung eines nicht zusammenhängenden Graphen entsprechen aber auch alle Eingaben,
+    die gar keiner Kodierung eines Graphen entsprechen.
+
+    \newpage
+    \section*{Die Turingmaschine (TM)}\label{sec:dieTuringmaschinetm}
+    Eine TM arbeitet auf einem beidseitig unendlichen Speicherband, das aus Zellen besteht:
+
+    \begin{figure}[htb]
+        \centering
+        \begin{tabular}{C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}}
+            \hline
+            $\cdots$ & \texttt{B} & \texttt{B} & \texttt{B} & \texttt{0} & \texttt{1} & \texttt{1} & \texttt{1} & \texttt{1} & \texttt{0} & \texttt{1} & \texttt{B} & \texttt{B} & $\cdots$\\
+            \hline
+        \end{tabular}
+    \end{figure}
+
+    Jede Zelle enthält ein Element des Bandalphabets $\Gamma$, zum Beispiel $\{\texttt{0},\texttt{1}, \texttt{B}\}$.
+    Des Weiteren hat die TM einen Schreib-Lese-Kopf $(SLK)$, der über das Band wandern,
+    und jeweils den Inhalt der Zelle, über der er steht, lesen und schreiben kann.
+    Zusätzlich besitzt die TM eine Zustandsmenge $Q$ und zu jedem Zeitpunkt befindet sich die TM in einem $q \in Q$.
+
+    \vspace*{0.3cm}
+    Um mit der TM arbeiten zu können, müssen noch einige Regeln eingeführt werden:
+    \begin{itemize}
+        \item Am Anfang einer Berechnung befindet sich die TM im Anfangs-/Startzustand $q_0 \in Q$.
+        \item Auf dem Band steht die Eingabe von links nach rechts,
+        alle anderen Zellen des Bandes enthalten \texttt{B}'s.
+        \item Der SLK steht auf dem ersten Zeichen der Eingabe
+        \item Das Eingabealphabet ist definiert als $\Sigma \subseteq \Gamma \textbackslash \{\texttt{B}\}$
+        \item Die Eingabeverarbeitung der TM ist durch eine Übergangsrelation definiert:
+        \begin{equation*}
+            \begin{align}
+                \delta & :(
+                \colorbox{green!30}{$Q \textbackslash \{ \bar{q} \}$} \times
+                \colorbox{blue!30}{$\Gamma$} \times
+                \colorbox{red!30}{$Q$} \times
+                \colorbox{upforestgreen!30}{$\Gamma$} \times
+                \colorbox{amethyst!30}{$\{L,R,N\}$}) \\
+                \colorbox{green!30}{$Q \textbackslash \{ \bar{q} \}$} & \rightarrow \text{aktueller Zustand} \\
+                \colorbox{blue!30}{$\Gamma$} & \rightarrow \text{aktuelles Zeichen} \\
+                \colorbox{red!30}{$Q$} & \rightarrow \text{neuer Zustand} \\
+                \colorbox{upforestgreen!30}{$\Gamma$} & \rightarrow \text{neues Zeichen (zu schreiben)} \\
+                \colorbox{amethyst!30}{$\{L,R,N\}$} & \rightarrow \text{Kopfbewegung} \\
+            \end{align}
+        \end{equation*}
+        \item [] Falls für den aktuellen Zustand und dem aktuellen Zeichen nur eine Aktion möglich ist,
+        spricht man von einer \textit{Übergangsfunktion}:
+        \begin{equation*}
+            \delta : (Q \textbackslash \{ \bar{q} \} \times \Gamma) \rightarrow Q \times \Gamma \times \{ R,L,N\}
+        \end{equation*}
+        \item [] Für $(q,a,q',a',d) \in \delta$ bzw. $\delta (q,a) = (q', a', d)$ mit $d \in \{R,L,N\}$
+        kann die Übergangsfunktion also gelesen werden als: Wenn sich die TM im Zustand $q$ befindet und ein $a$ unter dem SLK einließt,
+        schreibt sie ein $a'$ an diese Stelle, bewegt den SLK nach $d$ und nimmt den Zustand $q'$ ein.
+    \end{itemize}
+
+    Den Übergangsschritt nennt man auch Rechenschritt. Eine TM führt solange Rechenschritte aus, bis der Endzustand $\bar{q}$ erreicht wird.
+    Ist $\delta$ eine Relation, so handelt es um eine Nichtdeterministische TM (NTM), ist $\delta$ eine Funktion, dann ist die TM deterministisch (DTM).
+
+    \newpage
+    \subsection*{Zusammenfassung}
+    Eine Turingmaschine ist ein $7$-Tupel
+
+    \begin{equation*}
+        \begin{align}
+            & (
+            \colorbox{cadmiumred!35}{Q},
+            \colorbox{cadmiumorange!35}{$\Sigma$},
+            \colorbox{cadmiumyellow!35}{$\Gamma$},
+            \colorbox{cadmiumgreen!35}{$B$},
+            \colorbox{blizzardblue!35}{$q_o$},
+            \colorbox{persianblue!35}{$\bar{q}$},
+            \colorbox{darkviolet!35}{$ \delta$}) \\
+            \colorbox{cadmiumred!35}{Q} & \rightarrow \text{endliche Zustandsmenge} \\
+            \colorbox{cadmiumorange!35}{$\Sigma$} & \rightarrow \text{endliches Eingabealphabet} \\
+            \colorbox{cadmiumyellow!35}{$\Gamma$} & \rightarrow \text{endliches Bandalphabet} & \Gamma \supset $\Sigma$ \\
+            \colorbox{cadmiumgreen!35}{$B$}& \rightarrow \text{Blankzeichen}& B \subset \Gamma \textbackslash $\Sigma$ \\
+            \colorbox{blizzardblue!35}{$q_o$} & \rightarrow \text{Anfangszustand}& q_0 \subset Q \\
+            \colorbox{persianblue!35}{$\bar{q}$}& \rightarrow \text{Endzustand}&\bar{q} \subset Q \\
+            \colorbox{darkviolet!35}{$ \delta$}& \rightarrow \text{Übergangsrelationen/-funktionen} \\
+        \end{align}
+    \end{equation*}
+
+    \subsection*{Konfiguration}
+    Eine Konfiguration einer TM ist ein Schnappschuss der Berechnung einer TM zu einem bestimmten Zeitpunkt.
+    Die Konfiguration beschreibt vollständig alle Details, die notwendig sind, um die Berechnung fortzusetzen (also Bandinhalt, Kopfposition und Zustand).
+
+    \vspace*{0.3cm}
+    Formal: Eine Konfiguration ist ein String $\alpha q\beta$ mit $q \in Q$ und $\alpha, \beta \in \Gamma^*$.
+    Das bedeutet, auf dem Band befindet sich wie gehabt $\alpha$, eingerahmt von Blankzeichen.
+    Der aktuelle Zustand ist $q$ und der SLK befindet sich auf dem ersten Zeichen von $\beta$.
+
+    \vspace*{0.3cm}
+    Man nennt $\alpha'q'\beta'$ \textit{direkte Nachfolgekonfiguration} von $\alpha q\beta$,
+    falls $\alpha'q'\beta'$ in einem Rechenschritt aus $\alpha q\beta$ entsteht.
+    Man schreibt
+    $\alpha q\beta \vdash \alpha'q'\beta'$.
+
+    Man nennt $\alpha''q''\beta''$ \textit{Nachfolgekonfiguration} von $\alpha q\beta$,
+    falls $\alpha''q''\beta''$ in endlich vielen Rechenschritten aus $\alpha q\beta$ entsteht.
+    Man schreibt
+    $\alpha q\beta \vdash \alpha''q''\beta''$.
+
+    \vspace*{0.3cm}
+    Eine Rechnung der TM terminiert, sobald der Endzustand $\bar{q}$ erreicht wird.
+    Die Laufzeit ist definiert als die Anzahl der Rechenschritte, die die TM bis zur Terminierung ausführt.
+    Falls die Rechnung nicht terminiert, ist die Laufzeit unbeschränkt.
+    Der Platzbedarf einer TM-Rechnung ist die Anzahl der besuchten Bandzellen (kann auch unbeschränkt sein).
+
+    \section*{TM-berechenbare Funktionen und Sprachen}
+    Eine TM $\mathcal{M}$, die für jede Eingabe terminiert, berechnet eine totale Funktion $f_\mathcal{M} : \Sigma^* \rightarrow \Sigma^*$.
+    Wenn der Endzustand $\bar{q}$ erreicht ist, kann das Ergebnis $f_\mathcal{M}(x)$ rechts vom SLK vom Band gelesen werden.
+    Das Ergebnis kann auch $\epsilon$ sein, falls der SLK nach der Beendigung auf einem Zeichen $\notin \Sigma$ steht.
+
+    \vspace*{0.3cm}
+    Einige TMs terminieren auf manchen Eingaben nicht, man erweitert deshalb $f_\mathcal{M}$ auf
+    \begin{equation*}
+        \begin{align}
+            & f_\mathcal{M} : \Sigma^* \rightarrow \Sigma^* \cup \{  \colorbox{buff}{$\bot$} \} \\
+            \colorbox{buff}{$\bot$} & \rightarrow \textit{nicht definiert}
+        \end{align}
+    \end{equation*}
+
+    \textbf{\textsf{Definition:}} Eine Funktion $f_\mathcal{M} : \Sigma^* \rightarrow \Sigma^* \cup \{  \bot \}$ heißt TM-berechenbar,
+    wenn es eine TM $\mathcal{M}$ gibt, mit $f_\mathcal{M} = f$.
+    Diese Definition schließt auch Funktionen ein, die für manche Eingaben keine wohldefinierte Ausgaben haben.
+
+    \newpage
+    Im Spezialfall, dass $f : \Sigma^* \rightarrow \{0, 1\}$ (das bedeutet, man hat ein Entscheidungsproblem),
+    soll eine TM eine Eingabe $w \in \Sigma^*$ akzeptieren, wenn sie terminiert und die Ausgabe mit einer \texttt{1} beginnt.
+    Die TM verwirft $w \in \Sigma^*$, falls sie terminiert, aber die Ausgabe nicht mit einer \texttt{1} beginnt
+    (Die TM wird nun nicht auf jeder Eingabe terminieren).
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Definition:}} Eine Sprache $L \subseteq \Sigma^*$ heißt TM-entscheidbar, wenn es eine TM gibt,
+    die auf allen Eingaben hält, die Eingabe $w$ akzeptiert falls $w \in L$, und die Eingabe verwirft falls $w \notin L$.
+
+
+\end{document}
