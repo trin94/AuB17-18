@@ -1,0 +1,227 @@
+\documentclass{scrartcl}% siehe <http://www.komascript.de>
+\input{../lectures-tex/configuration}
+
+\definecolor{cadmiumred}{rgb}{0.89, 0.0, 0.13}
+\definecolor{cadmiumorange}{rgb}{0.93, 0.53, 0.18}
+\definecolor{cadmiumyellow}{rgb}{1.0, 0.96, 0.0}
+\definecolor{cadmiumgreen}{rgb}{0.0, 0.42, 0.24}
+\definecolor{blizzardblue}{rgb}{0.67, 0.9, 0.93}
+\definecolor{persianblue}{rgb}{0.11, 0.22, 0.73}
+\definecolor{darkviolet}{rgb}{0.58, 0.0, 0.83}
+
+\begin{document}
+    \headerline{Algorithmen und Berechenbarkeit}{Vorlesungsmitschrift}{Vorlesung 12}
+
+    \section*{Beispiele für Turingmaschinen}
+    \subsection*{Beispiel 1}
+    Gegeben sei die Sprache $L_1$, die aus allen Wörtern über \texttt{0} und \texttt{1} besteht,
+    und deren Wörter auf \texttt{0} enden:
+    \begin{equation*}
+        L = \{w0 \ | \ w \in \{0,1\}^* \}
+    \end{equation*}
+
+    Eine TM, die $L_1$ entscheidet, könnte folgendermaßen aussehen:
+    \begin{equation*}
+        M_1 = (\{q_0, q_1,\bar{q} \},\{0,1\},\{0,1,\text{B}\}, \text{B}, q_1, \bar{q}, \delta)
+    \end{equation*}
+    Die Übergangsfunktionen sind dabei
+
+    \begin{figure}[htb]
+        \centering
+        \begin{tabular}{r|l|l|l}
+            \textbf{\textsf{$\delta$}} & \texttt{0} & \texttt{1} & \texttt{B} \\
+            \hline
+            $q_0$ & \underline{$\{q_0, 0, R\}$} & $\{q_1, 1, R\}$ & $\{\bar{q}, 1, N \}$ \\
+            $q_1$ & $\{q_0, 0, R\}$ & $\{q_1, 1, R\}$ & $\{\bar{q}, 0, N \}$ \\
+            \hline
+        \end{tabular}
+    \end{figure}
+
+    Zu lesen ist zum Beispiel die unterstrichene Übergangsfunktion wie folgt:
+    Man befindet sich in Zustand $q_0$ und ließt eine \texttt{0} ein,
+    dann bleibt man in Zustand $q_0$, schreibt eine \texttt{0} an die Stelle,
+    an der vorher schon eine \texttt{0} war, und bewegt den SLK nach rechts.
+
+    \vspace*{0.3cm}
+    Oftmals ist es ratsam, dass man sich klarmacht, was die Zustände bedeuten:
+    \begin{itemize}
+        \item [$\rightarrow$] $q_0$ bedeutet, man hat als letztes Zeichen eine \texttt{0} gelesen
+        \item [$\rightarrow$] $q_1$ bedeutet, man hat als letztes Zeichen keine \texttt{0} gelesen
+    \end{itemize}
+
+    Für das Wort $w_1=\texttt{010101}$ ergibt sich der folgende Ablauf:
+    \begin{equation*}
+        \begin{align}
+            \Rightarrow \quad & q_{1}010101 & \vdash \quad & 0q_{0}10101 & \vdash \quad & 01q_{1}0101 & \vdash \quad & 010q_{0}101\\
+            \vdash \quad & 0101q_{1}01 & \vdash \quad & 01010q_{0}1 & \vdash \quad & 010101q_{1}B & \vdash \quad & 010101\bar{q}0\\
+        \end{align}
+    \end{equation*}
+    Da der letzte Zustand erreicht ist und $w_1$ mit einer \texttt{1} endet, schreibt die TM in der letzten Konfiguration eine \texttt{0}.
+
+    \newpage
+    \subsection*{Beispiel 2}
+    Gegeben sei die Sprache $L_2$:
+    \begin{equation*}
+        L_2 = \{0^n 1^n \ | \ n \geq 1 \}
+    \end{equation*}
+
+    Eine TM, die $L_2$ entscheidet, könnte folgendermaßen aussehen:
+    \begin{equation*}
+        M_2 = (\{q_0, q_1,q_2,q_3,q_4,q_5,q_6,\bar{q}\},\{0,1\},\{0,1,\text{B}\}, \text{B}, q_0, \bar{q}, \delta)
+    \end{equation*}
+
+    Die Übergangsfunktionen sind dabei
+
+    \begin{figure}[htb]
+        \centering
+        \begin{tabular}{r|l|l|l}
+            \textbf{\textsf{$\delta$}} & \texttt{0} & \texttt{1} & \texttt{B} \\
+            \hline
+            $q_0$ & $\{q_0, 0, R\}$ & $\{q_1, 1, R\}$ & $\{\bar{q}, 0, N \}$ \\
+            $q_1$ & $\{\bar{q}, 0, N\}$ & $\{q_1, 1, R\}$ & $\{q_2, B, L \}$ \\
+            \hline \hline
+            $q_2$ & $\{\bar{q}, 0, N\}$ & $\{q_3, B, L\}$ & $\{\bar{q}, 0, N \}$ \\
+            $q_3$ & $\{q_3, 0, L\}$ & $\{q_3, 1, L\}$ & $\{q_4, B, R \}$ \\
+            $q_4$ & $\{q_5, B, R\}$ & $\{\bar{q}, 0, N\}$ & $\{\bar{q}, 0, N \}$ \\
+            $q_5$ & $\{q_6, 0, R\}$ & $\{q_6, 1, R\}$ & $\{\bar{q}, 1, N \}$ \\
+            $q_6$ & $\{q_6, 0, R\}$ & $\{q_6, 1, R\}$ & $\{q_2, B, L \}$ \\
+        \end{tabular}
+    \end{figure}
+    \begin{itemize}
+        \item [$\rightarrow$] $q_0$ bedeutet, man hat bis jetzt keine \texttt{1} gelesen
+        \item [$\rightarrow$] $q_1$ bedeutet, man hat $\texttt{0}^i$ und danach mindestens eine \texttt{1} gelesen
+        \item [$\rightarrow$] $q_2$ bedeutet, der SLK steht auf dem letzten Zeichen (also nicht \texttt{B})
+        \item [$\rightarrow$] $q_3$ bedeutet, der SLK wird nach ganz links bewegt
+        \item [$\rightarrow$] $q_4$ bedeutet, der SLK steht auf dem ersten Zeichen (also nicht \texttt{B})
+        \item [$\rightarrow$] $q_5$ bedeutet, man überprüft, ob man schon fertig ist
+        \item [$\rightarrow$] $q_6$ bedeutet, der SLK wird nach ganz rechts bewegt
+    \end{itemize}
+
+    Die Entscheidung, ob ein Wort in der Sprache liegt, läuft in zwei Phasen ab:
+    \begin{enumerate}
+        \item In dieser Phase überprüft man, ob die Eingabe der Form $0^{i}1^j$ mit $i \geq 0$, $j \geq 1$ entspricht
+        \item Zu Beginn dieser Phase steht der SLK auf dem letzten Zeichen der Eingabe.
+        In dieser zweiten Phase überprüft man durch abwechselndes Löschen der jeweils äußeren Zeichen, ob $i=j$.
+    \end{enumerate}
+
+    Beispielhaft wird die zweite Phase für das Wort $w_2=\texttt{000111}$ aufgezeigt:
+    \begin{equation*}
+        \begin{align}
+            \Rightarrow \quad & 00011q_{2}1 & \vdash \quad & 0001q_{3}1B & \vdash \quad & \cdots & \vdash \quad & q_3B00011\\
+            \vdash \quad & Bq_{4}00011 & \vdash \quad & Bq_{5}0011 & \vdash \quad & 0q_{5}011 & \vdash \quad & \cdots \\
+            \vdash \quad & 0011q_{6}B & \vdash \quad & 001q_{2}1 & \vdash \quad & \cdots\ \cdots & \vdash \quad & Bq_{5}BBB \\
+            \vdash \quad & \bar{q}1 \\
+        \end{align}
+    \end{equation*}
+    Da der letzte Zustand erreicht ist und für $w_2$ gilt $i=j$, schreibt die TM in der letzten Konfiguration eine \texttt{1}.
+
+    \section*{Programmierung einer TM}
+    Die \textit{Programmierung} einer TM ist relativ mühsam,
+    dennoch können alle Sprachkonstrukte aus \textit{normalen Programmiersprachen} dargestellt werden:
+    \begin{itemize}
+        \item {Eine boolsche Variable im Programm kann folgendermaßen in den Zustandsraum kodiert werden
+        \begin{equation*}
+            \begin{align}
+                \text{Zustände alt:} \quad & Q \\
+                \text{Zustände neu:} \quad & Q \times \{0,1\}
+            \end{align}
+        \end{equation*}
+        }
+        \item {Eine Variable $x$ mit konstant vielen Zuständen $\{0,1,2,3,\cdots, k \}$ kann ebenfalls in den Zustandsraum kodiert werden.
+        \begin{equation*}
+            Q_{\text{neu}} = \{Q \times \{0,1,2,3,\cdots, k \} \}
+        \end{equation*}
+        }
+        \item {Man kann mit einer einspurigen TM auch eine $k$-spuringe TM simulieren mit jeweils einem Bandalphabet für ein $k$-Tupel.
+        \begin{figure}[htb]
+            \centering
+            \begin{tabular}{C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}}
+                \hline
+                & & & & & & & & & & & & & \\ \hline
+                & & & & & & & & & & & & & \\ \hline
+                & & & & & & & & & & & & & \\ \hline
+                & & & & & & & & & & & & & \\ \hline
+            \end{tabular}
+        \end{figure}
+        \begin{figure}[H]
+            \centering
+            \begin{subfigure}{0.3\textwidth}
+                \raggedleft
+                \begin{equation*}
+                    \begin{bmatrix}
+                        0 \\
+                        1
+                    \end{bmatrix}
+                    \begin{bmatrix}
+                        1 \\
+                        1
+                    \end{bmatrix}
+                \end{equation*}
+            \end{subfigure}%
+            \raggedright
+            \begin{subfigure}{.7\textwidth}
+                $\Rightarrow$ Neues Bandalphabt $|\Gamma_{\text{neu}} | = |\Gamma_{\text{alt}}|^n$
+            \end{subfigure}
+        \end{figure}
+        Das ist zum Beispiel dann nützlich, wenn zwei Binärzahlen miteinander addiert werden.
+        Anstatt auf bin$(a)\#$bin$(b)$ zu operieren,
+        kopiert man bin$(b)$ auf die zweite Spur und berechnet in der dritten Spur das Ergebnis.
+        }
+        \item Konstant viele Variablen mit nicht konstantem Wertebereich $\rightarrow$ jeweils eine Spur pro Variable
+        \item Unterprogramm und Rekursion $\rightarrow$ Reservierung einer Spur pro Prozeduraufruf
+        \item $\cdots$
+    \end{itemize}
+
+    \newpage
+    \section*{Mehrband TM}
+    Eine Mehrband TM hat für jede Spur einen unabhängigen SLK. Die Zustandsübergänge haben die Form
+    \begin{equation*}
+        \delta : ( Q \textbackslash \{ \bar{q}\} \times \Gamma^{k} \rightarrow Q \times \Gamma^{k} \times \{ L,R,N \}^k)
+    \end{equationn*}
+
+    Das erste Band enthält die Ein- bzw. Ausgabe, alle anderen Bänder sind initial mit \texttt{B}s gefüllt.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Satz:}} Eine $k$-Band TM $\mathcal{M}$,
+    die mit einer Rechenzeit von $f(n)$ und einem Platzverbrauch von $s(n)$ auskommt,
+    kann von einer \texttt{1}-Band TM $\mathcal{M}'$ mit der Rechenzeit von $\mathcal{O}(f^2(n))$ und einem Platzbedarf von $\mathcal{O}(s(n))$ simuliert werden.
+
+     \vspace*{0.3cm}
+    \textbf{\textsf{Beweisidee:}} Man simuliert eine $k$-Band TM durch eine $2k$-Band TM. Zum Beispiel wird die folgende $2$-Band TM
+    \begin{figure}[htb]
+        \centering
+        \begin{tabular}{C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}}
+            \hline
+            $\cdots$ & \texttt{B} & \texttt{0} & \texttt{1} & \texttt{2} & \texttt{1} & \texttt{2} & \texttt{1} & \texttt{B} & \texttt{B} & $\cdots$\\
+            $\cdots$ & \texttt{B} & \texttt{B} & \texttt{1} & \texttt{1} & \texttt{3} & \texttt{2} & \texttt{B} & \texttt{B} & \texttt{B} & $\cdots$\\
+            \hline
+        \end{tabular}
+    \end{figure}
+
+    durch
+    \begin{figure}[htb]
+        \centering
+        \begin{tabular}{C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}|C{1em}}
+            \hline
+            $\cdots$ & \texttt{B} & \texttt{0} & \texttt{1} & \texttt{2} & \texttt{1} & \texttt{2} & \texttt{1} & \texttt{B} & \texttt{B} & $\cdots$\\
+            $\cdots$ & \texttt{B} & \texttt{B} & \texttt{B} & \texttt{$\#$} & \texttt{B} & \texttt{B} & \texttt{B} & \texttt{B} & \texttt{B} & $\cdots$\\
+            $\cdots$ & \texttt{B} & \texttt{B} & \texttt{1} & \texttt{1} & \texttt{3} & \texttt{2} & \texttt{B} & \texttt{B} & \texttt{B} & $\cdots$\\
+            $\cdots$ & \texttt{B} & \texttt{B} & \texttt{B} & \texttt{B} & \texttt{B} & \texttt{B} & \texttt{$\#$} & \texttt{B} & \texttt{B} & $\cdots$\\
+            \hline
+        \end{tabular}
+    \end{figure}
+
+    simuliert.
+
+    Für einen Rechenschritt der $k$-Band TM wird über den beschriebenen Teil der $2k$-Band TM gelaufen
+    und die Zeichen unter den SLK der $k$-Bänder werden eingesammelt (und im Zustand gespeichert).
+    In einem zweiten Durchlauf über die Bänder werden die Zeichen und Kopfpositionen upgedatet.
+
+    \vspace*{0.3cm}
+    Anzahl beschriebener Zellen $\leq f(n)$
+    \begin{itemize}
+        \item [$\Rightarrow$] Ein Schritt der $k$-Band TM kostet $\mathcal{O}(f(n))$ Schritte auf der $2k$-Band TM
+        \item [$\Rightarrow$] $\mathcal{O}(f^2(n))$
+    \end{itemize}
+
+\end{document}
