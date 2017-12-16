@@ -1,0 +1,243 @@
+\documentclass{scrartcl}% siehe <http://www.komascript.de>
+\input{../lectures-tex/configuration}
+
+\usepackage{diagbox}
+
+\definecolor{cadmiumred}{rgb}{0.89, 0.0, 0.13}
+\definecolor{cadmiumorange}{rgb}{0.93, 0.53, 0.18}
+\definecolor{cadmiumyellow}{rgb}{1.0, 0.96, 0.0}
+\definecolor{cadmiumgreen}{rgb}{0.0, 0.42, 0.24}
+\definecolor{blizzardblue}{rgb}{0.67, 0.9, 0.93}
+\definecolor{persianblue}{rgb}{0.11, 0.22, 0.73}
+\definecolor{darkviolet}{rgb}{0.58, 0.0, 0.83}
+
+\begin{document}
+    \headerline{Algorithmen und Berechenbarkeit}{Vorlesungsmitschrift}{Vorlesung 13}
+
+    \section*{Universelle Turingmaschine}
+    Die bisher behandelten TMs wurden für jeweils ein spezifisches Problem entworfen.
+    Reale Computer können jedoch programmiert werden und somit verschiedene Probleme lösen.
+
+    \vspace*{0.3cm}
+    Die Universelle Turingmaschine $\mathcal{U}$ simuliert eine beliebige andere TM
+    $\mathcal{M}$ auf einer beliebigen Eingabe $w$.
+    Als Eingabe bekommt $\mathcal{U}$ einen String $<M><w>$.
+
+    \begin{itemize}
+        \item [$\rightarrow$] $<w>$ ist die Kodierung der Eingabe für $\mathcal{M}$.
+        \item [$\rightarrow$] $<M>$ ist die Kodierung der zu simulierenden TM $\mathcal{M}$.
+        $<M>$ bezeichnet man auch als \textit{Gödelnummer}.
+    \end{itemize}
+
+    \subsection*{Gödelnummerierung}
+    Als Gödelnummerierung bezeichnet man ein injektive Abbildung aus der Menge aller TMs in $\{0,1\}^*$.
+    TM-Kodierungen haben bestimmte Voraussetzungen, um als Gödelnummer zu gelten.
+    Die zu kodierende TM habe:
+
+    \begin{itemize}
+        \item Zustandsmenge $Q = {\{q_1,q_2, \cdots, q_t\}}$
+        \item Startzustand $q_1$
+        \item Endzustand $q_2$
+        \item Bandalphabet $\Gamma \{\colorbox{green!30}{\texttt{0}},\colorbox{red!30}{\texttt{1}},\colorbox{blue!30}{\texttt{B}}\}$
+        \begin{itemize}
+            \item [$\rightarrow$] \colorbox{green!30}{\texttt{0}}: Erstes Zeichen
+            \item [$\rightarrow$] \colorbox{red!30}{\texttt{1}}: Zweites Zeichen
+            \item [$\rightarrow$] \colorbox{blue!30}{\texttt{B}}: Drittes Zeichen
+        \end{itemize}
+        \item Bewegungen des SLK
+        \begin{itemize}
+            \item [$\rightarrow$] \texttt{L}: Erste Bewegung
+            \item [$\rightarrow$] \texttt{N}: Zweite Bewegung
+            \item [$\rightarrow$] \texttt{R}: Dritte Bewegung
+        \end{itemize}
+    \end{itemize}
+
+    \newpage
+    Da jede TM in diese Form gebracht werden kann, ist bis hierher noch keine Einschränkung gegeben.
+    Im Prinzip kommt es auf die Kodierung der Übergangsfunktionen $\delta$ an.
+
+    Ein Übergang
+
+    \begin{equation*}
+        \begin{align}
+            &  \delta(q_i,\colorbox{cadmiumorange!35}{$X_j$}) = (q_k,X_l,\colorbox{cadmiumgreen!35}{$D_m$}) \\
+            \colorbox{cadmiumorange!35}{$X_j$} &\rightarrow  \text{j-te Zeichen im Alphabet} \\
+            \colorbox{cadmiumgreen!35}{$D_m$}& \rightarrow \text{m-te Bewegung} \\
+        \end{align}
+    \end{equation*}
+
+    wird codiert als
+
+    \begin{equation*}
+        0^{i}10^{j}10^{k}10^{l}10^m \ | \ i,j,k,l,m \geq 1
+    \end{equation*}
+
+    Sei \texttt{code(t)} die Kodierung des \texttt{t}-ten Übergangs. Die Kodierung der gesamten TM ist dann
+
+    \begin{equation*}
+        <M>\ = \texttt{code(1)}11\texttt{code(2)}11 \cdots \texttt{code(s)}111
+    \end{equation*}
+
+    Die universelle TM $\mathcal{U}$ erhält als Eingabe ein Wort $<M><w>$ und simuliert $\mathcal{M}$ auf der Eingabe $w$.
+    Außerdem übernimmt $\mathcal{U}$ auch das Akzeptanzverhalten von $\mathcal{M}$.
+
+    \subsection*{Simulation mit einer 3-Band-TM}
+    Im Folgenden werden die Schritte einer Simulation punktuell aufgelistet.
+
+    \begin{itemize}
+        \item Beschreibung der Bänder:
+        \begin{itemize}
+            \item Band 1: Auf Band 1 steht das, was $\mathcal{M}$ auf seinem Band stehen hätte.
+            \item Band 2: Auf Band 2 steht die Beschreibung $<M>$.
+            \item Band 3: Auf Band 3 steht der Zustand, den $\mathcal{M}$ gerade hätte.
+        \end{itemize}
+        \item Initialisierung:
+        \begin{itemize}
+            \item Man überprüft, ob $<M>$ eine gültige Kodierung einer TM darstellt.
+            \item Man schreibt $<M>$ auf Band 2.
+            \item Man schreibt die Kodierung des Anfangszustandes $q_1$ auf Band 3.
+        \end{itemize}
+        \item Rechenschritt: Die Simulation beginnt mit dem SLK auf dem ersten Zeichen von $w$ auf Band 1.
+        \begin{itemize}
+            \item Man sucht auf Band 2 den Übergang des Zeichens,
+            das zu dem Zeichen unter dem SLK auf Band 1 und zum Zustand auf Band 3 passt.
+            \item Man aktualisiert den Bandinhalt entsprechend auf Band 1.
+            \item Man ändert den Zustand entsprechend auf Band 3.
+        \end{itemize}
+    \end{itemize}
+
+    Unter der Annahme, dass $<M>$ konstant groß ist,
+    kann ein Schritt von $\mathcal{M}$ in konstanter Zeit von $\mathcal{U}$ simuliert werden.
+
+    Die universelle 3-Band-TM kann mittels einer 1-Band-TM simuliert werden, was zur Folge hätte,
+    dass ein Schritt nicht mehr in konstanter Zeit ablaufen würde (quadratischer Overhead).
+    Mit einigen Tricks (Siehe Skript?) kann aber auch der entstehende quadratische Overhead quasi vermieden werden.
+
+    \vspace*{0.3cm}
+    Jede TM $\mathcal{M}$ kann auf $\mathcal{U}$ simuliert werden. $<M>$ entspricht sozusagen einem \textit{Programm}.
+
+    \vspace*{0.3cm}
+    Über ein anderes Rechenmodell, die \textbf{\textsf{Registermaschine}}, soll sich im Skript? informiert werden.
+    Wichtig ist insbesondere der Punkt der Äquivalenz TM $\Leftrightarrow$ Registermaschine.
+
+    \section*{Church-Turing-These}
+    Ohne Beweis: Die Klasse der Probleme, die \textit{intuitiv berechenbar} sind,
+    ist äquivalent mit der Klasse der Probleme, die von einer TM berechenbar sind.
+
+    \section*{Unentscheidbarkeit}
+    Es soll nun gezeigt werden, dass es zu viele Sprachen gibt,
+    als dass es für jede dieser Sprachen ein TM geben könnte, die sie entscheidet.
+
+    \vspace*{0.3cm}
+    \textit{Zur Erinnerung: Eine TM $\mathcal{M}$ entscheidet eine Sprache $L \subseteq \Sigma^*$,
+    falls $\mathcal{M}$ auf jeder Eingabe $w \in \Sigma^*$ hält und genau dann akzeptiert, wenn $w \in L$ und verwirft wenn $w \notin L$.}
+
+    \vspace*{0.5cm}
+    \par
+    \begingroup
+    \leftskip=1cm % Parameter anpassen
+    \noindent
+    \textsf{\textbf{Abzählbare Menge:}} Eine Menge heißt abzählbar, falls es eine surjektive Funktion \newline
+    $C: N \rightarrow H$ gibt.
+    Nicht abzählbare Mengen heißen \textit{überabzählbar}.
+
+    \vspace*{0.3cm}
+    Im Falle einer abzählbar unendlichen Menge gibt es immer auch eine bijektive Abbildung $C: \mathbb{N} \rightarrow H$,
+    da Wiederholungen übersprungen werden können. So eine Abbildung kann auch als Nummerierung der Menge $H$ interpretiert werden.
+
+    \vspace*{0.3cm}
+    $\Rightarrow$ Die Menge der ganzen Zahlen $\mathbb{Z}$ hat dieselbe Mächtigkeit wie $\mathbb{N}$ (abzählbar unendlich), da
+    \begin{equation*}
+        c(i) =
+        \[ \begin{cases}
+               \frac{i}{2} & \text{falls } i \text{ gerade} \\
+               -\frac{i+1}{2} & \text{falls } i \text{ ungerade}
+        \end{cases}
+        \]
+    \end{equation*}
+    \par
+    \endgroup
+    \par
+    \begingroup
+    \leftskip=1cm % Parameter anpassen
+    \noindent
+    eine bijektive Funktion $C: \mathbb{N} \rightarrow \mathbb{Z}$ ist.
+
+    \vspace*{0.3cm}
+    $\Rightarrow$ Die Menge aller Wörter über $\{0,1\}^*$
+    \begin{equation*}
+        \{\epsilon, 0,1,00,01,10,11,000,001,010,011,100,101,110,111, \cdots \}
+    \end{equation*}
+    \par
+    \endgroup
+    \par
+    \begingroup
+    \leftskip=1cm % Parameter anpassen
+    \noindent
+    ist ebenfalls überabzählbar unendlich (\textit{Binärzahlen ausgedrückt durch $w$ sind problematisch: $001 \Leftrightarrow 1$}).
+
+    \vspace*{0.3cm}
+    $\Rightarrow$ Die Menge der TMs ist abzählbar (z.B. indem man $<M>$ als Binärzahl interpretiert mit dem signifikantesten Bit an letzter Stelle).
+    \par
+    \endgroup
+
+    \vspace*{0.5cm}
+    \textbf{\textsf{Satz:}} Die Potenzmenge $\mathcal{P}(\mathbb{N})$ ist überabzählbar.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis durch Widerspruch:}} Angenommen, $\mathcal{P}(\mathbb{N})$ ist abzählbar. Das würde bedeuten,
+    dass eine Funktion $C: \mathbb{N} \rightarrow \mathcal{P}(\mathbb{N})$ existiert.
+
+    Sei $S_i$ nun die i-te Menge in $\mathcal{P}(\mathbb{N})$ und sei die Matrix $(A_{ij})_{i,j \in \mathbb{N}}$ definiert mit
+    \begin{equation*}
+        A_{ij} =
+        \[ \begin{cases}
+               1 & \text{falls } j \in S_i \\
+               0 & \text{sonst}
+        \end{cases}
+        \]
+    \end{equation*}
+
+    $A$ ist also zum Beispiel (wenn $S_{0} = \{0,1,4, \cdots\}$ und $S_{1} = \{1,2,3, \cdots\}$)
+    \begin{figure}[htb]
+        \centering
+        \scriptsize
+        \begin{tabular}{l|C{1em}C{1em}C{1em}C{1em}C{1em}C{1em}}
+            \diagbox{$i$}{$S$} & 0 & 1 & 2 & 3 & 4 & $\cdots$\\ \hline \\ [-2ex]
+            $S_0$ & 1 & 1 & 0 & 0 & 1 & $\cdots$\\
+            $S_1$ & 0 & 1 & 1 & 1 & 0 & $\cdots$\\
+            $S_2$ & & & & & & $\cdots$\\
+            $S_3$ & & & & & & $\cdots$\\
+        \end{tabular}
+    \end{figure}
+
+    \newpage
+    Sei nun eine spezielle Teilmenge $S_{diagonal}$ definiert mit
+    \begin{equation*}
+        S_{diagonal} = \{i \in \mathbb{N} \ | \ A_{i,i} = 1 \}
+    \end{equation*}
+
+    Das Komplement $\overline{S_{diagonal}}$ ist dann
+    \begin{equation*}
+        \overline{S_{diagonal}} = \{i \in \mathbb{N} \ | \ A_{i,i} = 0 \}
+    \end{equation*}
+
+    \vspace*{0.5cm}
+    In der Nummerierung von $\mathcal{P}(\mathbb{N})$ sei $\overline{S_{diagonal}}$ die k-te Menge, also
+    \begin{equation*}
+        \overline{S_{diagonal}} = S_k
+    \end{equation*}
+
+    Es gilt nun zwei Fälle zu unterscheiden:
+    \begin{enumerate}
+        \item Falls $A_{k,k} = 1$, dann muss $k \in S_k$. Aber wegen $S_k = \overline{S_{diagonal}}$ gilt $k \notin S_k$.
+        \item Falls $A_{k,k} = 0$, dann muss $k \notin S_k$. Aber wegen $S_k = \overline{S_{diagonal}}$ gilt $k \in S_k$.
+        \item [$\Rightarrow$] $\mathcal{P}(\mathbb{N})$ ist nicht abzählbar.    \proofend
+    \end{enumerate}
+
+
+
+    \textbf{\textsf{Kollorar:}} Die Menge der Sprachen über $\{0,1\}^*$ ist überabzählbar
+    (die Menge der Sprachen entspricht hier der Potenzmenge von $\{0,1\}$). Das heißt, es gibt \textsf{\textbf{echt}} mehr Sprachen als TMs.
+
+\end{document}
