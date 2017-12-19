@@ -1,0 +1,180 @@
+\documentclass{scrartcl}% siehe <http://www.komascript.de>
+\input{../lectures-tex/configuration}
+
+\usepackage{diagbox}
+
+\definecolor{cadmiumred}{rgb}{0.89, 0.0, 0.13}
+\definecolor{cadmiumorange}{rgb}{0.93, 0.53, 0.18}
+\definecolor{cadmiumyellow}{rgb}{1.0, 0.96, 0.0}
+\definecolor{cadmiumgreen}{rgb}{0.0, 0.42, 0.24}
+\definecolor{blizzardblue}{rgb}{0.67, 0.9, 0.93}
+\definecolor{persianblue}{rgb}{0.11, 0.22, 0.73}
+\definecolor{darkviolet}{rgb}{0.58, 0.0, 0.83}
+
+\begin{document}
+    \headerline{Algorithmen und Berechenbarkeit}{Vorlesungsmitschrift}{Vorlesung 14}
+
+    \section*{Unentscheidbarkeit der Diagonalsprache $\mathcal{D}$}
+    \label{sec:unentscheidbarkeitDerDiagonalsprache}
+    Es sei die Diagonalsprache $\mathcal{D}$ folgedermaßen definiert:
+
+    \begin{equation*}
+        \mathcal{D} = \{ w \in \{0,1\}^* \ | \ w =w_i \land M_i \text{ akzeptiert } w \text{ nicht} \}
+    \end{equation*}
+    $\mathcal{D}$ ist also so definiert,
+    dass ein $i$-tes Wort genau dann enthalten ist, wenn die $i$-te TM es nicht akzeptiert.
+
+    \begin{table}[H]
+        \centering
+        \small
+        \begin{tabular}{C{1.5em}|C{1.5em}C{1.5em}C{1.5em}C{1.5em}C{1.5em}C{1.5em}C{1.5em}C{1.5em}C{1.5em}}
+            \tiny Wort & \tiny $\epsilon$ & \tiny\texttt{0} & \tiny\texttt{1} & \tiny\texttt{00} & \tiny\texttt{01} & \tiny\texttt{10} & \tiny\texttt{11} & \tiny$\cdots$ \\
+            & $w_0$  & $w_1$ & $w_2$ & $w_3$ & $w_4$ & $w_5$ & $w_6$ & \tiny$\cdots$ \\ \hline
+            $\mathcal{M}_0$  & \cellcolor{cadmiumgreen!20}$0$  & & & & & & & \\
+            $\mathcal{M}_1$  & & \cellcolor{cadmiumgreen!20}$0$ & & & & & & \\
+            $\mathcal{M}_2$  & & & $1$ & & & & & \\
+            $\mathcal{M}_3$  & & & & $1$ & & & & \\
+            $\mathcal{M}_4$  & & & & & \cellcolor{cadmiumgreen!20}$0$ & & & \\
+        \end{tabular}
+    \end{table}
+
+    Beim betrachten der Tabelle fällt auf, dass $\mathcal{D}$ auch so definiert werden kann:
+    \begin{equation*}
+        \mathcal{D} = \{ w_i \ | \ A_{i,i} = 0 \}
+    \end{equation*}
+
+    \textbf{\textsf{Theorem:}} Die Diagonalsprache $\mathcal{D}$ ist nicht entscheidbar.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis (durch Widerspruch):}} Sie $\mathcal{M}_j$ eine TM, die $\mathcal{D}$ entscheidet.
+    Man lässt $\mathcal{M}_j$ auf der Eingabe $w_j$ laufen und erhält zwei Fälle.
+
+    \begin{enumerate}
+        \item $\mathcal{M}_j$ akzeptiert $w_j$. Dann gilt: $  w_j \in \mathcal{D}$ \newline
+        Aber dadurch gilt auch $A_{j,j} = 1$. Dann gilt: $w_j \notin \mathcal{D}$
+        \item $\mathcal{M}_j$ verwirft $w_j$. Dann gilt: $w_j \notin \mathcal{D}$ \newline
+        Aber dadurch gilt auch $A_{j,j} = 0$. Dann gilt: $w_j \in \mathcal{D}$
+    \end{enumerate}
+
+    Eine solche TM kann es nicht geben.\proofend
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Satz:}} Sei $\mathcal{L}$ eine unentscheidbare Sprache,
+    dann ist das Komplement $\overline{\mathcal{L}} = \Sigma^* - \mathcal{L}$ auch unentscheidbar.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Man nutzt eine Maschine, die $\overline{\mathcal{L}}$ entscheidet,
+    um $\mathcal{L}$ zu entscheiden, sodass man \texttt{JA} und \texttt{NEIN} vertauscht.
+    Falls $\overline{\mathcal{L}}$ entscheidbar, so ist auch $\mathcal{L}$ entscheidbar.\proofend
+
+    \section*{Unentscheidbarkeit des Halteproblems}
+    Vom Halteproblem spricht man, wenn man ein gegebenes Programm samt Eingabe für dieses Programm laufen lässt
+    und entscheiden muss, ob das Programm auf dieser Eingabe terminiert.
+
+    Formal also
+    \begin{equation*}
+        \mathcal{H} = \{ <M>w \ | \ M \text{ hält auf } w \}
+    \end{equation*}
+
+    Um die Unentscheidbarkeit zu zeigen, sollte sich vorher klargemacht werden,
+    was \textit{semientscheidbar} bzw. \textit{Akzeptieren} bedeutet:
+    \textit{Eine TM akzeptiert ein Wort, falls das Wort immer richtig von der TM erkannt wird.
+    Wörter, die nicht in der Sprache sind, können von der TM jedoch nicht als solche erkannt werden.}
+
+    \vspace*{0.3cm}
+    Auch die universelle TM $\mathcal{U}$ kann $\mathcal{H}$ nicht entscheiden.
+    Zwar könnte für alle $<M>w \in \mathcal{H}$ die TM $\mathcal{U}$ irgendwann \texttt{JA} sagen,
+    aber nie mit Sicherheit \texttt{NEIN}.
+
+    \vspace*{0.5cm}
+    \textbf{\textsf{Theorem:}} Das Halteproblem bzw. die Sprache $\mathcal{H}$ ist unentscheidbar.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Angenommen, $\mathcal{H}$ ist durch die TM $\mathcal{M}_\mathcal{H}$ entscheidbar.
+    Dann muss es möglich sein, aus $\mathcal{M}_\mathcal{H}$ eine TM  $\mathcal{M}_\mathcal{D}$ zu konstruieren, die
+    $\overline{D}$ (und damit auch $\mathcal{D}$) entscheidet.
+
+    So eine TM $\mathcal{M}_\mathcal{D}$ kann es aber nicht geben, also kann es auch die TM $\mathcal{M}_\mathcal{H}$ nicht geben.
+
+    \vspace*{0.3cm}
+    $\mathcal{M}_{\overline{\mathcal{D}}}$ müsste folgendermaßen aussehen:
+    \begin{enumerate}
+        \item Man berechnet $i$ auf der Eingabe $w$ sodass gilt $w = w_i$.
+        \item Man berechnet $<M_{i}>$ der $i$-ten TM.
+        \item Man startet $\mathcal{M}_\mathcal{H}$ als Unterprogramm auf der Eingabe $<M_i>w$.
+        \item Falls $\mathcal{M}_\mathcal{H}$ akzeptiert, wird $w$ auf $\mathcal{M}_i$ simuliert und die Ausgabe übernommen.
+        \item Falls $\mathcal{M}_\mathcal{H}$ verwirft, so wird die Eingabe verworfen.
+    \end{enumerate}
+
+    Korrektheit von $\mathcal{M}_{\overline{\mathcal{D}}}$:
+    \begin{enumerate}
+        \item $w \in \overline{\mathcal{D}} \Rightarrow \mathcal{M}_\mathcal{H}$ akzeptiert $<M_{i}>w$ im dritten Schritt
+        (da $M_i$ das $w=w_i$ im vierten Schritt akzeptiert und damit auch stoppt)
+        $\Rightarrow \mathcal{M}_{\overline{\mathcal{D}}}$ akzeptiert $w$.
+        \item $w \in \overline{\mathcal{D}} \Rightarrow$
+        \begin{itemize}
+            \item $\mathcal{M}_\mathcal{H}$ verwirft $<M_{i}>w$ im dritten Schritt, da $M_i$ auf $w$ nicht hält.
+            \newline $\Rightarrow \mathcal{M}_{\overline{\mathcal{D}}}$ verwirft $w$.
+            \item $\mathcal{M}_\mathcal{H}$ akzeptiert $<M_{i}>w$ im dritten Schritt, aber $M_i$ verwirft $w$.
+            \newline $\Rightarrow \mathcal{M}_{\overline{\mathcal{D}}}$ verwirft $w$.
+        \end{itemize}
+    \end{enumerate}\proofend
+
+    \newpage
+    \section*{Das Spezielle Halteproblem}
+    Das Spezielle Halteproblem ist definiert als
+    \begin{equation*}
+        \mathcal{H_\epsilon} = \{ <M> \ | \ M \text{ hält auf der Eingabe } \epsilon \}
+    \end{equation*}
+
+    \vspace*{0.5cm}
+    \textbf{\textsf{Satz:}} Das Spezielle Halteproblem $\mathcal{H}_\epsilon$ ist unentscheidbar.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Die Idee ist wieder wie vorhin: Man nimmt an, es gibt eine TM $\mathcal{M}_\epsilon$,
+    die $\mathcal{H}_\epsilon$ entscheidet. Dann kann $\mathcal{M}_\epsilon$ als Unterprogramm einer TM genutzt werden,
+    die $\mathcal{H}_\epsilon$ entscheidet. So eine $\mathcal{M}_\epsilon$ kann es aber nicht geben. Als Folge würde dann gelten:
+    \begin{equation*}
+        \begin{align}
+            \Rightarrow \ & \mathcal{M}_\epsilon & \text{ kann nicht existieren.}\\
+            \Rightarrow \ & \mathcal{H}_\epsilon & \text{ ist unentscheidbar.}\\
+        \end{align}
+    \end{equation*}
+
+    Die TM $\mathcal{M}_{\mathcal{H}}$ kann beschrieben werden:
+    \begin{enumerate}
+        \item Falls die Eingabe mit einer Kodierung einer TM beginnt, so wird die Eingabe verworfen.
+        \item Falls die Eingabe $<M>w$ ist, so soll eine TM $\mathcal{M}_w$ konstruiert werden, die Folgendes macht:
+        \begin{itemize}
+            \item Falls $\mathcal{M}_w$ auf keiner Eingabe startet, schreibt man $w$ auf das Band und simuliert $\mathcal{M}$ auf $w$.
+            \item Auf anderen Eingaben kann sich $\mathcal{M}_w$ beliebig verhalten.
+        \end{itemize}
+        \item Man lässt $\mathcal{M}_\epsilon$ entscheiden, ob $\mathcal{M}_w$ auf dem leeren Wort terminiert.
+        Falls terminiert, entscheidet man mit \texttt{JA}, sonst mit \texttt{NEIN}.
+    \end{enumerate}
+
+    Korrektheit der Konstruktion:
+    \begin{itemize}
+        \item $<M>w \in \mathcal{H}$
+        \begin{itemize}
+            \item [$\Rightarrow$] $\mathcal{M}$ hält auf $w$
+            \item [$\Rightarrow$] $\mathcal{M}_w$ hält auf $\epsilon$
+            \item [$\Rightarrow$] $\mathcal{M}_\epsilon$ akzeptiert $<M_w>$
+            \item [$\Rightarrow$] $\mathcal{M}_\mathcal{H}$ akzeptiert $<M>w$
+        \end{itemize}
+        \item $<M>w \notin \mathcal{H}$
+        \begin{itemize}
+            \item [$\Rightarrow$] $\mathcal{M}$ hält nicht auf $w$
+            \item [$\Rightarrow$] $\mathcal{M}_w$ hält nicht auf $\epsilon$
+            \item [$\Rightarrow$] $\mathcal{M}_\epsilon$ verwirft $<M_w>$
+            \item [$\Rightarrow$] $\mathcal{M}_\mathcal{H}$ verwirft $<M>w$
+        \end{itemize}
+    \end{itemize}
+
+%    \textit{Anmerkung}:
+    %    \begin{itemize}
+    %        \item Ist eine Sprache und sein Komplement jeweils semientscheidbar, so ist die Sprache entscheidbar.
+    %        \item Ist eine Sprache semientscheidbar, sein Komplement aber nicht mal semientscheidbar, so ist die Sprache unentscheidbar.
+    %    \end{itemize}
+
+\end{document}

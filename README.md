@@ -1,6 +1,6 @@
 # AuB 17-18
 
-Mitschriften zur Vorlesung *AuB17/18* der Uni Stuttgart.
+Mitschriften zur Vorlesung *AuB17/18* der Uni Stuttgart. Kein Anspruch auf Korrektheit.
 
 <table>
 <tr><td>
@@ -24,7 +24,7 @@ Mitschriften zur Vorlesung *AuB17/18* der Uni Stuttgart.
 | 11            | 05.12.2017   |[klick](lectures-pdf/lecture11.pdf)    |
 | 12            | 08.12.2017   |[klick](lectures-pdf/lecture12.pdf)    |
 | 13            | 12.12.2017   |[klick](lectures-pdf/lecture13.pdf)    |
-| 14            | 19.12.2017   |                                       |
+| 14            | 19.12.2017   |[klick](lectures-pdf/lecture14.pdf)   |
 | 15            | 22.12.2017   | Scheinklausur                         |
 | 16            |              |                                       |
 | 17            |              |                                       |
