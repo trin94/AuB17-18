@@ -15,10 +15,6 @@ Mitschriften zur Vorlesung *AuB17/18* der Uni Stuttgart. Kein Anspruch auf Korre
 |08             | 21.11.2017   |[klick](lectures-pdf/lecture08.pdf)    |Perfektes Hashing
 |09             | 24.11.2017   |[klick](lectures-pdf/lecture09.pdf)    |Perfektes Hashing, Cuckoo-Hashing
 |10             | 28.11.2017   |[klick](lectures-pdf/lecture10.pdf)    |Contraction Hierarchies
-
-
-|Vorlesung      | Datum der VL |PDF                                    |Thema
-|---------------|--------------|---------------------------------------|----------------------------------
 | 11            | 05.12.2017   |[klick](lectures-pdf/lecture11.pdf)    |Berechenbarkeit/TMs
 | 12            | 08.12.2017   |[klick](lectures-pdf/lecture12.pdf)    |Mehrband TMs
 | 13            | 12.12.2017   |[klick](lectures-pdf/lecture13.pdf)    |Universelle TM
@@ -29,10 +25,6 @@ Mitschriften zur Vorlesung *AuB17/18* der Uni Stuttgart. Kein Anspruch auf Korre
 | 18            |              |                                       |
 | 19            |              |                                       |
 | 20            |              |                                       |
-
-
-|Vorlesung      | Datum der VL |PDF                                    |Thema
-|---------------|--------------|---------------------------------------|----------------------------------
 | 21            |              |                                       |
 | 22            |              |                                       |
 | 23            |              |                                       |
