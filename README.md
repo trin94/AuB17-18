@@ -2,8 +2,6 @@
 
 Mitschriften zur Vorlesung *AuB17/18* der Uni Stuttgart. Kein Anspruch auf Korrektheit.
 
-<table>
-<tr><td>
 
 |Vorlesung      | Datum der VL |PDF                                    |Thema
 |---------------|--------------|---------------------------------------|----------------------------------
@@ -17,7 +15,7 @@ Mitschriften zur Vorlesung *AuB17/18* der Uni Stuttgart. Kein Anspruch auf Korre
 |08             | 21.11.2017   |[klick](lectures-pdf/lecture08.pdf)    |Perfektes Hashing
 |09             | 24.11.2017   |[klick](lectures-pdf/lecture09.pdf)    |Perfektes Hashing, Cuckoo-Hashing
 |10             | 28.11.2017   |[klick](lectures-pdf/lecture10.pdf)    |Contraction Hierarchies
-</td><td>
+
 
 |Vorlesung      | Datum der VL |PDF                                    |Thema
 |---------------|--------------|---------------------------------------|----------------------------------
@@ -32,8 +30,6 @@ Mitschriften zur Vorlesung *AuB17/18* der Uni Stuttgart. Kein Anspruch auf Korre
 | 19            |              |                                       |
 | 20            |              |                                       |
 
-</td>
-<!-- <td>
 
 |Vorlesung      | Datum der VL |PDF                                    |Thema
 |---------------|--------------|---------------------------------------|----------------------------------
@@ -48,7 +44,6 @@ Mitschriften zur Vorlesung *AuB17/18* der Uni Stuttgart. Kein Anspruch auf Korre
 | 29            |              |                                       |
 | 30            |              |                                       |
 
-</td> --></tr> </table>
 
 ## Mitmachen
 Hilfe ist gern gesehen. Ob Grafiken, Mitschriften der Vorlesung in Text- oder Texform oder einfach nur Korrektur.
