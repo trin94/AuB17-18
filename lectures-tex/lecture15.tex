@@ -1,0 +1,246 @@
+\documentclass{scrartcl}% siehe <http://www.komascript.de>
+\input{../lectures-tex/configuration}
+
+\usepackage{diagbox}
+
+\definecolor{cadmiumred}{rgb}{0.89, 0.0, 0.13}
+\definecolor{cadmiumorange}{rgb}{0.93, 0.53, 0.18}
+\definecolor{cadmiumyellow}{rgb}{1.0, 0.96, 0.0}
+\definecolor{cadmiumgreen}{rgb}{0.0, 0.42, 0.24}
+\definecolor{blizzardblue}{rgb}{0.67, 0.9, 0.93}
+\definecolor{persianblue}{rgb}{0.11, 0.22, 0.73}
+\definecolor{darkviolet}{rgb}{0.58, 0.0, 0.83}
+
+\begin{document}
+    \headerline{Algorithmen und Berechenbarkeit}{Vorlesungsmitschrift}{Vorlesung 15}
+
+    \section*{Satz von Rice}
+    TMs halten nicht auf jeder Eingabe, dass bedeutet, sie berechnen partielle Funktionen, die die folgende Form aufweisen:
+
+    \begin{align*}
+        & f : \{0,1\}^* \rightarrow \{0,1\}^* \cup \{\colorbox{blue!30}{$\bot$} \} \\
+        \rightarrow &\ \colorbox{blue!30}{$\bot$} \text{ bedeutet, TM hält nicht}
+    \end{align*}
+
+    Im Rahmen der Vorlesung liegt der Hauptfokus auf TMs, die \texttt{JA}/\texttt{NEIN} ausgeben, also Funktionen der Form:
+
+    \begin{align*}
+        & f : \{0,1\}^* \rightarrow \{\colorbox{green!30}{$0$},\colorbox{red!30}{$1$}\}^* \cup \{\bot \} \\
+        \rightarrow &\ \colorbox{green!30}{$0$} \text{ TM verwirft Eingabe} \\
+        \rightarrow &\ \colorbox{red!30}{$1$} \text{ TM akzeptiert Eingabe}
+    \end{align*}
+
+    Sei nun die Menge aller Funktionen, die von irgendeiner TM erkannt werden, definiert als
+
+    \begin{equation*}
+        \mathcal{R} = \{f_M : \{0,1\}^* \rightarrow \{0,1\}^* \cup \{\bot\}\ |\text{ M ist TM} \}
+    \end{equation*}
+
+    dann besagt der
+    \textbf{\textsf{Satz von Rice:}}
+
+    \vspace*{0.3cm}
+    Sei $\mathcal{S}$ eine Teilmenge von $\mathcal{R}$ mit $ \emptyset \neq \mathcal{S} \neq \mathcal{R}$, dann ist die Sprache
+
+    \begin{equation*}
+        L(\mathcal{S}) = \{ \text{<M> } | \text{ M berechnet eine Funktion aus } \mathcal{S} \}
+    \end{equation*}
+
+    unentscheidbar.\proofend
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Man nimmt an, eine TM $\mathcal{M}_{\mathcal{R}(\mathcal{S})}$ existiert,
+    die $L(\mathcal{S})$ entscheidet.
+    Dann konstruiert man daraus eine TM $M_{\epsilon}$, die $\mathcal{H}_\epsilon$ entscheidet,
+    was im Widerspruch zur Unentscheidbarkeit von $\mathcal{H}_\epsilon$ steht.
+
+    \vspace*{0.3cm}
+    Sei $u$ die überall undefinierte Funktion. Man unterscheidet nun die Fälle
+    \begin{itemize}
+        \item [a)] $u \notin S$
+        \item [b)] $u \in S$
+    \end{itemize}
+
+    \newpage
+    Sein nun $f \neq u$ eine Funktion aus $\mathcal{S}$. Die TM $\mathcal{M}_\epsilon$ arbeitet wie folgt:
+    \begin{enumerate}
+        \item Falls die Eingabe <M> keine korrekte Kodierung einer TM ist, wird verworfen.
+        \item Es wird eine TM $\mathcal{M}^*$ mit folgendem Verhalten konstruiert:
+        \begin{itemize}
+            \item Man ignoriert die Eingabe $x$, d.h. man simuliert $\mathcal{M}$ auf der Eingabe $\epsilon$.
+            \item Man berechnet $f(x)$, d.h. man simuliert $\mathcal{M}_f$ auf der Eingabe $x$.
+            \item [$\Rightarrow$] Beobachtung: $\mathcal{M}^*$ berechnet genau dann $f(x)$,
+            falls $\mathcal{M}$ auf $\epsilon$ hält. Sonst gilt $f_{\mathcal{M}} = u$.
+        \end{itemize}
+        \item Man startet die TM $\mathcal{M}_{L(\mathcal{S})}$ auf der Eingabe <$\text{M}^*$> und akzeptiert genau dann,
+        wenn $\mathcal{M}_{L(\mathcal{S})}$ akzeptiert.
+    \end{enumerate}
+
+    Korrektheit der Konstruktion:
+    \begin{itemize}
+        \item $w \in \mathcal{H}_\epsilon$
+        \begin{itemize}
+            \item [$\Rightarrow$] $\mathcal{M}$ hält auf $\epsilon$
+            \item [$\Rightarrow$] <$\text{M}^*$> $\in L(\mathcal{S})$
+            \item [$\Rightarrow$] $\mathcal{M}_{L(\mathcal{S})}$ akzpetiert <$\text{M}^*$>
+            \item [$\Rightarrow$] $\mathcal{M}_{\epsilon}$ akzpetiert $w$
+        \end{itemize}
+        \item $w \notin \mathcal{H}_\epsilon$
+        \begin{itemize}
+            \item [$\Rightarrow$] $\mathcal{M}$ hält nicht auf $\epsilon$
+            \item [$\Rightarrow$] $\mathcal{M}^*$ berechnet $u$
+            \item [$\Rightarrow$] <$\text{M}^*$> $\notin L(\mathcal{S})$
+            \item [$\Rightarrow$] $\mathcal{M}_{L(\mathcal{S})}$ verwirft <$\text{M}^*$>
+            \item [$\Rightarrow$] $\mathcal{M}_{\epsilon}$ verwirft $w$
+        \end{itemize}
+    \end{itemize}
+
+    Analog kann der Fall $u \in \mathcal{S}$ gezeigt werden (mit Invertierung des Akzeptanzverhaltens).\proofend
+
+    \vspace*{0.3cm}
+    Als Folge des Satzes von Rice gilt insbesondere, dass man nicht entscheiden kann,
+    ob ein Programm auf jeder Eingabe hält.
+
+    \begin{equation*}
+        S = \{ f: \{0,1\}^* \rightarrow \{0,1\}^* \}
+    \end{equation*}
+
+    \section*{Semi-Entscheidbarkeit}
+
+    \textbf{\textsf{Definition Entscheidbarkeit:}}
+    Eine Sprache $L$ wird von einer TM $\mathcal{M}$ \textit{\textbf{\textsf{entschieden}}}, falls $\mathcal{M}$ auf jeder Eingabe hält und genau die Wörter aus $L$ akzeptiert.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Definition Erkennen:}}
+    Eine Sprache $L$ wird von einer TM $\mathcal{M}$ \textit{\textbf{\textsf{erkannt}}}, wenn $\mathcal{M}$ jedes Wort aus $L$ akzeptiert und $\mathcal{M}$ kein Wort akzeptiert,
+    das nicht in $L$ ist. Auf Eingaben, die nicht in $L$ sind, muss $\mathcal{M}$ nicht halten (Entweder \texttt{NEIN} sagen, oder ewig loopen).
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Definition Semi-Entscheidbarkeit:}}
+    Eine Sprache heißt \textit{\textbf{\textsf{semi-entscheidbar}}}, wenn es eine TM $\mathcal{M}$ gibt, die $L$ erkennt.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Bsp:}} Das Halteporblem ($\mathcal{H} = \{\text{<M>}w\ | \text{ TM }\mathcal{M} \text{ hält auf Eingabe } w\}$) ist semi-entscheidbar, denn es gilt
+    \begin{itemize}
+        \item Wenn die Eingabe nicht der Form <M>$w$ entspricht, wird verworfen,
+        \item Man simuliert $\mathcal{M}$ auf $w$:
+        \begin{itemize}
+            \item Falls $\mathcal{M}$ hält, wird akzeptiert.
+            \item Falls $\mathcal{M}$ nicht hält, wird ewig weiter simuliert.
+        \end{itemize}
+    \end{itemize}
+
+    \textit{Wenn eine Sprache nicht semi-entscheidbar ist, dann kann sie auch nicht entscheidbar sein. Alle Sprachen, die entscheidbar sind, sind automatisch auch semi-entscheidbar.}
+
+    \section*{Rekursive Aufzählbarkeit}
+
+    \textbf{\textsf{Definition Aufzähler:}}
+    Ein Aufzähler für eine Sprache $L$ ist eine TM mit Drucker (Ausgabeband, auf dem der Kopf nur nach rechts bewegt werden darf).
+    Ein Aufzähler für $L$ gibt alle Wörter aus $L$ auf dem Drucker aus:
+    \begin{itemize}
+        \item Es werden nur Wörter aus $L$ ausgedruckt.
+        \item Jedes Wort aus $L$ wird irgendwann ausgedruckt.
+    \end{itemize}
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Definition Rekursiv aufzählbar:}}
+    Eine Sprache $L$ heißt rekursiv aufzählbar, wenn es einen Aufzähler für $L$ gibt.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Satz:}}
+    Eine Sprache $L$ ist genau dann semi-entscheidbar, wenn $L$ rekursiv aufzählbar ist.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}}
+    \begin{itemize}
+        \item [] \textbf{"`aufzählbar $\Rightarrow$ semi-entscheidbar"':}
+        \item [] Man konstruiert eine TM $\mathcal{M}$, die auf einer separaten Spur den Aufzähler simuliert.
+        Immer wenn ein Wort ausgegeben wird, wird es mit der Eingabe verglichen.
+        Man akzeptiert, falls die Eingabe einem aufgezählten Wort entspricht.
+        $\mathcal{M}$ erkennt sonst $L$, da jedes Wort aus $L$ irgendwann aufgezählt wird.
+        \item [] \textbf{"`semi-entscheidbar $\Rightarrow$ aufzählbar"':}
+        \item [] Seien $w_1, w_2, w_3 \dots$ alle Wörter aus $\Sigma^*$ in kanonischer Reihenfolge (z.B. lexikografisch) sortiert.
+        Für $i = 1,2,3, \dots$ simuliert man nun $i$-Schritte von $\mathcal{M}$ auf $w_1, w_2, \dots, w_i$.
+        Wird dabei ein Wort akzeptiert, druckt man es aus.
+        Offensichtlich werden nur Wörter aus $L$ ausgedruckt.
+        Sei $w=w_K \in L$, dann wird $w_k$ von $\mathcal{M}$ nach $t_k$ Schritten akzeptiert.
+        Wenn $i = max(k, E_k)$, dann wird $w_k$ betrachtet und $\mathcal{M}$ lange genug simuliert, um $w_k$ zu akzeptieren
+        $\Rightarrow$ $w_k$ wird gedruckt.\proofend
+    \end{itemize}
+
+    \section*{Eigenschaften entscheidbarer / semi-entscheidbarer Sprachen}
+    \textbf{\textsf{Satz:}}
+    \begin{itemize}
+        \item [a)] Wenn die Sprachen $L_1$ und $L_2$ entscheidbar sind, so ist auch $L_1 \cap L_2$ entscheidbar.
+        \item [b)] Wenn die Sprachen $L_1$ und $L_2$ semi-entscheidbar sind, so ist auch $L_1 \cap L_2$ semi-entscheidbar.
+    \end{itemize}
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Satz:}}
+    \begin{itemize}
+        \item [a)] Wenn die Sprachen $L_1$ und $L_2$ entscheidbar sind, so ist auch $L_1 \cup L_2$ entscheidbar.
+        \item [b)] Wenn die Sprachen $L_1$ und $L_2$ semi-entscheidbar sind, so ist auch $L_1 \cup L_2$ semi-entscheidbar.
+    \end{itemize}
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Satz:}} Wenn $L$ entscheidbar ist, so ist auch $\overline{L}$ entscheidbar.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Man invertiert die Ausgabe des Entscheiders für $L$.
+
+    \vspace*{0.7cm}
+    \textbf{\textsf{Satz:}} Sind $L$ und $\overline{L}$ semi-entscheidbar, so ist $L$ entscheidbar.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Man simuliert Semi-Entscheider für $L$ und $\overline{L}$ parallel.
+    Die Entscheidung ist klar, sobald einer der Entscheider akzeptiert. Einer davon muss akzeptieren, denn es gilt:
+    $w \in L$ oder $ w \notin L$.
+
+    \vspace*{0.7cm}
+    \textbf{\textsf{Korollar:}} $L$ ist unentscheidbar genau dann, wenn mindestens einer der beiden Sprachen $L$
+    und $\overline{L}$ nicht semi-entscheidbar ist.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Bsp:}} Sei $\mathcal{H}$ semi-entscheidbar. Dann gilt: $\overline{\mathcal{M}}$ ist nicht semi-entscheidbar oder aufzählbar.
+
+    \section*{Technik der Reduktion}
+    Das Ziel ist es, mithilfe von bereits untersuchten Sprachen zu zeigen,
+    ob eine Sprache $L$ entscheidbar oder semi-entscheidbar ist.
+    Die Reduktion bildet also die Eingaben eines Problems auf Eingaben eines anderen Problems ab.
+
+    \subsection*{Eingabe-Eingabe-Reduktion}
+    \textbf{\textsf{Definition:}} Es seien $L_1$ und $L_2$ Sprachen über $\Sigma^*$.
+    Dann heißt $L_1$ auf $L_2$ reduzierbar ($L_1 \leq L_2$), wenn es eine berechenbare Funktion
+
+    \begin{equation*}
+        f: \Sigma^* \rightarrow \Sigma^*
+    \end{equation*}
+
+    gibt, sodass für alle $x \in \Sigma^*$ gilt:
+
+    \begin{equation*}
+        x \in L_1 \qquad \Leftrightarrow \qquad f(x) \in L_2
+    \end{equation*}
+
+    Aus "`Berechenbarkeitssicht"' bedeutet das inbesondere, dass $L_1$ nicht schwieriger zu untersuchen ist als $L_2$.
+    Beispielhaft also: Falls $L_1$ unentscheidbar und $L_1 \leq L_2$ gilt, so ist auch $L_2$ unentscheidbar.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Lemma:}} Falls $L_1 \leq L_2$ und $L_2$ entscheidbar, so ist auch $L_1$ entscheidbar.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Man konstruiert eine TM $\mathcal{M}_1$,
+    die $L_1$ entscheidet unter Nutzung der TM $\mathcal{M}_2$, die $L_2$ entscheidet.
+    Nun berechnet man mit der Eingabe $x$ die Funktion $f(x)$ und simuliert $\mathcal{M}_2$ auf $f(x)$ wobei man deren Akzeptanzverhalten übernimmt.
+
+    Dann gilt
+    \begin{align*}
+        \mathcal{M}_1 \text{ akzpetiert } & \quad \Leftrightarrow \quad \mathcal{M}_2 \text{ akzpetiert } f(x) \\
+        & \quad \Leftrightarrow \quad f(x) \in L_2 \\
+        & \quad \Leftrightarrow \quad x \in L_1 \\
+    \end{align*}\proofend
+
+    \vspace*{0.3cm}
+    Aus dem Lemma folgt außerdem: Falls $L_1 \leq L_2$ und $L_1$ unentscheidbar $\quad \Rightarrow L_2$ unentscheidbar.
+
+\end{document}
