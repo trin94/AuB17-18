@@ -33,7 +33,7 @@
     Sei nun die Menge aller Funktionen, die von irgendeiner TM erkannt werden, definiert als
 
     \begin{equation*}
-        \mathcal{R} = \{f_M : \{0,1\}^* \rightarrow \{0,1\}^* \cup \{\bot\}\ |\text{ M ist TM} \}
+        \mathcal{R} = \{f_{\mathcal{M}}: \{0,1\}^* \rightarrow \{0,1\}^* \cup \{\bot\}\ |\ \mathcal{M} \text{ ist TM} \}
     \end{equation*}
 
     dann besagt der
@@ -43,15 +43,15 @@
     Sei $\mathcal{S}$ eine Teilmenge von $\mathcal{R}$ mit $ \emptyset \neq \mathcal{S} \neq \mathcal{R}$, dann ist die Sprache
 
     \begin{equation*}
-        L(\mathcal{S}) = \{ \text{<M> } | \text{ M berechnet eine Funktion aus } \mathcal{S} \}
+        \mathcal{L}(\mathcal{S}) = \{ \text{<M> } |\ \mathcal{M} \text{ berechnet eine Funktion aus } \mathcal{S} \}
     \end{equation*}
 
     unentscheidbar.\proofend
 
     \vspace*{0.3cm}
     \textbf{\textsf{Beweis:}} Man nimmt an, eine TM $\mathcal{M}_{\mathcal{R}(\mathcal{S})}$ existiert,
-    die $L(\mathcal{S})$ entscheidet.
-    Dann konstruiert man daraus eine TM $M_{\epsilon}$, die $\mathcal{H}_\epsilon$ entscheidet,
+    die $\mathcal{L}(\mathcal{S})$ entscheidet.
+    Dann konstruiert man daraus eine TM $\mathcal{M}_{\epsilon}$, die $\mathcal{H}_\epsilon$ entscheidet,
     was im Widerspruch zur Unentscheidbarkeit von $\mathcal{H}_\epsilon$ steht.
 
     \vspace*{0.3cm}
@@ -64,7 +64,7 @@
     \newpage
     Sein nun $f \neq u$ eine Funktion aus $\mathcal{S}$. Die TM $\mathcal{M}_\epsilon$ arbeitet wie folgt:
     \begin{enumerate}
-        \item Falls die Eingabe <M> keine korrekte Kodierung einer TM ist, wird verworfen.
+        \item Falls die Eingabe <M> keine korrekte Kodierung einer TM ist, wird sie verworfen.
         \item Es wird eine TM $\mathcal{M}^*$ mit folgendem Verhalten konstruiert:
         \begin{itemize}
             \item Man ignoriert die Eingabe $x$, d.h. man simuliert $\mathcal{M}$ auf der Eingabe $\epsilon$.
@@ -72,8 +72,8 @@
             \item [$\Rightarrow$] Beobachtung: $\mathcal{M}^*$ berechnet genau dann $f(x)$,
             falls $\mathcal{M}$ auf $\epsilon$ hält. Sonst gilt $f_{\mathcal{M}} = u$.
         \end{itemize}
-        \item Man startet die TM $\mathcal{M}_{L(\mathcal{S})}$ auf der Eingabe <$\text{M}^*$> und akzeptiert genau dann,
-        wenn $\mathcal{M}_{L(\mathcal{S})}$ akzeptiert.
+        \item Man startet die TM $\mathcal{M}_{\mathcal{L}(\mathcal{S})}$ auf der Eingabe <$\text{M}^*$> und akzeptiert genau dann,
+        wenn $\mathcal{M}_{\mathcal{L}(\mathcal{S})}$ akzeptiert.
     \end{enumerate}
 
     Korrektheit der Konstruktion:
@@ -81,16 +81,16 @@
         \item $w \in \mathcal{H}_\epsilon$
         \begin{itemize}
             \item [$\Rightarrow$] $\mathcal{M}$ hält auf $\epsilon$
-            \item [$\Rightarrow$] <$\text{M}^*$> $\in L(\mathcal{S})$
-            \item [$\Rightarrow$] $\mathcal{M}_{L(\mathcal{S})}$ akzpetiert <$\text{M}^*$>
+            \item [$\Rightarrow$] <$\text{M}^*$> $\in \mathcal{L}(\mathcal{S})$
+            \item [$\Rightarrow$] $\mathcal{M}_{\mathcal{L}(\mathcal{S})}$ akzpetiert <$\text{M}^*$>
             \item [$\Rightarrow$] $\mathcal{M}_{\epsilon}$ akzpetiert $w$
         \end{itemize}
         \item $w \notin \mathcal{H}_\epsilon$
         \begin{itemize}
             \item [$\Rightarrow$] $\mathcal{M}$ hält nicht auf $\epsilon$
             \item [$\Rightarrow$] $\mathcal{M}^*$ berechnet $u$
-            \item [$\Rightarrow$] <$\text{M}^*$> $\notin L(\mathcal{S})$
-            \item [$\Rightarrow$] $\mathcal{M}_{L(\mathcal{S})}$ verwirft <$\text{M}^*$>
+            \item [$\Rightarrow$] <$\text{M}^*$> $\notin \mathcal{L}(mathcal{S})$
+            \item [$\Rightarrow$] $\mathcal{M}_{\mathcal{L}(\mathcal{S})}$ verwirft <$\text{M}^*$>
             \item [$\Rightarrow$] $\mathcal{M}_{\epsilon}$ verwirft $w$
         \end{itemize}
     \end{itemize}
@@ -120,7 +120,7 @@
     Eine Sprache heißt \textit{\textbf{\textsf{semi-entscheidbar}}}, wenn es eine TM $\mathcal{M}$ gibt, die $L$ erkennt.
 
     \vspace*{0.3cm}
-    \textbf{\textsf{Bsp:}} Das Halteporblem ($\mathcal{H} = \{\text{<M>}w\ | \text{ TM }\mathcal{M} \text{ hält auf Eingabe } w\}$) ist semi-entscheidbar, denn es gilt
+    \textbf{\textsf{Bsp:}} Das Halteproblem ($\mathcal{H} = \{\text{<M>}w\ | \text{ TM }\mathcal{M} \text{ hält auf Eingabe } w\}$) ist semi-entscheidbar, denn es gilt
     \begin{itemize}
         \item Wenn die Eingabe nicht der Form <M>$w$ entspricht, wird verworfen,
         \item Man simuliert $\mathcal{M}$ auf $w$:
@@ -163,7 +163,7 @@
         Für $i = 1,2,3, \dots$ simuliert man nun $i$-Schritte von $\mathcal{M}$ auf $w_1, w_2, \dots, w_i$.
         Wird dabei ein Wort akzeptiert, druckt man es aus.
         Offensichtlich werden nur Wörter aus $L$ ausgedruckt.
-        Sei $w=w_K \in L$, dann wird $w_k$ von $\mathcal{M}$ nach $t_k$ Schritten akzeptiert.
+        Sei $w=w_k \in L$, dann wird $w_k$ von $\mathcal{M}$ nach $t_k$ Schritten akzeptiert.
         Wenn $i = max(k, E_k)$, dann wird $w_k$ betrachtet und $\mathcal{M}$ lange genug simuliert, um $w_k$ zu akzeptieren
         $\Rightarrow$ $w_k$ wird gedruckt.\proofend
     \end{itemize}
@@ -210,12 +210,7 @@
 
     \subsection*{Eingabe-Eingabe-Reduktion}
     \textbf{\textsf{Definition:}} Es seien $L_1$ und $L_2$ Sprachen über $\Sigma^*$.
-    Dann heißt $L_1$ auf $L_2$ reduzierbar ($L_1 \leq L_2$), wenn es eine berechenbare Funktion
-
-    \begin{equation*}
-        f: \Sigma^* \rightarrow \Sigma^*
-    \end{equation*}
-
+    Dann heißt $L_1$ auf $L_2$ reduzierbar ($L_1 \leq L_2$), wenn es eine berechenbare Funktion $f: \Sigma^* \rightarrow \Sigma^*$
     gibt, sodass für alle $x \in \Sigma^*$ gilt:
 
     \begin{equation*}
@@ -223,16 +218,19 @@
     \end{equation*}
 
     Aus "`Berechenbarkeitssicht"' bedeutet das inbesondere, dass $L_1$ nicht schwieriger zu untersuchen ist als $L_2$.
-    Beispielhaft also: Falls $L_1$ unentscheidbar und $L_1 \leq L_2$ gilt, so ist auch $L_2$ unentscheidbar.
 
     \vspace*{0.3cm}
     \textbf{\textsf{Lemma:}} Falls $L_1 \leq L_2$ und $L_2$ entscheidbar, so ist auch $L_1$ entscheidbar.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Lemma:}} Falls $L_1 \leq L_2$ und $L_1$ unentscheidbar, so ist auch $L_2$ unentscheidbar.
 
     \vspace*{0.3cm}
     \textbf{\textsf{Beweis:}} Man konstruiert eine TM $\mathcal{M}_1$,
     die $L_1$ entscheidet unter Nutzung der TM $\mathcal{M}_2$, die $L_2$ entscheidet.
     Nun berechnet man mit der Eingabe $x$ die Funktion $f(x)$ und simuliert $\mathcal{M}_2$ auf $f(x)$ wobei man deren Akzeptanzverhalten übernimmt.
 
+    \vspace*{0.3cm}
     Dann gilt
     \begin{align*}
         \mathcal{M}_1 \text{ akzpetiert } & \quad \Leftrightarrow \quad \mathcal{M}_2 \text{ akzpetiert } f(x) \\
@@ -242,5 +240,10 @@
 
     \vspace*{0.3cm}
     Aus dem Lemma folgt außerdem: Falls $L_1 \leq L_2$ und $L_1$ unentscheidbar $\quad \Rightarrow L_2$ unentscheidbar.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Korollar:}}
+    Eine Sprache $\mathcal{L}$ ist genau dann unentscheidbar,
+    wenn entweder $\mathcal{L}$ oder $\overline{\mathcal{L}}$ nicht semi-entscheidbar sind.
 
 \end{document}
