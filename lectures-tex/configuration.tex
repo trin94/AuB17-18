@@ -44,6 +44,8 @@
 \usetikzlibrary{trees}
 \usetikzlibrary{calc}
 \usetikzlibrary{tikzmark}
+\usetikzlibrary{intersections}
+
 
 \sisetup{
 locale = DE ,
@@ -81,7 +83,7 @@ per-mode = symbol
 
 \vspace*{0.3cm} \textbf{\textsf{Beweis:}} #2 \vspace*{0.3cm}
 }
-\newcommand{\uparrow}[0]{\rlap{\scalebox{1.6}{$\uparrow$}}}
+%\newcommand{\uparrow}[0]{\rlap{\scalebox{1.6}{$\uparrow$}}}
 \newlength\dlf
 \newcommand{\proofend}[0]{\hfill $\square$}
 \newcommand\drawbi[7][4pt]{%

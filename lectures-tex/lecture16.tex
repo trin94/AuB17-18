@@ -1,0 +1,224 @@
+\documentclass{scrartcl}% siehe <http://www.komascript.de>
+\input{../lectures-tex/configuration}
+
+\usepackage{diagbox}
+
+\definecolor{cadmiumred}{rgb}{0.89, 0.0, 0.13}
+\definecolor{cadmiumorange}{rgb}{0.93, 0.53, 0.18}
+\definecolor{cadmiumyellow}{rgb}{1.0, 0.96, 0.0}
+\definecolor{cadmiumgreen}{rgb}{0.0, 0.42, 0.24}
+\definecolor{blizzardblue}{rgb}{0.67, 0.9, 0.93}
+\definecolor{persianblue}{rgb}{0.11, 0.22, 0.73}
+\definecolor{darkviolet}{rgb}{0.58, 0.0, 0.83}
+
+\begin{document}
+    \headerline{Algorithmen und Berechenbarkeit}{Vorlesungsmitschrift}{Vorlesung 16}
+
+    \section*{Das Allgemeine Halteproblem: Die Sprache $\mathcal{H}_{all}$}
+    Die Sprache $\mathcal{H}_{all}$ ist definiert als
+
+    \begin{equation*}
+        \mathcal{H}_{all} = \{ \text{<M>}\ |\ \text{ M hält auf allen Eingaben} \}
+    \end{equation*}
+
+    Das Allgemeine Halteproblem besteht aus den beiden Teilsätzen,
+    dass sowohl $\mathcal{H}_{all}$ als auch $\overline{\mathcal{H}_{all}}$ nicht semi-entscheidbar sind.
+
+    \vspace*{1cm}
+    \textbf{\textsf{Satz:}} $\overline{\mathcal{H}_{all}}$ ist nicht semi-entscheidbar.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Für den Beweis wird eine Sprache $\mathcal{X}$ gesucht, die nicht semi-entscheidbar ist.
+    Anschließend wird  $\mathcal{X} \leq \overline{\mathcal{H}_{all}}$.
+
+    Für $\mathcal{X}$ eignen sich einige Sprachen: Es wurde bereits gezeigt, dass $\mathcal{H}_\epsilon$ semi-entscheidbar aber nicht entscheidbar ist ($\mathcal{H}_\epsilon$ ist unentscheidbar und semi-entscheidbar).
+    Deshalb ist auch bekannt, dass $\overline{\mathcal{H}_\epsilon}$ nicht semi-entscheidbar ist.
+
+    \vspace*{0.5cm}
+    \par
+    \begingroup
+    \leftskip=1cm % Parameter anpassen
+    \noindent
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Einschub: Entscheidbarkeit/Unentscheidbarkeit - Semi-entscheidbar}}
+
+    \par
+    \endgroup
+    \par
+    \begingroup
+    \leftskip=1cm % Parameter anpassen
+    \noindent
+
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}[
+        thick]
+            \draw [fill=cadmiumgreen, fill opacity=0.7, name path=c1] (0,0) circle (2cm);
+            \draw [fill=cadmiumred, fill opacity=0.3, name path=c2] (3,0) circle (2.5cm);
+            \draw (0,0) ++(120:2cm) -- ++(150:2.2cm) node [fill=white,inner sep=5pt](a){Entscheidbare Sprachen};
+            \draw (3, 0) ++(30:2.5cm) -- ++(45 :2.6cm) node [fill=white,inner sep=5pt](b){Unentscheidbare-Sprachen};
+            \path [name intersections={of=c1 and c2,by=cs}];
+            \draw (cs) -- ++(0,2) node [fill=white,inner sep=5pt](c){Un- aber semi-entscheidbare Sprachen};
+        \end{tikzpicture}
+    \end{figure}
+    \par
+    \endgroup
+    \par
+    \begingroup
+    \leftskip=1cm % Parameter anpassen
+    \noindent
+    \newpage
+    Daraus ergeben sich beispielhaft die folgenden Zusammenhänge
+    \begin{itemize}
+        \item [$\rightarrow$] Wenn entscheidbar $\Rightarrow$ auch semi-entscheidbar
+        \item [$\rightarrow$] Wenn semi-entscheidbar $\centernot\Rightarrow$ entscheidbar
+        \item [$\rightarrow$] Wenn unentscheidbar $\centernot\Rightarrow$ semi-entscheidbar
+        \item [$\rightarrow$] Wenn nicht semi-entscheidbar $\Rightarrow$ unentscheidbar
+    \end{itemize}
+    \par
+    \endgroup
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis-Fortführung:}} Wählt man nun $\mathcal{X} = \overline{\mathcal{H}_\epsilon}$
+    (man zeigt also $\overline{\mathcal{H}_\epsilon} \leq \overline{\mathcal{X}_{all}}$) wird eine Funktion
+    $f'$ benötigt, sodass gilt
+
+    \begin{equation*}
+        x \in \overline{\mathcal{H}_\epsilon} \quad \Leftrightarrow \quad f(x) \in \overline{\mathcal{H}_{all}}
+    \end{equation*}
+
+    oder äquivalent
+
+    \begin{equation*}
+        x \in \mathcal{H}_\epsilon \quad \Leftrightarrow \quad f(x) \in \mathcal{H}_{all}
+    \end{equation*}
+
+    und damit
+
+    \begin{equation*}
+        \mathcal{H}_\epsilon \leq \mathcal{H}_{all}
+    \end{equation*}
+
+    Die Funktion $f$ wird wie folgt definiert bzw. berechnet: Sei $w$ die Eingabe für $\mathcal{H}_\epsilon$.
+    \begin{itemize}
+        \item Falls $w$ keine gültige TM-Kodierung, dann setzt man $f(w) = w$.
+        \item Falls $w$ eine gültige TM-Kodierung <M>, dann setzt man $f(w) = \text{<M}^{*}_\epsilon\text{>}$ mit der folgenden Eigenschaft:
+        $\text{<M}^{*}_\epsilon\text{>}$ ignoriert und simuliert $\mathcal{M}$ mit der Eingabe $\epsilon$.
+    \end{itemize}
+
+    Korrektheit der Konstruktion:
+    \begin{itemize}
+        \item [] Falls $w$ keine TM-Kodierung $\Rightarrow w \notin \mathcal{H}_\epsilon$ und $f(w) \notin \mathcal{H}_{all}$.\newline
+        Andernfalls gilt $w=$<M> und $f(w)=\text{<M}^{*}_\epsilon\text{>}$.
+        \item $w \in \mathcal{H}_\epsilon$
+        \begin{itemize}
+            \item [$\Rightarrow$] $\mathcal{M}$ hält auf der Eingabe $\epsilon$
+            \item [$\Rightarrow$] $\text{<M}^{*}_\epsilon\text{>}$ hält auf allen Eingaben
+            \item [$\Rightarrow$] $f(w) \in \mathcal{H}_{all}$
+        \end{itemize}
+        \item $w \notin \mathcal{H}_\epsilon$
+        \begin{itemize}
+            \item [$\Rightarrow$] $\mathcal{M}$ hält nicht auf der Eingabe $\epsilon$
+            \item [$\Rightarrow$] $\text{<M}^{*}_\epsilon\text{>}$ hält nie
+            \item [$\Rightarrow$] $f(w) \notin \mathcal{H}_{all}$
+        \end{itemize}
+    \end{itemize}
+
+    Somit gilt:
+    \begin{align*}
+        w \in \mathcal{H}_{\epsilon} & \quad \Leftrightarrow \quad  f(w) \in \mathcal{H}_{all}, \text{ also ist} \\
+        \mathcal{H}_{\epsilon} \leq \mathcal{H}_{all} & \quad \Rightarrow \quad  \overline{\mathcal{H}_{\epsilon}} \leq \overline{\mathcal{H}_{all}}\\
+        & \quad \Rightarrow \quad  \overline{\mathcal{H}_{all}} \text{ nicht entscheidbar}\\
+    \end{align*}\proofend
+
+    \newpage
+    \textbf{\textsf{Satz:}} $\mathcal{H}_{all}$ ist nicht semi-entscheidbar.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}}
+    Es wird wieder mit $\overline{\mathcal{H}_\epsilon} \leq \mathcal{H}_{all}$ argumentiert.
+    Man konstruiert eine Funktion $f$, die \texttt{JA}-Instanzen von $\overline{\mathcal{H}_\epsilon}$ auf \texttt{JA}-Instanzen von
+    $\mathcal{H}_{all}$ und \texttt{NEIN}-Instanzen von $\overline{\mathcal{H}_\epsilon}$ auf \texttt{NEIN}-Instanzen von
+    $\mathcal{H}_{all}$ abbildet.
+
+    Sei $w$ die Eingabe für $\overline{\mathcal{H}_\epsilon}$
+    \begin{itemize}
+        \item Falls $w$ keine gültige TM-Kodierung, dann gilt $w \in \overline{\mathcal{H}_\epsilon}$. \newline Außerdem wird $f(w)= \text{ Kodierung einer TM in } \mathcal{H}_{all}$.
+        \item Falls $w$ eine gültige TM-Kodierung <M>, dann berechnet man eine Kodierung $\text{<M}^{'}_{\mathcal{M}}\text{>}$ einer TM $\mathcal{M}'_{\mathcal{M}}$,
+        die auf der Eingabe $x$ Folgendes tut:
+        Falls $|x|=i$, simuliert sie die ersten $i$-Schritte von $\mathcal{M}$ auf der Eingabe $\epsilon$.
+        Wenn $\mathcal{M}$ dabei hält, geht sie in eine Endlosschleife, ansonsten hält sie an: $f(w)=\text{<M}^{'}_{\mathcal{M}}\text{>}$
+    \end{itemize}
+
+    Korrektheit der Konstruktion:
+    \begin{itemize}
+        \item $w \in \overline{\mathcal{H}_\epsilon}$
+        \begin{itemize}
+            \item [$\Rightarrow$] $\mathcal{M}$ hält nicht auf der Eingabe $\epsilon$
+            \item [$\Rightarrow$] $\neg \exists i: \mathcal{M}$ hält innerhalb der ersten $i$-Schritte auf $\epsilon$
+            \item [$\Rightarrow$] $\forall i: \text{<M}^{'}_{\mathcal{M}}\text{>}$ hält auf der Eingabe der Länge $i$
+            \item [$\Rightarrow$] $f(w) = \text{<M}^{'}_{\mathcal{M}}\text{>} \in \mathcal{H}_{all}$
+        \end{itemize}
+        \item $w \notin \overline{\mathcal{H}_\epsilon}$
+        \begin{itemize}
+            \item [$\Rightarrow$] $\mathcal{M}$ hält auf der Eingabe $\epsilon$
+            \item [$\Rightarrow$] $\exists i: \mathcal{M}$ hält innerhalb der ersten $i$-Schritte auf $\epsilon$
+            \item [$\Rightarrow$] $\exists i: \text{<M}^{'}_{\mathcal{M}}\text{>}$ loopt auf Eingaben der Länge $i$
+            \item [$\Rightarrow$] $f(w) = \text{<M}^{'}_{\mathcal{M}}\text{>} \notin \mathcal{H}_{all}$
+        \end{itemize}
+    \end{itemize}
+
+    Somit gilt:
+    \begin{align*}
+        w \in \overline{\mathcal{H}_{\epsilon}} & \quad \Leftrightarrow \quad f(w) \in \mathcal{H}_{all}
+    \end{align*}\proofend
+
+    \vspace*{0.3cm}
+    Es wurde also gezeigt, dass sowohl $\mathcal{H}_{all}$ als auch $\overline{\mathcal{H}_{all}}$ nicht semi-entscheidbar bzw. rekursiv aufzählbar sind.
+
+    \newpage
+    \section*{Weitere unentscheidbare Probleme}
+    \subsection*{Hilberts zehntes Problem}
+    Gegeben sei ein multivariates Polynom $p$ (also ein Polynom mit mehreren Variablen z.B. $x,y,z,a \dots$).
+    Es kann die Frage gestellt werden, ob $p$ eine ganzzahlige Nullstelle besitzt.
+
+    \vspace*{0.3cm}
+    In der Tat gilt: Die Sprache
+
+    \begin{align*}
+        N = \{\ p\ |\ & p \text{ ist Polynom mit ganzzahligen Koeffizienten und ganzzahliger Nullstelle } \}
+    \end{align*}
+    ist unentscheidbar.
+
+    \subsection*{Postsche Korrespondenzproblem}
+    Gegeben seien z.B. die Kärtchen
+
+    \begin{equation*}
+        K = \left\{
+        \underbrace{\left[ \frac{b}{ca}\right]}_{1},
+        \underbrace{\left[ \frac{a}{ab}\right]}_{2},
+        \underbrace{\left[ \frac{ca}{a}\right]}_{3},
+        \underbrace{\left[ \frac{abc}{c}\right]}_{4}
+        \right\}
+    \end{equation*}
+
+    Man kann nun beliebig viele Kärtchen beliebig oft aneinanderreihen.
+    Reiht man die Kärtchen $1+2+1$ aneinander, so erhält man zwei Zeichenketten: Einmal die Zeichenkette oben und einmal die Zeichenkette unten.
+    Im Beispiel also oben: \texttt{bab} und unten: \texttt{caabca}.
+
+    \vspace*{0.3cm}
+    Nun kann die Frage gestellt werden, ob man bei einem gegebenen Kartenset $K$ die Karten so anordnen kann,
+    dass die obere Zeichenkette genau der unteren Zeichenkette entspricht.
+    Für das obige Beispiel ist das möglich, dort liefert die Kombination $2+1+3+2+4$ sowohl oben als auch unten dieselbe Zeichenkette.
+
+    \vspace*{0.3cm}
+    Im Allgemeinen gilt aber: Die Sprache
+
+    \begin{equation*}
+        PKP = \{ \text{ Kärtchenset } K \text{ mit Lösung } \}
+    \end{equation*}
+
+    ist unentscheidbar (aber semi-entscheidbar).
+
+\end{document}

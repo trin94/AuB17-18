@@ -19,8 +19,8 @@ Mitschriften zur Vorlesung *AuB17/18* der Uni Stuttgart. Kein Anspruch auf Korre
 |12             |08.12.2017    |[klick](lectures-pdf/lecture12.pdf)    |Mehrband TMs
 |13             |12.12.2017    |[klick](lectures-pdf/lecture13.pdf)    |Universelle TM
 |14             |19.12.2017    |[klick](lectures-pdf/lecture14.pdf)    |Halteproblem
-|15             |10.01.2018    |[klick](lectures-pdf/lecture15.pdf)    |Rice, Semi-Entscheidbarkeit, Aufzählbarkeit, Reduktion
-|16             |              |                                       |
+|15             |09.01.2018    |[klick](lectures-pdf/lecture15.pdf)    |Rice, Semi-Entscheidbarkeit, Aufzählbarkeit, Reduktion
+|16             |12.01.2018    |[klick](lectures-pdf/lecture16.pdf)    |Allgemeine Halteproblem, weitere unent. Probleme
 |17             |              |                                       |
 |18             |              |                                       |
 |19             |              |                                       |
