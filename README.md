@@ -21,8 +21,8 @@ Mitschriften zur Vorlesung *AuB17/18* der Uni Stuttgart. Kein Anspruch auf Korre
 |14             |19.12.2017    |[klick](lectures-pdf/lecture14.pdf)    |Halteproblem
 |15             |09.01.2018    |[klick](lectures-pdf/lecture15.pdf)    |Rice, Semi-Entscheidbarkeit, Aufzählbarkeit, Reduktion
 |16             |12.01.2018    |[klick](lectures-pdf/lecture16.pdf)    |Allgemeine Halteproblem, weitere unent. Probleme
-|17             |              |                                       |
-|18             |              |                                       |
+|17             |16.01.2018    |[klick](lectures-pdf/lecture17.pdf)    |NP, Rucksackproblem
+|18             |19.01.2018    |                                       |
 |19             |              |                                       |
 |20             |              |                                       |
 |21             |              |                                       |

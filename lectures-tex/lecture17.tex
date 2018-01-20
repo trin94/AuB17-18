@@ -1,0 +1,115 @@
+\documentclass{scrartcl}% siehe <http://www.komascript.de>
+\input{../lectures-tex/configuration}
+
+\usepackage{diagbox}
+
+\definecolor{cadmiumred}{rgb}{0.89, 0.0, 0.13}
+\definecolor{cadmiumorange}{rgb}{0.93, 0.53, 0.18}
+\definecolor{cadmiumyellow}{rgb}{1.0, 0.96, 0.0}
+\definecolor{cadmiumgreen}{rgb}{0.0, 0.42, 0.24}
+\definecolor{blizzardblue}{rgb}{0.67, 0.9, 0.93}
+\definecolor{persianblue}{rgb}{0.11, 0.22, 0.73}
+\definecolor{darkviolet}{rgb}{0.58, 0.0, 0.83}
+
+\begin{document}
+    \headerline{Algorithmen und Berechenbarkeit}{Vorlesungsmitschrift}{Vorlesung 17}
+
+    \section*{Die Komplexitätsklasse $\mathcal{N}\mathcal{P}$}
+    Ein Problem $\mathcal{X}$ ist in der Komplexitätsklasse $\mathcal{P}$,
+    wenn es einen Polynomzeitalgorithmus für $\mathcal{X}$ gibt
+    (\textit{alternativ:} Ein Problem $\mathcal{X}$ ist in der Komplexitätsklasse $\mathcal{P}$,
+    wenn es eine TM $\mathcal{M}$ gibt, die $\mathcal{X}$ in einer polynomiellen Anzahl an Schritten löst).
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Definition Akzeptanzverhalten einer NTM:}}
+    Eine NTM $\mathcal{M}$ akzeptiert eine Eingabe $x \in \Sigma^*$
+    falls es mindestens eine Sequenz von gültigen Rechenschritten (gemäß Übergangsrelation) gibt,
+    die in einer akzeptierenden Konfiguration endet.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Definition Laufzeit einer NTM:}}
+    Sei $\mathcal{M}$ eine NTM. Die Laufzeit $T_{\mathcal{M}}(x)$ von $\mathcal{M}$ auf einer Eingabe $x \in L(\mathcal{M})$ ist definiert als
+    \begin{align*}
+        T_{\mathcal{M}}(x) := & \text{ Länge des kürzesten akzeptierenden Rechenwegs von } \mathcal{M} \text{ auf } x
+    \end{align*}
+
+    Außerdem gilt: Für ein $x \notin L(\mathcal{M})$ ist $T_{\mathcal{M}}(x) = 0$. Die Worst-Case-Laufzeit
+    $t_{\mathcal{M}}(n)$ für $\mathcal{M}$ auf Eingaben der Länge $n$ ist
+    \begin{align*}
+        t_{\mathcal{M}}(n) := &\ max\{T_{\mathcal{M}}(x)\ |\ x\in \Sigma^n \}
+    \end{align*}
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Definition Komplexitätsklasse $\mathcal{N}\mathcal{P}$:}}
+    $\mathcal{N}\mathcal{P}$ ist die Klasse der Entscheidungsprobleme, die durch eine NTM $\mathcal{M}$ erkannt wird,
+    deren Worst-Case-Laufzeit $t_{\mathcal{M}}(n)$ polynomiell \textbf{in $n$} beschränkt ist.
+
+    $\mathcal{N}\mathcal{P}$ bedeutet \textit{Nichtdeterministisch Polynomiell}.
+
+    \subsection*{Beispiel für ein $\mathcal{N}\mathcal{P}$-Problem: CLIQUE}
+    Das \textit{CLIQUE}-Problem liegt nicht in $\mathcal{P}$ und ist definiert wie folgt:
+    Gegeben sei ein ungerichteter Graph $G(V,E)$ und ein $k \in {\{1, \dots, |V|\}}$.
+    Nun möchte man wissen, ob $G$ eine CLIQUE der Größe $k$ hat.
+    Dieses Problem kann naiv in $\mathcal{O}(n^k)$ entschieden werden, was jedoch nicht polynomiell ist
+    (Eine CLIQUE ist dabei eine Teilmenge von Knoten von $G$, die vollständig untereinander verbunden sind).
+
+    \newpage
+    \vspace*{0.3cm}
+    \textbf{\textsf{Satz:}}
+    CLIQUE $\in \mathcal{N}\mathcal{P}$
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Es wird eine NTM $\mathcal{M}$ beschrieben mit $L(\mathcal{M}) =$CLIQUE,
+    die polynomielle Laufzeit hat und wie folgt vorgeht:
+    \begin{enumerate}
+        \item Falls die Eingabe nicht der Form $(G,K)$ entspricht, wird verworfen.
+        \item Sei nun $G=(V, E)$, $N=\text{ Anzahl der Knoten ohne Beschränkung der Allgmeinheit}$ und $V=\{1, \dots, N\}$.
+
+        $\mathcal{M}$ schreibt hinter die Eingabe den String  $\#^N$, der Kopf bewegt sich über das erste $\#$.
+        \item $\mathcal{M}$ läuft von links nach rechts über $\#^N$ und ersetzt nichtdeterministisch jedes $\#$ durch $0$ oder $1$.
+        Der resultierende String sei $y = (y_1, y_2, \dots, y_N) \in \{0,1\}^N$
+        \item Sei $C = \{ i \in V\ |q_i = 1\}$. $\mathcal{M}$ akzeptiert, falls $C = \text{ K-CLIQUE}$.
+    \end{enumerate}
+
+    Task $1,2$ und $4$ sind deterministisch, Task $3$ ist nichtdeterministisch.
+    Alle Tasks benötigen eine polynomielle Anzahl an Schritten.
+
+    \vspace*{0.3cm}
+    Nun muss gezeigt werden, dass $L(\mathcal{M}) = \text{CLIQUE}$.
+
+    \begin{itemize}
+        \item [$a)$] Angenommen, $G$ enthält CLIQUE:
+        \begin{itemize}
+            \item [$\Rightarrow$] Dann existiert mindestens ein $y$, dass zur Akzeptanz in Task $4$ führt
+            \item [$\Rightarrow$] Dieses $y$ wird in Task $3$ nichtdeterministisch gefunden
+            \item [$\Rightarrow$] $\mathcal{M}$ akzeptiert die Eingabe
+        \end{itemize}
+        \item [$b)$] Angenommen, $G$ enthält CLIQUE nicht:
+        \begin{itemize}
+            \item [$\Rightarrow$] Egal was das Ergebnis aus Task $3$ ist, Task $4$ führt nie zur Akzeptanz
+        \end{itemize}
+        \item [$\Rightarrow$] CLIQUE $\in \mathcal{N}\mathcal{P}$.\proofend
+    \end{itemize}
+
+    \textit{(Im Skript Kapitel 3.2.2 lesen)}
+
+    \subsection*{Beispiel für ein $\mathcal{N}\mathcal{P}$-Hart-Problem: Rucksack/Knapsack}
+    \subsubsection*{Rucksack/Knapsack (Optimierungsvariante)}
+    Gegeben sind $N$ Gegenstände $U=\{u_1,u_2,\dots,u_N\}$ mit den jeweiligen
+    Werten $p_1,p_2,\dots,p_N$,
+    Gewichten $w_1,w_2,\dots,w_N$ und einer
+    Gewichtsschranke $B$. Nun soll entschieden werden, ob es eine Teilmenge $k \subseteq U$ gibt mit
+    \begin{equation*}
+        \sum_{u_i \in U} w_i \leq B \text{\textbf{\textsf{ und }}} \sum_{u_i \in K} P_i \text{ maximal}
+    \end{equation*}
+
+    \subsubsection*{Rucksack/Knapsack (Entscheidungsvariante)}
+    Gegeben sind wieder $U, B \in \mathbb{N}, P \in \mathbb{N}$. Man stellt sich nun die Frage: Existiert ein $K \subseteq U$, für das gilt:
+    \begin{equation*}
+        \sum_{u_i \in K} w_i \leq B \text{\textbf{\textsf{ und }}} \sum_{k_i \in K} p_i \geq P
+    \end{equation*}
+
+    \vspace*{0.3cm}
+    Es kann gezeigt werden, dass das Lösen der einen Variante automatisch auch die andere Variante löst.
+
+\end{document}
