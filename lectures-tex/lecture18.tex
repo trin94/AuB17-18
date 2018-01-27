@@ -1,0 +1,130 @@
+\documentclass{scrartcl}% siehe <http://www.komascript.de>
+\input{../lectures-tex/configuration}
+
+\usepackage{diagbox}
+
+\definecolor{cadmiumred}{rgb}{0.89, 0.0, 0.13}
+\definecolor{cadmiumorange}{rgb}{0.93, 0.53, 0.18}
+\definecolor{cadmiumyellow}{rgb}{1.0, 0.96, 0.0}
+\definecolor{cadmiumgreen}{rgb}{0.0, 0.42, 0.24}
+\definecolor{blizzardblue}{rgb}{0.67, 0.9, 0.93}
+\definecolor{persianblue}{rgb}{0.11, 0.22, 0.73}
+\definecolor{darkviolet}{rgb}{0.58, 0.0, 0.83}
+
+\begin{document}
+    \headerline{Algorithmen und Berechenbarkeit}{Vorlesungsmitschrift}{Vorlesung 18}
+
+    \section*{Die Komplexitätsklassen $\mathcal{N}\mathcal{P}$ und $\mathcal{P}$}
+
+    \begin{figure}[H]
+        \centering
+        \begin{table}[H]
+            \centering
+            \renewcommand{\arraystretch}{1.7}
+            \setlength{\tabcolsep}{4mm}
+            \begin{tabular}{R{3cm}|p{4cm}|p{4cm}}
+                & $\mathcal{N}\mathcal{P}$ & $\mathcal{P}$ \\\hline
+                TM & nichtdeterministisch & deterministisch \\
+                Übergang & Relation & Funktion \\
+                Akzeptanz & falls es einen gültigen Berechnungspfad zu einem akzeptierenden Endzustand gibt & falls die TM in einem akzeptierenden Endzustand landet (es gibt nur einen Pfad) \\
+                Laufzeit für eine Eingabe der Länge $n$& $t_{\mathcal{M}} =\ $ \textit{Längster kürzester akzeptierender Berechnungspfad} & $t_{\mathcal{M}} =\ $ \textit{Längster Berechnungspfad} \\
+                Charakterisierung
+                & $\mathcal{N}\mathcal{P} \rightarrow$ Entscheidungsprobleme, für die die NTM $\mathcal{M}_{NTM}$ akzeptiert mit Laufzeit $t_{\mathcal{M}} =\mathcal{O}(n^\alpha)$ \textbf{\textsf{für ein konstantes}} $\alpha$
+                & $\mathcal{P} \rightarrow$ Entscheidungsprobleme, für die die DTM $\mathcal{M}_{DTM}$ akzeptiert mit Laufzeit $t_{\mathcal{M}} =\mathcal{O}(n^\alpha)$ \\
+                Beispiele & CLIQUE, Knapsack & Sortieren, Graphzusammenhang \\
+            \end{tabular}
+        \end{table}
+    \end{figure}
+
+    \begin{equation*}
+        \mathcal{N}\mathcal{P} \supseteq \mathcal{P} ?
+    \end{equation*}
+
+    Die Klasse $\mathcal{N}\mathcal{P}$ kann auch wie folgt charakterisiert werden:
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Satz:}}
+    Eine Sprache $\mathcal{L}$ ist genau dann in $\mathcal{N}\mathcal{P}$, wenn es einen Polynomzeitalgorithmus $V$ und ein Polynom $p$ gibt mit
+    \begin{equation*}
+        x \in L \Leftrightarrow \exists y \in \{0,1\}^{*} \ |\ |y| \leq p(|x|)
+    \end{equation*}
+
+    und $V$ akzeptiert $y\#x$.
+
+    \newpage
+    \textbf{\textsf{Beweisidee:}}
+    Falls $\mathcal{L}$ in $\mathcal{N}\mathcal{P}$ ist, existiert eine NTM $\mathcal{M}$ mit $\mathcal{L}(\mathcal{M}) = \mathcal{L}$ und polynomieller Laufzeit.
+
+    Nun modifiziert man $\mathcal{M}$ zu einer deterministischen TM $V$, die bei jeder (config, gekennzeichnet) - Situation,
+    in der mehrere Schritte möglich sind, den Leitstring $y$ liest und entsprechend deterministisch handelt.
+
+    Der Leitstring $y$ muss nur polynomiell lang sein, da die NTM $\mathcal{M}$ polynomielle Laufzeit hat \textit{(weitere Informationen im Skript)}.
+
+    \subsubsection*{Bin-Packing (Optimierung: $\mathcal{N}\mathcal{P}$-schwer)}
+    \begin{itemize}
+        \item [] \textbf{\textsf{Gegeben:}} $b \in \mathbb{N},\quad w_1,w_2, \dots, w_\mathbb{N} \in \{1, \dots, b\}$
+        \item [] {\textbf{\textsf{Gegesucht:}} Eine Funktion $f : \{1, \dots, N\} \rightarrow \{1, \dots, k\}$,
+        sodass für alle $i \in \{1, \dots, k\}$ gilt
+        \begin{equation*}
+            \sum_{j \in f^{-1}(i) } w_j \leq b
+        \end{equation*}
+
+        und $k$ minimal.
+        }
+    \end{itemize}
+
+    \subsubsection*{Bin-Packing (Entscheidungsvariante: $\mathcal{N}\mathcal{P}$-vollständig)}
+    \begin{itemize}
+        \item [] \textbf{\textsf{Gegeben:}} $b \in \mathbb{N},\quad w_1,w_2, \dots, w_\mathbb{N} \in \{1, \dots, b\}$
+        \item [] {\textbf{\textsf{Frage:}}} Existiert eine solche Funktion $f$?
+    \end{itemize}
+
+    \section*{Travelling Salesperson Problem (TSP)}
+    Gegeben sei ein vollständiger gewichteter Graph mit $N$-Knoten. Es soll nun eine Permutation $\pi$ der Knoten gefunden werden, sodass die folgende Gleichung minimal wird:
+    \begin{equation*}
+        \sum_{i=0}^{n-1} c(\pi(i)), \pi((i+1)\Mod n)
+    \end{equation*}
+
+    \textsf{\textbf{"`Finde die billigste Rundtour"'}}
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Satz:}} Die Entscheidungsvarianten von KP, BPP und TSP sind in $\mathcal{N}\mathcal{P}$.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweisidee:}} Man rät eine nichtdeterministische Lösung und verifiziert dann, dass die Lösung in der Tat gültig ist (alles in polynomieller Zeit).
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Satz:}} Wenn die Entscheidungsvariante von KP in polynomieller Zeit lösbar ist, dann auch die Optimierungsvariante.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweisidee:}} Man nimmt an, ein deterministischer-polyzeit-Algorithmus $\mathcal{A}_{\epsilon}$ für die Entscheidungsvariante existiert.
+    \begin{itemize}
+        \item []{1. \textbf{\textsf{Schritt}}: Man bestimmt den maximal möglichen Rucksackwert durch Binärsuche mittels $\mathcal{A}_\epsilon$ auf die folgende Weise:
+        Man fragt $\mathcal{A}_\epsilon$, ob es einen Rucksack mit Wert $\sum_{i=1}^{N} P_i$ gibt, falls nein, halbiert man, $\dots$ Die Anzahl der Iterationen ist
+        \begin{equation*}
+            \leq \log \sum p_i \leq n
+        \end{equation*}
+
+        bei Eingabelängen $\leq 2^n$.
+        }
+        \newpage
+        \item []{2. \textbf{\textsf{Schritt}}: Man betrachtet den Gegenstand $N$ und entscheidet, ob dieser eingespart werden soll, wie folgt:
+        \begin{itemize}
+            \item [$a)$] Man bestimmt den Max-Wert $a$ für die Gegenstände $1, \dots, N$
+            \item [$b)$] Man bestimmt den Max-Wert $b$ für die Gegenstände $1, \dots, N-1$
+            \item [$c)$] Falls $a=b$, dann wirft man den Gegenstand $N$ weg, sonst packt man den Gegenstand $N$ ein.
+            \item [$\Rightarrow$] Man wiederholt die Schritte $a)-c)$ für die Gegenstände $1, \dots, N-1$
+        \end{itemize}
+        }
+    \end{itemize}
+
+    Es erfordert $\mathcal{O}(n)$ Aufrufe für das Bestimmen des Max-Werts. Insgesamt ist die Laufzeit polynomiell.\proofend
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Satz:}} Für jedes Entscheidungsproblem $L \in \mathcal{N}\mathcal{P}$ gibt es einen
+    deterministischen Algorithmus bzw. eine deterministische TM $\mathcal{M}$, der $L$ entscheidet und dessen Worst-Case-Laufzeit beschränkt ist durch $2^{q(n)}$ für ein Polynom $q$.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweisidee:}} Man enumeriert alle möglichen Leitstrings für die Verifizierer, das sind exponentiell viele.
+
+\end{document}
