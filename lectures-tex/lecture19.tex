@@ -1,0 +1,164 @@
+\documentclass{scrartcl}% siehe <http://www.komascript.de>
+\input{../lectures-tex/configuration}
+
+\usepackage{diagbox}
+
+\definecolor{cadmiumred}{rgb}{0.89, 0.0, 0.13}
+\definecolor{cadmiumorange}{rgb}{0.93, 0.53, 0.18}
+\definecolor{cadmiumyellow}{rgb}{1.0, 0.96, 0.0}
+\definecolor{cadmiumgreen}{rgb}{0.0, 0.42, 0.24}
+\definecolor{blizzardblue}{rgb}{0.67, 0.9, 0.93}
+\definecolor{persianblue}{rgb}{0.11, 0.22, 0.73}
+\definecolor{darkviolet}{rgb}{0.58, 0.0, 0.83}
+
+
+\begin{document}
+    \headerline{Algorithmen und Berechenbarkeit}{Vorlesungsmitschrift}{Vorlesung 19}
+
+    \section*{$\mathcal{P}$ vs. $\mathcal{N}\mathcal{P}$}
+
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}[
+        thick]
+            \draw [fill=persianblue, name path=c1] (0,0) circle (3cm);
+            \draw [fill=cadmiumorange,name path=c2] (0,0.5) circle (2cm);
+            \draw [fill=cadmiumyellow,name path=c2] (0,1) circle (1cm);
+
+            \draw (0.2,1) ++(120:2cm) -- ++(160:3.5cm) node [fill=white,inner sep=5pt](a){\texttt{EXPTIME}};
+            \draw (0.2,-0.7) ++(120:2cm) -- ++(160:3.5cm) node [fill=white,inner sep=5pt](a){$\mathcal{P}$};
+            \draw (0.2,-2.4) ++(120:2cm) -- ++(160:3.5cm) node [fill=white,inner sep=5pt](a){$\mathcal{N}\mathcal{P}$};
+        \end{tikzpicture}
+    \end{figure}
+
+    Eine der bekanntesten, wichtigsten und offenen Fragen der theoretischen Informatik beschäftigt sich ebenfalls mit $\mathcal{P}$ und $\mathcal{N}\mathcal{P}$:
+    \begin{equation*}
+        \mathcal{N}\mathcal{P} = \mathcal{P}\ ?
+    \end{equation*}
+
+    Wie der Grafik entnommen werden kann, gilt offensichtlich $\qquad \mathcal{P} \subseteq \mathcal{N}\mathcal{P}$ \newline und außerdem $\qquad \mathcal{N}\mathcal{P} \subseteq\ $\texttt{EXPTIME}.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Idee:}} Man zeigt äquivalente Schwere einiger Probleme in $\mathcal{N}\mathcal{P} \quad \rightarrow$ "`$\mathcal{N}\mathcal{P}$-vollständige Probleme"'.
+    Dies hätte zur Folge, dass wenn man von einem dieser Probleme zeigen könnte
+    \begin{itemize}
+        \item [$\in$]$\mathcal{P}$, dann gilt $\Rightarrow \mathcal{N}\mathcal{P} = \mathcal{P}$
+        \item [$\notin$]$\mathcal{P}$, dann gilt $\Rightarrow \mathcal{N}\mathcal{P} \neq \mathcal{P}$
+    \end{itemize}
+
+    Zunächst wird eine weitere Form der Reduktion eingeführt.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Definition polynomieller Reduktion:}} $L_1$ und $L_2$ seien zwei Sprachen über $\Sigma_1$ bzw. $\Sigma_2$.
+    \newline $L_1$ ist polynomiell reduzierbar auf $L_2$, wenn es ein
+    \begin{equation*}
+        f : \Sigma_{1}^* \rightarrow \Sigma_{2}^*
+    \end{equation*}
+
+    gibt, das in polynomieller Zeit berechnet werden kann mit $x \in L_1 \Leftrightarrow f(x) \in L_2$. \newline Geschrieben
+    $L_1 \leq_p L_2$.
+
+    \textbf{\textsf{Lemma:}} $L_1 \leq_p L_2$, $L_2 \in \mathcal{P} \Rightarrow L_1 \in \mathcal{P}$
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Klar.
+
+    \subsection*{Beispiel polynomieller Reduktion: Coloring $\leq_p$ SAT}
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Definition: Coloring}}
+    \begin{itemize}
+        \item [] \textbf{\textsf{Gegeben}} sei $G(V,E)$  (ungerichtet) und $k \in \{1, \dots, |V|\}$.
+        \item [] {\textbf{\textsf{Frage:}} Gibt es eine Färbung
+        \begin{equation*}
+            c : V \rightarrow \{1, \dots, K\}
+        \end{equation*}
+
+        der Knoten in $G$ mit $k$-Farben, sodass benachbarte Knoten nie dieselben Farben haben?
+        }
+    \end{itemize}
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Definition: SAT (Satisfiability)}}
+    \begin{itemize}
+        \item [] \textbf{\textsf{Gegeben}} sei eine aussagenlogische Formel $\phi$ in KNF.
+        \item [] {\textbf{\textsf{Frage:}} Ist $\phi$ erfüllbar?
+        }
+    \end{itemize}
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Satz:}} Coloring $\leq_p$ SAT.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Man beschreibt eine Reduktionsfunktion $f(G,K) = \phi$, sodass gilt:
+    \begin{equation*}
+        G \text{ hat } k\text{-Färbung} \Leftrightarrow \phi \text{ erfüllbar}
+    \end{equation*}
+
+    Für jeden Knoten $v \in V$ und jede Farbe $i \in \{1, \dots, K\}$ führt man eine Variable $x_v^i$ ein \newline
+    ($x_v^i =$\texttt{true} $\Rightarrow v$ bekommt die Farbe $i$).
+
+    \begin{align*}
+        \phi = & \underbrace{\bigwedge_{v \in V}(x_v^1 \lor x_v^2 \lor \dots \lor x_v^k)}_{\text{Knotenbedingung}} \quad
+         \underbrace{\bigwedge_{\{u,v\} \in E}\quad \bigwedge_{i \in \{1, \dots, k\}} (\overline{x_u^i} \lor \overline{x_v^i})}_{\text{Kantenbedingung}}
+    \end{align*}
+
+    $\phi$ hat die Größe $\mathcal{O}(k \cdot n + k \cdot n) \Rightarrow \mathcal{O}(n^3)$.
+
+    \vspace*{0.3cm}
+    Nun muss noch gezeigt werden, dass die Reduktionsfunktion gültig ist.
+    \begin{itemize}
+        \item [$\Rightarrow$] Sei $c$ eine $k$-Farbe für G: Nun setzt man $x_v^i =$\texttt{true} für $v$ mit $c(v)=i$, sonst $x_v^{i}=$\texttt{false}.
+        Die Knotenbedingung ist offensichtlich erfüllt. Auch die Kantenbedingung ist erfüllt, da immer $\overline{x}_u^i \lor \overline{x}_v^i$ gilt,
+        weil sonst $v$ und $u$ dieselbe Farbe haben müssten.
+        \item [$\Leftarrow$] Angenommen, man hat eine erfüllende Belegung für $\phi$. Für jeden Knoten gibt es also mindestens ein $x_v^{i}=$\texttt{true}.
+        Nun wählt man für jeden dadurch eine Farbe aus. Sei $\{u,v\} \in E:$ Angenommen, $c(u)=c(v)=i$.
+        Dann wäre jedoch $x_v^i = x_u^i =$\texttt{true} und $\overline{x}_v^i \lor \overline{x}_u^{i}=$\texttt{false}. Daraus folgt, $\phi$ ist nicht erfüllt, woraus gilt $c(u) \neq c(v)$.\proofend
+    \end{itemize}
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Korollar:}}
+    \begin{itemize}
+        \item [$a)$] Wenn SAT in Polynomzeit deterministisch lösbar ist, ist Coloring auch in Polynomzeit lösbar.
+        \item [$b)$] Wenn SAT nicht in Polynomzeit deterministisch lösbar ist, ist Coloring auch nicht in Polynomzeit lösbar.
+    \end{itemize}
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Definition $\mathcal{N}\mathcal{P}$-hart/$\mathcal{N}\mathcal{P}$-schwer:}} Ein Problem $L$ heißt $\mathcal{N}\mathcal{P}$-hart falls gilt:
+    \begin{equation*}
+       \forall L' \in \mathcal{N}\mathcal{P} \ :\ L' \leq_p L
+    \end{equation*}
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Satz:}} $L$ ist $\mathcal{N}\mathcal{P}$-hart und $L \in \mathcal{P}$, dann gilt $\mathcal{P} = \mathcal{N}\mathcal{P}$.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Definition $\mathcal{N}\mathcal{P}$-vollständig:}}
+    Ein Problem heißt $\mathcal{N}\mathcal{P}$ vollständig, falls
+    \begin{enumerate}
+        \item $L \in \mathcal{N}\mathcal{P} \qquad\qquad$ (meistens einfacher zu zeigen)
+        \item $L$ ist $ \mathcal{N}\mathcal{P}-\text{hart } \qquad$ (meistens schwieriger zu zeigen)
+    \end{enumerate}
+
+    \textbf{\textsf{NPC}} ist die Klasse der $\mathcal{N}\mathcal{P}$-vollständigen Probleme.
+
+    \vspace*{0.6cm}
+    \textbf{\textsf{Satz:}} SAT ist $\mathcal{N}\mathcal{P}$-vollständig.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweisidee:}}
+    \begin{itemize}
+        \item [$a)$] SAT $\in \mathcal{N}\mathcal{P}$ ist einfach.
+        \item [$b)$] { $\forall L' \in \mathcal{N}\mathcal{P} \ :\ L' \leq_p L$ \newline
+        $L' \in \mathcal{N}\mathcal{P}$ heißt, es gibt eine NTM $\mathcal{M}$, die $L'$ in polynomieller Zeit erkennt.
+        Nun kodiert man das Verhalten von $\mathcal{M}$ in eine aussagenlogische Formel, die genau dann erfüllbar ist, falls $\mathcal{M}$ die Eingabe in polynomieller Zeit akzeptiert \textit{(mehr Informationen im Skript)}.
+        }
+    \end{itemize}
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Lemma:}} SAT $\leq_p$ 3SAT
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Satz:}} 3SAT ist $\mathcal{N}\mathcal{P}$-vollständig.
+
+\end{document}
