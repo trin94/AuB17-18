@@ -56,19 +56,19 @@
     \section*{Contraction Hierarchies}\label{sec:contractionHierarchies}
     \subsection*{Anreiz}
 
-    Für einen relativ statischen Graphen (wie das Straßennetz) ist es nicht sinnvoll und vor allem ineffizent,
+    Für einen relativ statischen Graphen (wie das Straßennetz) ist es nicht sinnvoll und vor allem ineffizient,
     für jede Suchanfrage eines kürzesten Pfads einen Dijkstra-Algorithmus laufen zu lassen.
     Daher möchte man einen Vorverarbeitungsschritt einfügen, der anfangs einige Minuten Zeit benötigt,
     hinterher aber jede Anfrage enorm (um den Faktor $100.000$) beschleunigt.
 
     Ein naiver Ansatz hierfür wäre, alle paarweisen kürzesten Distanzen vorzuberechnen.
-    Theoretisch wäre die Antwortszeit auf eine Anfrage damit sehr schnell, praktisch scheitert es aber daran,
+    Theoretisch wäre die Antwortzeit auf eine Anfrage damit sehr schnell, praktisch scheitert es aber daran,
     die Menge der paarweise kürzesten Pfade im Speicher zu halten.
     Für $n=20 \cdot 10^6$ Knoten ergäbe das etwa einen Platzverbrauch von $\approx 400 \cdot 10^{12}$.
 
     \subsection*{Idee: Vorverarbeitung}\label{subsec:idee:Vorverarbeitung}
     \begin{itemize}
-        \item Der Graph wird um songenannte \textit{Shortcuts} erweitert.
+        \item Der Graph wird um sogenannte \textit{Shortcuts} erweitert.
         Das sind zusätzliche Kanten, die \textit{kürzeste Wege} repräsentieren.
         \item Zusätzlich wird jedem Knoten ein \textit{Level} zugeordnet.
     \end{itemize}
