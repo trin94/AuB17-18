@@ -94,19 +94,55 @@
     \textit{(Im Skript Kapitel 3.2.2 lesen)}
 
     \subsection*{Beispiel für ein $\mathcal{N}\mathcal{P}$-Hart-Problem: Rucksack/Knapsack}
-    \subsubsection*{Rucksack/Knapsack (Optimierungsvariante)}
-    Gegeben sind $N$ Gegenstände $U=\{u_1,u_2,\dots,u_N\}$ mit den jeweiligen
-    Werten $p_1,p_2,\dots,p_N$,
-    Gewichten $w_1,w_2,\dots,w_N$ und einer
-    Gewichtsschranke $B$. Nun soll entschieden werden, ob es eine Teilmenge $k \subseteq U$ gibt mit
+    \subsubsection*{Optimierungsvariante}
+    Gegeben sind $n$ Gegenstände $U=\{u_1,u_2,\dots,u_n\}$ mit den jeweiligen
+    Werten $w_i$,den Gewichten $g_i$ und einer Rucksackkapazität $G$.
+    Gewichtsschranke $B$. Nun wird $\mathcal{I} \subseteq {1, \dots, n}$ gewählt, sodass
     \begin{equation*}
-        \sum_{u_i \in U} w_i \leq B \text{\textbf{\textsf{ und }}} \sum_{u_i \in K} P_i \text{ maximal}
+        \sum_{i \in \mathcal{I}} g_i \leq G \text{\textbf{\textsf{ und }}} \sum_{i \in \mathcal{I}} w_i \text{ maximal}
     \end{equation*}
 
-    \subsubsection*{Rucksack/Knapsack (Entscheidungsvariante)}
-    Gegeben sind wieder $U, B \in \mathbb{N}, P \in \mathbb{N}$. Man stellt sich nun die Frage: Existiert ein $K \subseteq U$, für das gilt:
+    \begin{figure}[H]
+        \centering
+        \begin{table}[H]
+            \centering
+            \begin{tabular}{C{1cm}|C{0.5cm}C{0.5cm}C{0.5cm}C{0.5cm}C{0.5cm}C{0.5cm}C{0.5cm}}
+               & 1 & 2 & 3 & $\dots$ & $i$ & $\dots$ & n \\ \hline
+               1 &  &  &  &  &  &  &  \\
+               2 &  &  &  &  &  &  &  \\
+               3 &  &  &  &  &  &  &  \\
+               $\vdots$ &  &  &  &  &  &  &  \\
+               $i$ &  &  &  &  &  & $\square_{i,j}$ &  \\
+               $\vdots$ &  &  &  &  &  &  &  \\
+               $\sum_{w_i}$ &  &  &  &  &  &  &  \\
+
+            \end{tabular}
+        \end{table}
+    \end{figure}
+
+    $\square_{i,j}$ bezeichnet dabei das minimale Gewicht eines Rucksacks mit der Auswahl aus $\{1, \dots, i\}$ und Wert genau $j$.
+
+    \vspace*{0.3cm}
+    Betrachtet man nun einen Rucksackinhalt mit Wert $j$ und Gewicht $\square_{i,j}$:
+
+    \begin{itemize}
+        \item [$a)$] Falls der Gegenstand $i$ enthalten ist, so hat der Rucksack ein Gewicht von $g_{i} + \square_{i-1,j-1}$.
+        \item [$b)$] Falls der Gegenstand $i$ nicht enthalten ist, so gilt $\square_{i,j} = \square_{i-1, j}$
+    \end{itemize}
+
+    Insgesamt also
     \begin{equation*}
-        \sum_{u_i \in K} w_i \leq B \text{\textbf{\textsf{ und }}} \sum_{k_i \in K} p_i \geq P
+        \square_{i,j} = \text{ min}(\square_{i-1,j}, g_i + \square_{i-1,j-w_i})
+    \end{equation*}
+
+    Als Laufzeit ergibt sich $\mathcal{O}(n \cdot \sum w_i)$.
+    Das ist \textit{pseudopolynomiell}, da die Laufzeit sehr stark von den kodierten Zahlen abhängt.
+    Eine vergleichsweise kleine Vergrößerung der Eingabe kann die Laufzeit extrem stark ansteigen lassen.
+
+    \subsubsection*{Entscheidungsvariante}
+    Gegeben sind wieder $U, g_i, G \in \mathbb{N}, w_i, W \in \mathbb{N}$. Man stellt sich nun die Frage: Existiert ein $K \subseteq U$, für das gilt:
+    \begin{equation*}
+        \sum_{u_i \in K} g_i \leq G \text{\textbf{\textsf{ und }}} \sum_{k_i \in K} w_i \geq W
     \end{equation*}
 
     \vspace*{0.3cm}
