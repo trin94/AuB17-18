@@ -1,0 +1,167 @@
+\documentclass{scrartcl}% siehe <http://www.komascript.de>
+\input{../lectures-tex/configuration}
+
+\usepackage{diagbox}
+
+\definecolor{cadmiumred}{rgb}{0.89, 0.0, 0.13}
+\definecolor{cadmiumorange}{rgb}{0.93, 0.53, 0.18}
+\definecolor{cadmiumyellow}{rgb}{1.0, 0.96, 0.0}
+\definecolor{cadmiumgreen}{rgb}{0.0, 0.42, 0.24}
+\definecolor{blizzardblue}{rgb}{0.67, 0.9, 0.93}
+\definecolor{persianblue}{rgb}{0.11, 0.22, 0.73}
+\definecolor{darkviolet}{rgb}{0.58, 0.0, 0.83}
+
+\tikzset{node cadmiumred/.style={circle,fill=cadmiumred!50,draw,minimum size=0.75cm,inner sep=0pt},}
+\tikzset{node cadmiumorange/.style={circle,fill=cadmiumorange!50,draw,minimum size=0.75cm,inner sep=0pt},}
+\tikzset{node cadmiumyellow/.style={circle,fill=cadmiumyellow!50,draw,minimum size=0.75cm,inner sep=0pt},}
+\tikzset{node cadmiumgreen/.style={circle,fill=cadmiumgreen!50,draw,minimum size=0.75cm,inner sep=0pt},}
+\tikzset{node blizzardblue/.style={circle,fill=blizzardblue!50,draw,minimum size=0.75cm,inner sep=0pt},}
+\tikzset{node persianblue/.style={circle,fill=persianblue!50,draw,minimum size=0.75cm,inner sep=0pt},}
+\tikzset{node darkviolet/.style={circle,fill=darkviolet!20,draw,minimum size=0.4cm,inner sep=0pt},}
+\tikzset{node white/.style={circle,draw,minimum size=0.75cm,inner sep=0pt},}
+\tikzset{node smwhite/.style={circle,draw,minimum size=0.4cm,inner sep=0pt},}
+
+
+
+\begin{document}
+    \headerline{Algorithmen und Berechenbarkeit}{Vorlesungsmitschrift}{Vorlesung 21}
+
+    \textbf{\textsf{Satz:}} SAT $\leq_p$ DHC
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}} Sei eine KNF-Formel $\phi$ gegeben.
+    Man konstruiert daraus einen gerichteten Graphen $G$, der genau dann einen Hamiltonkreis hat,
+    wenn $\phi$ erfüllbar ist. Seien $x_1, x_2, \dots, x_N$ die Variablen
+    und $c_1, c_2, \dots, c_M$ die Klauseln von $\phi$.
+    Für jede Variable $x_i$ enthält $G$ einen Subgraph $G_i$ - genannt Diamantgadget:
+
+    \begin{figure}[H]
+        \centering
+        \tikzset{arrow/.style={-latex}}
+        \begin{tikzpicture}[thick, scale=0.75]
+            \node[node white] (n1) at (0,0) {$s_i$};
+            \node[node cadmiumorange] (n2) at (-3,-3) {$l_i$};
+            \node[node cadmiumgreen] (n3) at (3,-3) {$r_i$};
+            \node[node white] (n4) at (0,-6) {$t_i$};
+
+            \foreach \from/\to in {n1/n2,n1/n3,n2/n4,n3/n4}
+            \draw[arrow] (\from) -> (\to);
+
+            \node[node darkviolet] (n5) at (-1.75,-3) {};
+            \node[node darkviolet] (n6) at (-0.875,-3) {};
+            \node[node darkviolet] (n7) at (0,-3) {};
+            \node[node darkviolet] (n8) at (0.875,-3) {};
+            \node[node darkviolet] (n9) at (1.75,-3) {};
+
+            \foreach \from/\to in {n2/n5,n5/n6,n6/n7,n7/n8,n8/n9,n9/n3}
+            \drawbi{\from}{\to}{->, thin}{}{<-, thin}{};
+
+            \draw[thick, cadmiumred, rounded corners=8pt, arrow]
+            (-0.5,0) -- (-3,-2.65) -- (3, -2.65) -- (0.35, -5.65);
+
+            \draw[thick, persianblue, rounded corners=8pt, arrow]
+            (0.5,0) -- (3,-3.35) -- (-3, -3.35) -- (-0.35, -5.65);
+
+            \node (legend) [style={draw=none},align=left] at (0, -7.5) { $\Rightarrow t_i = s_{i+1} \dots$};
+
+        \end{tikzpicture}
+    \end{figure}
+
+    Diese Diamantgadgets werden verbunden,
+    indem $t_i$ und $s_{i+1}$, $\forall i=1, \dots, n-1$ und $t_N$ und $S_1$ identifiziert werden.
+    Eine Rundtour in $G$ muss die Gadgets nacheinander besuchen.
+    Jedes Gadget kann von links nach rechts oder von rechts nach links durchlaufen werden.
+    Im ersteren Fall interpretiert man das als $x_i =$ \texttt{true}, im letzteren als $x_i =$ \texttt{false}.
+
+    Nun fügt man für jede Klausel einen Klauselknoten $c_j$ ein.
+    Falls $c_j$ eine Variable $x_i$ enthält, wird das Gadget $G_i$ mit $c_j$ auf geeignete Art und Weise verbunden.
+    Die doppelt verkettete Liste in Gadget $G_i$ enthält $2 \cdot k +1$ Knoten, falls $x_i$ in der $k$-Klausel vorkommt.
+
+    \vspace*{0.3cm}
+    Bsp: $k=2$
+
+    \begin{figure}[H]
+        \centering
+        \tikzset{arrow/.style={-latex}}
+        \begin{tikzpicture}[thick, scale=0.75]
+
+            \node[node cadmiumorange] (n2) at (-6,-0) {$l_i$};
+            \node[node cadmiumgreen] (n3) at (6,-0) {$r_i$};
+
+            \node[node darkviolet] (n5) at (-4,-0) {};
+            \node[node darkviolet] (n6) at (-2,-0) {};
+            \node[node darkviolet] (n7) at (0,-0) {};
+            \node[node darkviolet] (n8) at (2,-0) {};
+            \node[node darkviolet] (n9) at (4,-0) {};
+
+            \node[node blizzardblue] (n1) at (-4,-2) {$c_j$};
+
+            \draw [->] (n6) to[bend left] (n1);
+            \draw [->] (n1) to[bend right] (n7);
+
+            \node [node,,align=center, text width=4cm] at (-1, 1.2){Vorkommen von $x_i$\\ in erster Klausel};
+            \draw [cadmiumred] (-1,0) ellipse (1.5cm and 0.5cm);
+
+            \node [node,,align=center, text width=4cm] at (3, -1.2){Vorkommen von $x_i$\\ in zweiter Klausel};
+            \draw [cadmiumred] (3,0) ellipse (1.5cm and 0.5cm);
+
+            \foreach \from/\to in {n2/n5,n5/n6,n6/n7,n7/n8,n8/n9,n9/n3}
+            \drawbi{\from}{\to}{->, thin}{}{<-, thin}{};
+
+        \end{tikzpicture}
+    \end{figure}
+
+    Wenn $x_i$ in der ersten Klausel nicht negiert vorkommt,
+    fügt man eine Kante ein, die vom linken Knoten des Paars, das für diese Klausel steht, zum Klauselknoten zeigt.
+    Analog wird eine Kante vom Klauselknoten zum rechten Knoten des Paars hinzugefügt.
+
+    \vspace*{0.3cm}
+    Wenn $x_i$ in der zweiten Klausel negiert vorkommt,
+    fügt man eine Kante vom rechten Knoten zum Klauselknoten und von dort zum linken Knoten des Paars ein.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beobachtung:}} Eine Rundtour muss die Gadgets immer vollständig nacheinander besuchen (mit Abstecher zum Klauselknoten),
+    da teilweises Besuchen eines Gadgets und Springen zu anderen Gadgets via Klauselknoten \textbf{\textsf{keine}} Rundtour ermöglicht.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Zu zeigen:}}
+    $G$ hat DHC genau dann, wenn $\phi$ erfüllbar ist.
+    \begin{itemize}
+        \item [$a)$] $G$ habe DHC, dann ist $x_{i} =$ \texttt{true}, wenn $G_i$ von links nach rechts durchlaufen wird und falsch andernfalls.
+        Jeder Klauselknoten wird von genau einem Gadget $G_i$ aus besucht.
+        \begin{itemize}
+            \item Falls $G_i$ von links nach rechts traversiert wird ($\rightarrow x_i = $ \texttt{true}) und $x_i$
+            taucht in Klausel nicht negiert auf, dann gilt: Die Klausel ist erfüllt.
+            \item Falls $G_i$ von rechts nach links traversiert wird ($\rightarrow x_i = $ \texttt{false}) und $x_i$
+            taucht in Klausel negiert auf, dann gilt: Die Klausel ist erfüllt.
+        \end{itemize}
+        \item [$b)$] Sei $B$ eine erfüllende Belegung für $\phi$. Dann bestimmt $B$, wie die Gadgets traversiert werden.
+        \begin{itemize}
+            \item $x_i = $\texttt{true} $\Rightarrow G_i$ wird von links nach rechts traversiert
+            \item $x_i = $\texttt{false} $\Rightarrow G_i$ wird von rechts nach links traversiert
+        \end{itemize}
+
+        Die Klauselknoten besucht man vom Gadget des ersten erfüllenden Literals der Klausel.
+    \end{itemize}\proofend
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Satz:}} TSP ist $\mathcal{N}\mathcal{P}$-hart.
+
+    \vspace*{0.6cm}
+    \textbf{\textsf{Lemma:}} HC $\leq_p$ TSP.
+
+    \vspace*{0.3cm}
+    \textbf{\textsf{Beweis:}}
+    Man konstruiert aus der HC-Instanz $G(V,E)$ (wobei $G$ vollständig) eine TSP-Instanz $G'(V, E')$ wobei
+    \begin{equation*}
+        E' = \binom{V}{2} \text{ und }
+        \[ \begin{cases}
+               c(e) = 1 & \text{ falls } e \in E \\
+               c(e) = 2 & \text{ sonst}
+        \end{cases}
+        \]
+    \end{equation*}
+
+    $G'(V, E')$ hat eine TSP-Tour mit einem Gewicht von $\leq |V|$ genau dann, wenn $G(V,E)$ HC hat.
+
+\end{document}

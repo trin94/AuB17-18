@@ -25,10 +25,7 @@ Mitschriften zur Vorlesung *AuB17/18* der Uni Stuttgart. Kein Anspruch auf Korre
 |18             |19.01.2018    |[klick](lectures-pdf/lecture18.pdf)    |NP & P, Bin-Packing, TSP
 |19             |23.01.2018    |[klick](lectures-pdf/lecture19.pdf)    |NP vs. P
 |20             |26.01.2018    |-                                      |
-|21             |              |                                       |
-|22             |              |                                       |
-|23             |              |                                       |
-|24             |              |                                       |
+|21             |30.01.2018    |[klick](lectures-pdf/lecture21.pdf)    |SAT und DHC
 
 
 ## Mitmachen
