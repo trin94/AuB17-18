@@ -168,10 +168,11 @@
             \begin{align}
                 \delta & :(
                 \colorbox{green!30}{$Q \textbackslash \{ \bar{q} \}$} \times
-                \colorbox{blue!30}{$\Gamma$} \times
+                \colorbox{blue!30}{$\Gamma$} ) \rightarrow 
+                \mathcal{P}(
                 \colorbox{red!30}{$Q$} \times
                 \colorbox{upforestgreen!30}{$\Gamma$} \times
-                \colorbox{amethyst!30}{$\{L,R,N\}$}) \\
+                \colorbox{amethyst!30}{$\{L,R,N\}$})) \\
                 \colorbox{green!30}{$Q \textbackslash \{ \bar{q} \}$} & \rightarrow \text{aktueller Zustand} \\
                 \colorbox{blue!30}{$\Gamma$} & \rightarrow \text{aktuelles Zeichen} \\
                 \colorbox{red!30}{$Q$} & \rightarrow \text{neuer Zustand} \\
@@ -184,7 +185,7 @@
         \begin{equation*}
             \delta : (Q \textbackslash \{ \bar{q} \} \times \Gamma) \rightarrow Q \times \Gamma \times \{ R,L,N\}
         \end{equation*}
-        \item [] Für $(q,a,q',a',d) \in \delta$ bzw. $\delta (q,a) = (q', a', d)$ mit $d \in \{R,L,N\}$
+        \item [] Für $(q',a',d) \in \delta(q,a)$ bzw. $\delta (q,a) = (q', a', d)$ mit $d \in \{R,L,N\}$
         kann die Übergangsfunktion also gelesen werden als: Wenn sich die TM im Zustand $q$ befindet und ein $a$ unter dem SLK einließt,
         schreibt sie ein $a'$ an diese Stelle, bewegt den SLK nach $d$ und nimmt den Zustand $q'$ ein.
     \end{itemize}
@@ -209,9 +210,9 @@
             \colorbox{cadmiumred!35}{Q} & \rightarrow \text{endliche Zustandsmenge} \\
             \colorbox{cadmiumorange!35}{$\Sigma$} & \rightarrow \text{endliches Eingabealphabet} \\
             \colorbox{cadmiumyellow!35}{$\Gamma$} & \rightarrow \text{endliches Bandalphabet} & \Gamma \supset $\Sigma$ \\
-            \colorbox{cadmiumgreen!35}{$B$}& \rightarrow \text{Blankzeichen}& B \subset \Gamma \textbackslash $\Sigma$ \\
-            \colorbox{blizzardblue!35}{$q_o$} & \rightarrow \text{Anfangszustand}& q_0 \subset Q \\
-            \colorbox{persianblue!35}{$\bar{q}$}& \rightarrow \text{Endzustand}&\bar{q} \subset Q \\
+            \colorbox{cadmiumgreen!35}{$B$}& \rightarrow \text{Blankzeichen}& B \in \Gamma \textbackslash $\Sigma$ \\
+            \colorbox{blizzardblue!35}{$q_o$} & \rightarrow \text{Anfangszustand}& q_0 \in Q \\
+            \colorbox{persianblue!35}{$\bar{q}$}& \rightarrow \text{Endzustand}&\bar{q} \in Q \\
             \colorbox{darkviolet!35}{$ \delta$}& \rightarrow \text{Übergangsrelationen/-funktionen} \\
         \end{align}
     \end{equation*}
@@ -234,7 +235,7 @@
     Man nennt $\alpha''q''\beta''$ \textit{Nachfolgekonfiguration} von $\alpha q\beta$,
     falls $\alpha''q''\beta''$ in endlich vielen Rechenschritten aus $\alpha q\beta$ entsteht.
     Man schreibt
-    $\alpha q\beta \vdash \alpha''q''\beta''$.
+    $\alpha q\beta \vdash^* \alpha''q''\beta''$.
 
     \vspace*{0.3cm}
     Eine Rechnung der TM terminiert, sobald der Endzustand $\bar{q}$ erreicht wird.
