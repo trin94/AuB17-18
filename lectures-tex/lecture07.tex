@@ -81,7 +81,7 @@
     \begin{equation*}
         \begin{flalign}
             \text{Finde } h:&\ U \rightarrow \{0,1,\ldots,m-1\} \\\nonumber
-            \text{ sodass } \forall\ 0 \leq i < m:&\ \biggl|\ \{x \in S\ |\ h(x) = i \}\ \biggl| \leq \left\lceil \frac{n}{2}\right\rceil\\\nonumber
+            \text{ sodass } \forall\ 0 \leq i < m:&\ \biggl|\ \{x \in S\ |\ h(x) = i \}\ \biggl| \leq \left\lceil \frac{n}{m}\right\rceil\\\nonumber
         \end{flalign}
     \end{equation*}
 
@@ -111,13 +111,21 @@
     \end{itemize}
 
     \vspace*{0.3cm}
-    \textbf{\textsf{Satz:}} Seien $U,m$ und $h$ gegeben, und sei $k=|U|$ sowie $n=|S| \Rightarrow S \in \binom{U}{n}$.
-    Dann gibt es für jedes $n$ mit $1 \leq n \leq \frac{k}{m}$ ein $S\subseteqU$, sodass alle Elemente aus $S$ von $h$ auf denselben Wert in $\{0,1,\cdots,m-1\}$ abgebildet werden.
+    \textbf{\textsf{Satz:}} Seien $U,m$ und $h$ gegeben, und sei $k=\vert U\vert$ sowie $n=\vert S \vert \Rightarrow S \in \binom{U}{n}$.
+    Dann gibt es für jedes $n$ mit $1 \leq n \leq \frac{k}{m}$ ein $ S \subseteq U$, sodass alle Elemente aus $S$ von $h$ auf denselben Wert in $\{0,1,\cdots,m-1\}$ abgebildet werden.
 
     \vspace*{0.3cm}
-    \textbf{\textsf{Beweis:}} Nach Schubfachsystem existiert ein $i$ mit $0 \leq i < m$, sodass $\underbrace{|k^{-1}(i)|}_{x \in U\ |\ h(x)=i} \supseteq \frac{|U|}{m} = \frac{k}{m}$.
+    \textbf{\textsf{Beweis:}}
+    Nach Schubfachsystem existiert ein $i$ mit $0 \leq i < m$, sodass
+
+            \begin{equation*}
+                \bigg \vert h^{-1}(i)\bigg \vert \geq \left\lceil \frac{k}{m} \right\rceil
+            \end{equation*}
+
     Nach Annahme ist $\frac{k}{m}\geq n$.
-    Man kann nun $S \subseteq n^{-1}(i)$ mit $|S|=n$ wählen für ein beliebiges $i$ mit $k^{-1}(i)\geq \frac{U}{m}$.\proofend
+
+    Man kann nun $S \subseteq h^{-1}(i)$ mit $\vert S \vert=n$ wählen für ein beliebiges $i$ mit $\big\vert h^{-1}(i)\big \vert \geq \left\lceil \frac{k}{m} \right\rceil$.
+    \proofend
 
     Um eine gute Hashfunktion zu finden, müssen also immer auch die Daten betrachtet werden, die mit dieser Funktion gehasht werden.
     \newpage
