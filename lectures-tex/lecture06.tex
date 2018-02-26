@@ -77,7 +77,7 @@
             \STATE $h\gets v.\text{height}$
             \STATE
             \WHILE{ $h > 0$}
-                \WHILE {$x \leq v.\text{forward}[h] \rightarrow \text{key}$}
+                \WHILE {$x \geq v.\text{forward}[h] \rightarrow \text{key}$}
                     \STATE $v\gets v.\text{forward}[h]$
                 \ENDWHILE
                 \STATE $h\gets h-1$
