@@ -3,35 +3,27 @@
 
 \tikzset{node black/.style={circle,fill=black!100,draw,minimum size=0.05cm,inner sep=0pt},}
 \begin{document}
-    \headerline{Algorithmen und Berechenbarkeit}{Vorlesungsmitschrift}{Vorlesung 01}
+    \header{Algorithmen und Berechenbarkeit}{Mitschrift}{Vorlesung 01}
     \section*{Randomisierte Algorithmen}
-    \label{sec:randomisierteAlgorithmen}
 
-    Randomisierte Algorithmen sind Algorithmen,
-    welche unter Nutzung einer Zufallsquelle (z.B. Münzwurf, Zufallsgenerator) Probleme lösen.
+    \kursiv{Randomisierte Algorithmen} sind Algorithmen,
+    die Probleme unter Einbeziehung einer Zufallsquelle (z.B.\ Münzwurf, Zufallsgenerator) lösen.
     In manchen Fällen sind diese Algorithmen einfacher und effizienter
-    als die entsprechenden deterministischen Algorithmen.
+    als ihre deterministischen Pendants.\\
 
-    Randomisierte Algorithmen werden nach "`dem Verbrauch von Zufall"' bewertet,
-    denn Zufall zu erzeugen, ist nicht so ohne Weiteres möglich (Zufall zu "`erzeugen"' ist \textbf{teuer}).
-    Im Gegensatz dazu bewertet man "`normale"' Algorithmen nach Platz- und Zeitbedarf.
+    Randomisierte Algorithmen werden nach \kursiv{dem Verbrauch von Zufall} bewertet
+    (im Gegensatz zu "`normalen"' Algorithmen, die nach Platz- und Zeitbedarf bewertet werden).
+    Die "`Generierung"' echten Zufalls ist jedoch \fett{teuer}.
 
-    Wir haben bisher die folgenden Gattungen kennengelernt:
+    \section*{Closest-Pair}
 
-    \begin{itemize}
-        \item \textbf{\textsf{Las-Vegas:}} Die Laufzeit hängt vom Zufall ab, die Korrektheit nicht.
-        \item \textbf{\textsf{Monte-Carlo:}} Die Laufzeit hängt nicht vom Zufall ab, die Korrektheit schon.
-    \end{itemize}
-
-    \subsection*{Closest Pair (Randomisiert, Las-Vegas)}
-    \label{subsec:closestPairrandomisiert,LasVegas}
-
-    Gegeben seien $n$ Punkte im $\mathbb{R}^2$
+    Gegeben sei eine Menge $P$ von Punkten im $\mathbb{R}^2$.
+    Finde $p_1,p_2 \in P$ für die $\vert p_{1},p_2 \vert $ (\kursiv{euklidische Distanz}) minimal.
 
     \begin{figure}[htb]
         \centering
         \framebox        {
-        \begin{tikzpicture}[thick, scale=0.5]
+        \begin{tikzpicture}[thick, scale=0.7]
             \node[node black] (n1) at (1,0) {};
             \node[node black] (n2) at (1,1.2) {};
             \node[node black] (n3) at (0,3) {};
@@ -45,33 +37,21 @@
             \node[node black] (n11) at (5,0) {};
             \node[node black] (n11) at (3,2.3) {};
         \end{tikzpicture}
-
         }
-
     \end{figure}
 
-    Gegeben ist eine Menge $P$ mit $n$ Punkten im $\mathbb{R}^2$.
-    Gesucht sind $p,q \in P$ für die gilt: $|pq| = \text{min}|rs|$ mit $r,s \in P$,
-    also das Paar mit dem kleinsten Abstand zueinander.
-
-    \subsubsection*{Naiver Ansatz}
-    \label{subsec:naiveransatz}
-
-    \begin{itemize}
-        \item Betrachte $P_1$ und berechne Distanzen zu $P_2, P_3, \dots, P_n$
-        \item Betrachte $P_2$ und berechne Distanzen zu $P_3, P_4, \dots, P_n$
-    \end{itemize}
-
-    Das würde eine Laufzeit von
+    \subsection*{Ansatz 1: Naiv}
+    Man betrachtet $P_1$ und berechnet die Distanzen zu $P_2, P_3, \dots, P_n$,
+    danach betrachtet man $P_2$ und berechnet die Distanzen zu $P_3, P_4, \dots, P_n$.
+    Dies wird für alle verbleibenden Punkte gemacht.
+    Es ergibt sich hieraus eine Laufzeit von
 
     \begin{equation*}
-        O\left(\sum_{i=1}^{n-1}\right) = O\left( \frac{(n-1) \cdot n}{2} \right) = O(n^2)
+        \mathcal{O}\left(\sum_{i=1}^{n-1}\right) = \mathcal{O}\left( \frac{(n-1) \cdot n}{2} \right) = \mathcal{O}(n^2)
     \end{equation*}
 
-    ergeben.
-    Ein Prozessor mit 1 GHz Taktfrequenz schafft
-    1.000.000.000 Instruktionen pro Sekunde.
-    Das führt zu folgender Tabelle:
+    und den tabellarisch aufgelisteten Laufzeiten.
+
     \begin{table}[H]
         \centering
         \begin{tabular}{llll}
@@ -81,35 +61,33 @@
             $=1000      $ & $1000^2 \cdot 10^{-9}$      & $= 10^{-3}$    & \SI{1}{\ms} \\
             $=10000     $ & $10000^2 \cdot 10^{-9}$     & $= 10$         & \SI{10}{\s} \\
             $=1000000   $ & $1000000^2 \cdot 10^{-9}$   & $= 10^3$       & \SI{10}{\min} \\
-            \hline \\
+            \hline
         \end{tabular}
+        \caption*{1-GHz-Prozessor (1.000.000.000 Instruktionen pro Sekunde) für $\mathcal{O}(n^2)$}
     \end{table}
-    $O(n^2)$ ist für das Problem nicht praktikabel.
 
-    \subsubsection*{Randomisierter Algorithmus für CP}
-    \label{subsec:randomisierterAlgorithmusfürCP}
+    \subsection*{Ansatz 2: Randomisiert (Las-Vegas)}
 
-    Ein randomisierter Algorithmus mit \textit{erwarteter Laufzeit}
-    (Varianten: Glück \& Pech) hat eine Laufzeit von $O(n)$.
-    Er wird aus folgendem inkrementellen Ansatz hergeleitet:
+    Ein randomisierter Ansatz des Closest-Pair-Problems hat eine \kursiv{erwartete} Laufzeit von $\mathcal{O}(n)$
+    und funktioniert folgendermaßen:\\
 
-    Zuerst wird die Datenmenge $P = \{ P_1, P_2, P_3, \dots, P_n \}$ betrachtet.
-    Sei nun $\delta_i$ die CP-Distanz in der Menge $P$.
-    Es kommt nun ein weiterer Punkt $P_{i+1}$ hinzu.
+    Sei $P$ die Punktemenge mit $P_1, P_2, P_3, \dots, P_n$
+    und sei $\delta_i$ die aktuelle Closest-Pair-Distanz.
 
-    Den neuen geringsten Abstand kann man nun dadurch herausfinden,
-    dass man die Abstände vom neuen Punkt zu allen anderen Punkten vergleicht und überprüft,
-    ob es einen kleineren Abstand als das bisherige $\delta_i$ gibt.
+    Für das \fett{Einfügen} eines neuen Punktes $P_{i+1}$ gilt allgemein:
+    Die neue Closest-Pair-Distanz erhält man,
+    wenn man die Abstände vom neuen Punkt zu allen bisherigen Punkten berechnet und überprüft,
+    ob es einen noch kürzeren Abstand zweier Punkte gibt als $\delta_i$.\\
 
-    Besser wäre jedoch Folgendes: Angenommen, $\delta_i$ ist bestimmt.
-    So kann nun ein Gitter erzeugt werden, das eine Maschenweite
-    (Breite der Zeilen/Spalten) von genau $\delta_i$ hat.
+    Optimiert werden kann das Einfügen durch die folgende Überlegung:
+    Da $\delta_i$ bekannt ist, kann nun ein Gitter mit einer Maschenweite (Breite der Zeilen/Spalten) von $\delta_i$
+    erzeugt werden.
 
     \begin{figure}[H]
         \centering
         \begin{table}[H]
             \centering
-            \scalebox{0.8}{%
+            \scalebox{1.1}{%
             \begin{tabular}{l|l|l|l|l|l|l}
                 & & & & $\cdot$ & &  \\ \hline
                 & \cellcolor{yellow!50}&\cellcolor{yellow!50} &\cellcolor{yellow!50}$\cdot$ & & $\cdot$ &  \\ \hline
@@ -122,64 +100,59 @@
         \end{table}
     \end{figure}
 
-    Das Einfügen folgt einem einfachen Ablauf
+    Beim \fett{Einfügen} eines neuen Punktes wird zuerst der neue Punkt $P_{i+1}$ im Gitter (orange) lokalisiert.
+    Anschließend werden alle Punkte in den angrenzenden Zellen (gelb)
+    mit dem neuen Punkt $P_{i+1}$ verglichen. Gilt
 
-    \begin{enumerate}
-        \item Lokalisiere $P_{i+1}$ im Gitter (orange)
-        \item Inspiziere alle Punkte im Feld von $P_{i+1}$ sowie alle Felder um $P_{i+1}$ herum (gelb)
-        \begin{enumerate}
-            \item $\delta_{i+1} = \delta_i \rightarrow$ Nichts mehr tun $\rightarrow O(1)$
-            \item $\delta_{i+1} < \delta_i \rightarrow$ Baue Gitter mit neuer Maschenweite
-            $\delta_{i+1}$ $\rightarrow O(n^2)$ im schlimmsten Fall
-        \end{enumerate}
-    \end{enumerate}
+    \begin{itemize}
+        \item $\delta_{i+1} = \delta_i $ : Ist die neue Closest-Pair-Distanz identisch mit der alten
+        (\fett{guter Fall}), so muss nichts weiter getan werden
+        und es ergibt sich eine Laufzeit von $\mathcal{O}(1)$.
+        \item $\delta_{i+1} < \delta_i $ : Ist die neue Closest-Pair-Distanz
+        kleiner als die alte (\fett{schlechter Fall}),
+        so muss das Gitter mit der Maschenweite $\delta_{i+1}$ neu aufgebaut werden.
+        Im schlechtesten Fall ergibt sich somit eine Laufzeit von $\mathcal{O}(n^2)$.
+    \end{itemize}
 
-    Da es auch Fälle geben kann, in denen $P_{i+1}$ immer einen kleineres $\delta$ hat als davor
-    (Liste nach größtem Abstand geordnet), empfiehlt es sich, die Punkte immer in zufälliger Reihenfolge "`einzufügen"'.
-    So bleibt eine Wahrscheinlichkeit von $\frac{2}{i+1}$ dafür, dass der nächste Punkt ein CP-Punkt ist.
-
-    Die erwarteten Kosten des Einfügens sind
-
-    \begin{equation*}
-        \begin{align*}
-            & \leq \underbrace{\frac{2}{i+1} \cdot O(n)}_{\text{schlechter Fall}} + \underbrace{O(1)}_{\substack{\text{guter} \\ \text{Fall}}}\\\nonumber
-            & = O(1) + O(1) \\\nonumber
-            & = O(1)
-        \end{align*}
-    \end{equation*}
-
-    \newpage
-    Damit lässt sich der Erwartungswert berechnen zu
+    Da es auch Fälle geben kann, in denen jeder neu eingefügte Punkt gleichzeitig auch ein neues Closest-Pair bildet,
+    das Gitter also bei jedem Einfügeschritt neu aufgebaut werden muss (Liste, sortiert nach größtem Abstand zueinander),
+    werden die Punkte in \kursiv{zufälliger Reihenfolge} einzufügt.
+    So bleibt eine Wahrscheinlichkeit von $\frac{2}{i+1}$, dass der nächste Punkt ein Closest-Pair-Punkt ist.
+    Die erwarteten Kosten des Einfügens \fett{pro Punkt} sind
 
     \begin{equation*}
-        \begin{align*}
-            E\left[ \sum^{n}_{i=1}(\text{Kosten für Einfügen von }P_i)\right] &= \sum^{n}_{i=1}E[\text{Kosten für Einfügen von }P_i] \\\nonumber
-            &= \sum^{n}_{i=1}O(1)\\\nonumber
-            & = O(n)
-        \end{align*}
+        \leq \quad \underbrace{\frac{2}{i+1} \cdot \mathcal{O}(i)}_{\text{schlechter Fall}} + \underbrace{\mathcal{O}(1)}_{\substack{\text{guter} \\ \text{Fall}}}
+        \quad = \quad \mathcal{O}(1) + \mathcal{O}(1)
+        \quad = \quad \mathcal{O}(1)
     \end{equation*}
 
-    \newproof{Die Wahrscheinlichkeit, beim Einfügen von $P_{i+1}$ das Gitter neu aufbauen zu müssen, ist $< \frac{2}{i+1}$. }
-    {
-    Das Gitter muss genau dann neu aufgebaut werden, wenn $P_{i+1}$
-    einer der beiden Punkte ist, welche das CP in der Menge der ersten $i+1$ Punkte bestimmen.
-    Jeder der ersten $i+1$ Punkte ist mit gleicher Wahrscheinlichkeit der $P_{i+1}$.
+    Der Erwartungswert für das Einfügen ergibt sich zu
 
-    Falls CP eindeutig:
-    \begin{equation*}
-        \rightarrow \text{Pr}(\text{Gitter muss neu aufgebaut werden}) = \frac{2}{i}
-    \end{equation*}
+    \begin{align*}
+        E\left[ \sum^{n}_{i=1}(\text{Kosten für Einfügen von }P_i)\right] &= \sum^{n}_{i=1}E[\text{Kosten für Einfügen von }P_i] \\\nonumber
+        &= \sum^{n}_{i=1} \mathcal{O}(1) \quad = \quad \mathcal{O}(n)
+    \end{align*}
 
-    \textbf{\textsf{Wichtig:}} Wenn der Algorithmus länger braucht, hat das nichts mit der Eingabe zu tun.
-    Der randomisierte Closest-Pair-Algorithmus berechnet immer ein korrektes Resultat.
-    }
+    \begin{satz}
+        Die Wahrscheinlichkeit, beim Einfügen eines neuen Punktes $P_{i+1}$ das Gitter neu aufbauen zu müssen,
+        ist $< \frac{2}{i+1}$.
+    \end{satz}
+    \begin{proof}
+        Das Gitter muss genau dann neu aufgebaut werden, wenn der neue Punkt $P_{i+1}$
+        einer der beiden Punkte ist, welche das Closest-Pair in der Menge der ersten $i+1$ Punkte bestimmen.
+        Jeder der ersten $i+1$ Punkte ist mit gleicher Wahrscheinlichkeit der $P_{i+1}$.
+        Falls das Closest-Pair eindeutig ist, gilt
+        \begin{equation*}
+            \text{Pr}(\text{Gitter muss neu aufgebaut werden}) = \frac{2}{i}
+        \end{equation*}
 
-    \subsubsection*{Closest Pair mit deterministischem Algorithmus}
-    \label{subsec:closestPairmitdeterministischemAlgorithmus}
-    Closest Pair kann in $O(n \cdot \log(n))$ berechnet werden.
-    Es kann sogar gezeigt werden, dass CP mindestens $\Omega(n \cdot \log(n))$ braucht.
+        \textbf{\textsf{Wichtig:}} Wenn der Algorithmus länger braucht, hat das nichts mit der Eingabe zu tun.
+        Der randomisierte Closest-Pair-Algorithmus berechnet \fett{immer} ein korrektes Resultat.
+    \end{proof}
 
-    Deterministisch geht CP vergleichsbasiert nicht besser als $\Omega(n \cdot \log(n))$
+    \subsection*{Ansatz 3: Deterministisch}
+    Ein Closest-Pair kann in $\mathcal{O}(n \cdot \log(n))$ berechnet werden.
+    Es kann sogar gezeigt werden, dass Closest-Pair $\in \Omega(n \cdot \log(n))$, es also gar nicht besser geht.
 
     \begin{table}[!ht]
         \centering
@@ -187,33 +160,33 @@
             \textbf{\textsf{n}} & \textbf{\textsf{Rechnung}} & \textbf{\textsf{Ergebnis}}\\
             \hline \\ [-2ex]
             $=1000000   $ & $10^6 \cdot 6 \cdot  10^{-9}$   & 6 ms \\
-            \hline \\
+            \hline
         \end{tabular}
+        \caption*{1-GHz-Prozessor für $\mathcal{O}(n \cdot \log(n))$}
     \end{table}
 
-    \vspace*{0.3cm} \textbf{\textsf{Beweis:}}
-        Man weiß, dass Elementuniqueness (gegeben sind $n$ Zahlen, man überprüft, ob eine Zahl doppelt vorkommt)
+    \begin{proof}
+        Man weiß, dass Elementuniqueness (gegeben $n$ Zahlen $\rightarrow$ man prüft, ob eine Zahl doppelt vorkommt)
         $\Omega(n \cdot \log(n))$ braucht.
-        Falls CP deterministisch vergleichsbasiert besser als $o(n \cdot \log(n))$
-        gelöst werden könnte, so könnte man auch Elementuniqueness in dieser Zeit lösen
-        (Zahl $i \rightarrow Punkt \ (i, i) \in \mathbb{R}^2$). Allerdings gilt das nur in einem
-        anderem Rechenmodell (Randomisierung und Abrundung).
 
-    \hrulefill
+        Wenn nun Closest-Pair vergleichsbasiert besser als $o(n \cdot \log(n))$ gelöst werden könnte,
+        so könnte man auch Elementuniqueness in dieser Zeit lösen.
+        Das gilt jedoch nur in einem anderen Rechenmodell (Randomisierung und Abrundung).
+    \end{proof}
 
     \section*{Anhang}
     \label{sec:anhang}
 
     \subsubsection*{Zufallsvariable und Erwartungswert}
     \label{sec:zufallsvariableUndErwartungswert}
-    Sei $Y$ eine Zufallsvariable, zum Beispiel \textit{Augenzahl beim Wurf} mit einem normalen und fairen Würfel. \newline
+    Sei $X$ die Zufallsvariable \kursiv{Augenzahl beim Wurf} mit einem normalen Würfel.
     Der Erwartungswert berechnet sich zu
 
-    \begin{equation*}
-        E[X] = \sum \text{Ereignis} \cdot \text{Pr}(\text{Ereignis})
-    \end{equation*}
-
-    Für $Y$ also: $\frac{1}{6} \cdot 1 + \frac{1}{6} \cdot 2 + \frac{1}{6} \cdot 3 +
-    \frac{1}{6} \cdot 4 + \frac{1}{6} \cdot 5 + \frac{1}{6} \cdot 6 = 3,5$
+    \begin{align*}
+        E[X] & = \sum \text{Ereignis} \cdot \text{Pr}(\text{Ereignis}) \\
+        & = \frac{1}{6} \cdot 1 + \frac{1}{6} \cdot 2 + \frac{1}{6} \cdot 3 +
+        \frac{1}{6} \cdot 4 + \frac{1}{6} \cdot 5 + \frac{1}{6} \cdot 6 \\
+        & = 3,5
+    \end{align*}
 
 \end{document}

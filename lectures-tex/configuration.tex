@@ -1,5 +1,5 @@
 % packages ---------------------------------------------------------------------------------------------------- packages
-\usepackage[margin=2.5cm]{geometry}
+\usepackage[margin=3cm]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[ngerman]{babel}
@@ -29,6 +29,7 @@
 \usepackage{algorithm}
 \usepackage[]{algorithmic}
 \usepackage{centernot}
+\usepackage{amsthm}
 % \usepackage[noend]{algorithmic}
 
 % pgf plotsets -------------------------------------------------------------------------------------------- pgf plotsets
@@ -46,8 +47,6 @@
 \usetikzlibrary{calc}
 \usetikzlibrary{tikzmark}
 \usetikzlibrary{intersections}
-
-
 
 \sisetup{
 locale = DE ,
@@ -80,6 +79,7 @@ per-mode = symbol
 \date{Letztes Update: \today \ - \currenttime \ Uhr}
 \maketitle
 }
+\newcommand{\header}[3]{\section*{#1: #3 - #2}\subsection*{Letztes Update: \today \ - \currenttime \ Uhr}\vspace*{1cm}}
 \newcommand{\newproof}[2]{
 \vspace*{0.3cm} \textbf{\textsf{Satz:}} #1
 
@@ -137,7 +137,7 @@ moredelim=[il][\textcolor{listingGrey}]{$$},
 moredelim=[is][\textcolor{listingGrey}]{\%\%}{\%\%}
 }
 \lstdefinelanguage{Kotlin}{
-  keywords={package, as, typealias, this, super, val, var, fun, for, null, true, false, is, in, throw, return, break, continue, object, if, try, else, while, do, when, yield, typeof, yield, typeof, class, interface, enum, object, override, public, private, get, set, import, abstract, },
+  keywords={package, as, typealias, this, super, val, var, fun, for, null, true, false, is, in, throw, return, break, continue, object, if, try, else, while, do, when, yield, typeof, yield, typeof, class, interface, enum, object, override, public, private, get, set, import, abstract, procedure},
   keywordstyle=\color{listingBlue}\bfseries,
   ndkeywords={@Deprecated, Iterable, Int, Integer, Float, Double, String, Runnable, dynamic},
   ndkeywordstyle=\color{amethyst}\bfseries,
@@ -151,7 +151,6 @@ moredelim=[is][\textcolor{listingGrey}]{\%\%}{\%\%}
   stringstyle=\color{listingRed}\ttfamily,
   morestring=[b]",
   morestring=[s]{"""*}{*"""},
-  numbers=left,
 }
 
 % misc ------------------------------------------------------------------------------------------------------------ misc
@@ -161,3 +160,13 @@ moredelim=[is][\textcolor{listingGrey}]{\%\%}{\%\%}
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}} % zentriert mit Breitenangabe
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}} % rechtsbündig mit Breitenangabe
 \newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}} % rechtsbündig mit Breitenangabe
+
+% text ------------------------------------------------------------------------------------------------------------ text
+\newcommand{\fett}[1]{\textbf{\textsf{#1}}}
+\newcommand{\kursiv}[1]{\textit{#1}}
+
+% proofs -------------------------------------------------------------------------------------------------------- proofs
+\newtheoremstyle{dotless}{}{}{\itshape}{}{\bfseries\sffamily}{}{ }{}
+\theoremstyle{dotless}
+\newtheorem*{satz}{Satz:}
+\renewenvironment{proof}{{\bfseries \sffamily Beweis:}}{\hfill $\square$}
