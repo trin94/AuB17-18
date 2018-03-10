@@ -55,7 +55,7 @@
     \begin{table}[H]
         \centering
         \begin{tabular}{llll}
-            \textbf{\textsf{n}} & \textbf{\textsf{Rechnung}} & & \textbf{\textsf{Ergebnis}}\\
+            \fett{n} & \fett{Rechnung} & & \fett{Ergebnis}\\
             \hline \\ [-2ex]
             $=100       $ & $100^2 \cdot 10^{-9}$       & $=10^{-5}$   & $\SI{10}{\us}$ \\
             $=1000      $ & $1000^2 \cdot 10^{-9}$      & $= 10^{-3}$    & \SI{1}{\ms} \\
@@ -116,12 +116,13 @@
 
     Da es auch Fälle geben kann, in denen jeder neu eingefügte Punkt gleichzeitig auch ein neues Closest-Pair bildet,
     das Gitter also bei jedem Einfügeschritt neu aufgebaut werden muss (Liste, sortiert nach größtem Abstand zueinander),
-    werden die Punkte in \kursiv{zufälliger Reihenfolge} einzufügt.
+    werden die Punkte in \kursiv{zufälliger Reihenfolge} eingefügt.
     So bleibt eine Wahrscheinlichkeit von $\frac{2}{i+1}$, dass der nächste Punkt ein Closest-Pair-Punkt ist.
     Die erwarteten Kosten des Einfügens \fett{pro Punkt} sind
 
     \begin{equation*}
-        \leq \quad \underbrace{\frac{2}{i+1} \cdot \mathcal{O}(i)}_{\text{schlechter Fall}} + \underbrace{\mathcal{O}(1)}_{\substack{\text{guter} \\ \text{Fall}}}
+        \leq \quad \underbrace{\frac{2}{i+1} \cdot \mathcal{O}(i)}_{\text{schlechter Fall}} +
+        \underbrace{\mathcal{O}(1)}_{\substack{\text{guter} \\ \text{Fall}}}
         \quad = \quad \mathcal{O}(1) + \mathcal{O}(1)
         \quad = \quad \mathcal{O}(1)
     \end{equation*}
@@ -129,7 +130,8 @@
     Der Erwartungswert für das Einfügen ergibt sich zu
 
     \begin{align*}
-        E\left[ \sum^{n}_{i=1}(\text{Kosten für Einfügen von }P_i)\right] &= \sum^{n}_{i=1}E[\text{Kosten für Einfügen von }P_i] \\\nonumber
+        E\left[ \sum^{n}_{i=1}(\text{Kosten für Einfügen von }P_i)\right]
+        &= \sum^{n}_{i=1}E[\text{Kosten für Einfügen von }P_i] \\\nonumber
         &= \sum^{n}_{i=1} \mathcal{O}(1) \quad = \quad \mathcal{O}(n)
     \end{align*}
 
@@ -146,18 +148,19 @@
             \text{Pr}(\text{Gitter muss neu aufgebaut werden}) = \frac{2}{i}
         \end{equation*}
 
-        \textbf{\textsf{Wichtig:}} Wenn der Algorithmus länger braucht, hat das nichts mit der Eingabe zu tun.
+        \fett{Wichtig:} Wenn der Algorithmus länger braucht, hat das nichts mit der Eingabe zu tun.
         Der randomisierte Closest-Pair-Algorithmus berechnet \fett{immer} ein korrektes Resultat.
     \end{proof}
 
     \subsection*{Ansatz 3: Deterministisch}
-    Ein Closest-Pair kann in $\mathcal{O}(n \cdot \log(n))$ berechnet werden.
-    Es kann sogar gezeigt werden, dass Closest-Pair $\in \Omega(n \cdot \log(n))$, es also gar nicht besser geht.
+    \begin{satz}
+        Deterministisch Closest-Pair ist $\in \Omega(n \cdot \log(n))$.
+    \end{satz}
 
     \begin{table}[!ht]
         \centering
         \begin{tabular}{llll}
-            \textbf{\textsf{n}} & \textbf{\textsf{Rechnung}} & \textbf{\textsf{Ergebnis}}\\
+            \fett{n} & \fett{Rechnung} & \fett{Ergebnis}\\
             \hline \\ [-2ex]
             $=1000000   $ & $10^6 \cdot 6 \cdot  10^{-9}$   & 6 ms \\
             \hline
