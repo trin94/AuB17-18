@@ -2,11 +2,13 @@
 
 Mitschriften zur Vorlesung *AuB17/18* der Uni Stuttgart. Kein Anspruch auf Korrektheit.
 
+Aktuell: *Die Mitschriften erhalten eine Überarbeitung* (Fertig: 01-02).
+
 
 |Vorlesung      | Datum der VL |PDF                                    |Thema
 |---------------|--------------|---------------------------------------|----------------------------------
 |01             |17.10.2017    |[klick](lectures-pdf/lecture01.pdf)    |Closest-Pair
-|02             |20.10.2017    |[klick](lectures-pdf/lecture02.pdf)    |Min Cut
+|02             |20.10.2017    |[klick](lectures-pdf/lecture02.pdf)    |Min-Cut
 |03             |24.10.2017    |[klick](lectures-pdf/lecture03.pdf)    |Monte-Carlo, Las Vegas
 |04             |27.10.2017    |[klick](lectures-pdf/lecture04.pdf)    |Quicksort, Zero-Knowledge-Proof
 |05             |07.11.2017    |[klick](lectures-pdf/lecture05.pdf)    |Quickselect

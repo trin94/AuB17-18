@@ -9,29 +9,26 @@
 \tikzset{node purp/.style={circle,fill=amethyst!100,draw,minimum size=0.5cm,inner sep=0pt},}
 \tikzset{node whit/.style={circle,fill=anti-flashwhite!100,draw,minimum size=0.7cm,inner sep=0pt},}
 \tikzset{node yell/.style={circle,fill=buff!100,draw,minimum size=0.7cm,inner sep=2pt},}
-\setlength{\parindent}{0pt}
 \begin{document}
-    \headerline{Algorithmen und Berechenbarkeit}{Vorlesungsmitschrift}{Vorlesung 02}
+    \header{Algorithmen und Berechenbarkeit}{Mitschrift}{Vorlesung 02}
 
-    \section*{Min-Cut-Problem}
-    \label{sec:mincutproblem}
-
-    \subsection*{Cut}
-    \label{subsec:cut}
-
-    Ein Cut im Graphen unterteilt einen Graphen in zwei Hälften.
-    Das heißt, es gibt Kanten, bei denen ein Knoten in einer
-    Hälfte und bei denen der andere Knoten in der anderen Hälfte ist.
+    \section*{Min-Cut}
+    \begin{definition}
+        Ein \fett{Cut} unterteilt einen Graphen in zwei Hälften.
+        Das heißt, es gibt Kanten, bei denen ein Knoten in einer
+        Hälfte und bei denen der andere Knoten in der anderen Hälfte ist.
+        Der \normal{Wert des Cuts} ist die \normal{Anzahl geschnittener Kanten}.
+    \end{definition}
 
     \begin{figure}[htb]
         \centering
 
         \begin{tikzpicture}[thick, scale=0.5]
-            \node[node purp] (n1) at (1,0) {};
-            \node[node purp] (n2) at (0,3) {};
-            \node[node blue] (n3) at (4,4) {};
-            \node[node blue] (n4) at (7,2) {};
-            \node[node blue] (n5) at (5,0) {};
+            \node[node purp] (n1) at (1,0) {\textcolor{white}{\sansserif{1}}};
+            \node[node purp] (n2) at (0,3) {\textcolor{white}{\sansserif{2}}};
+            \node[node blue] (n3) at (4,4) {\textcolor{black}{\sansserif{3}}};
+            \node[node blue] (n4) at (7,2) {\textcolor{black}{\sansserif{4}}};
+            \node[node blue] (n5) at (5,0) {\textcolor{black}{\sansserif{5}}};
 
             \foreach \from/\to in {n1/n2,n2/n3,n3/n4,n4/n5,n5/n1,n2/n5,n3/n5}
             \draw[very thick] (\from) -- (\to);
@@ -40,27 +37,29 @@
             \coordinate (c2) at (1.5,5);
 
             \draw [ultra thick, red, dashed] (c1) to [bend right=20] (c2);
-            %            \draw [ultra thick, red, dashed] (2,-1) to[out=-15,in=-15] (1.5,5);
-            %            \draw [ultra thick, red, dashed] plot [smooth, tension=2] coordinates {(2,-1) (2.5,2)(1.5,5)};
         \end{tikzpicture}
-        \caption*{Ein Cut mit Wert 3}
+        \caption*{Cut $\{1,2\}$ bzw.\ $\{3,4,5\}$ mit Wert 3}
     \end{figure}
 
-    \subsection*{Min-Cut}
-    \label{subsec:mincut}
-    Der Min-Cut beschreibt den Cut, bei dem am wenigsten Kanten "`geschnitten"' werden müssen,
-    um den Graphen in zwei Hälften zu teilen.
+    \begin{definition}
+        Der \fett{Min-Cut} beschreibt den Cut, bei dem am wenigsten Kanten \normal{geschnitten} werden müssen,
+        um den Graphen in zwei Hälften zu teilen. Ein Min-Cut muss nicht eindeutig sein.\\
+
+        \normal{Formal:} Sei $G=(V,E)$ ein ungewichteter und ungerichteter Multigraph,
+        $A \subset V$ und $cut(A, G)$ ein Cut.
+        Finde $A \subset V$ mit $\vert cut(A,G)\vert$ minimal.
+    \end{definition}
 
     \begin{figure}[H]
         \centering
         \begin{subfigure}{.5\textwidth}
             \centering
             \begin{tikzpicture}[thick, scale=0.5]
-                \node[node purp] (n1) at (1,0) {};
-                \node[node purp] (n2) at (0,3) {};
-                \node[node purp] (n3) at (4,4) {};
-                \node[node blue] (n4) at (7,2) {};
-                \node[node purp] (n5) at (5,0) {};
+                \node[node purp] (n1) at (1,0) {\textcolor{white}{\sansserif{1}}};
+                \node[node purp] (n2) at (0,3) {\textcolor{white}{\sansserif{2}}};
+                \node[node purp] (n3) at (4,4) {\textcolor{white}{\sansserif{3}}};
+                \node[node blue] (n4) at (7,2) {\textcolor{black}{\sansserif{4}}};
+                \node[node purp] (n5) at (5,0) {\textcolor{white}{\sansserif{5}}};
 
                 \foreach \from/\to in {n1/n2,n2/n3,n3/n4,n4/n5,n5/n1,n2/n5,n3/n5}
                 \draw[very thick] (\from) -- (\to);
@@ -70,54 +69,60 @@
                 \coordinate (c2) at (6,5);
 
                 \draw [ultra thick, red, dashed] (c1) to [bend left=20] (c2);
-                %            \draw [ultra thick, red, dashed] (2,-1) to[out=-15,in=-15] (1.5,5);
-                %            \draw [ultra thick, red, dashed] plot [smooth, tension=2] coordinates {(2,-1) (2.5,2)(1.5,5)};
             \end{tikzpicture}
         \end{subfigure}%
         \begin{subfigure}{.5\textwidth}
             \centering
 
             \begin{tikzpicture}[thick, scale=0.5]
-            \node[node purp] (n1) at (1,0) {};
-            \node[node blue] (n2) at (0,3) {};
-            \node[node blue] (n3) at (4,4) {};
-            \node[node blue] (n4) at (7,2) {};
-            \node[node blue] (n5) at (5,0) {};
+                \node[node purp] (n1) at (1,0) {\textcolor{white}{\sansserif{1}}};
+                \node[node blue] (n2) at (0,3) {\textcolor{black}{\sansserif{2}}};
+                \node[node blue] (n3) at (4,4) {\textcolor{black}{\sansserif{3}}};
+                \node[node blue] (n4) at (7,2) {\textcolor{black}{\sansserif{4}}};
+                \node[node blue] (n5) at (5,0) {\textcolor{black}{\sansserif{5}}};
 
-            \foreach \from/\to in {n1/n2,n2/n3,n3/n4,n4/n5,n5/n1,n2/n5,n3/n5}
-            \draw[very thick] (\from) -- (\to);
+                \foreach \from/\to in {n1/n2,n2/n3,n3/n4,n4/n5,n5/n1,n2/n5,n3/n5}
+                \draw[very thick] (\from) -- (\to);
 
 
-            \coordinate (c1) at (3.5,-1);
-            \coordinate (c2) at (-1.5,2);
+                \coordinate (c1) at (3.5,-1);
+                \coordinate (c2) at (-1.5,2);
 
-            \draw [ultra thick, red, dashed] (c1) to [bend right=35] (c2);
-            %            \draw [ultra thick, red, dashed] (2,-1) to[out=-15,in=-15] (1.5,5);
-            %            \draw [ultra thick, red, dashed] plot [smooth, tension=2] coordinates {(2,-1) (2.5,2)(1.5,5)};
-        \end{tikzpicture}
+                \draw [ultra thick, red, dashed] (c1) to [bend right=35] (c2);
+            \end{tikzpicture}
         \end{subfigure}
-        \caption*{Min-Cut mit Wert 2 (hier nicht eindeutig)}
+        \caption*{Min-Cut links $\{4\}$ bzw.\ rechts $\{1\}$ mit Wert 2}
     \end{figure}
-    \newpage
 
-    \section*{Kargers Min-Cut-Algorithmus}
+    \section*{Min-Cut-Algorithmus von Karger}
     \label{sec:kargersMincutAlgorithmus}
 
     Kargers-Min-Cut-Algorithmus beschreibt einen randomisierten Algorithmus, der mit einer
     Wahrscheinlichkeit von $\frac{1}{n^2}$ das richtige Ergebnis berechnet.
-    Als zentrale Operation dient hier die Kantenkontraktion:
+    Die zentrale Operation des Algorithmus ist die \kursiv{Kantenkontraktion}.
+    Der Algorithmus lässt sich wie folgt beschreiben:
 
     \begin{figure}[H]
+        \begin{algorithmic}
+            \FOR{$i=1$ \TO $n-2$}
+            \STATE{Kontrahiere zufällige Kante}
+            \ENDFOR
+            \STATE
+            \RETURN{Kantenmenge zwischen den beiden verbleibenden Knoten}
+        \end{algorithmic}
+    \end{figure}
+
+    \begin{figure}
         \centering
         \begin{subfigure}{.45\textwidth}
             \centering
-            \begin{tikzpicture}[thick, scale=0.5]
-                \node[node whit] (n1) at (0,0) {};
+            \begin{tikzpicture}[thick, scale=0.4]
+                \node[node whit] (n1) at (-1,0) {};
                 \node[node whit] (n2) at (4,3) {};
-                \node[node whit] (n3) at (8,0) {};
+                \node[node whit] (n3) at (9,0) {};
                 \node[node whit] (n4) at (4,-3) {};
-                \node[node yell] (n5) at (3,0) {v};
-                \node[node yell] (n6) at (5,0) {w};
+                \node[node yell] (n5) at (2,0) {\sansserif{A}};
+                \node[node yell] (n6) at (6,0) {\sansserif{B}};
 
                 \foreach \from/\to in {n1/n5,n2/n5,n2/n6,n3/n6,n4/n5,n4/n6,n5/n6}
                 \draw[very thick] (\from) -- (\to);
@@ -130,12 +135,12 @@
         \begin{subfigure}{.45\textwidth}
             \centering
 
-            \begin{tikzpicture}[thick, scale=0.5]
-                \node[node whit] (n1) at (0,0) {};
+            \begin{tikzpicture}[thick, scale=0.4]
+                \node[node whit] (n1) at (-1,0) {};
                 \node[node whit] (n2) at (4,3) {};
-                \node[node whit] (n3) at (8,0) {};
+                \node[node whit] (n3) at (9,0) {};
                 \node[node whit] (n4) at (4,-3) {};
-                \node[node yell] (n5) at (4,0) {v, w};
+                \node[node yell] (n5) at (4,0) {\sansserif{A, B}};
 
                 \foreach \from/\to in {n1/n5,n3/n5}
                 \draw[very thick] (\from) -- (\to);
@@ -146,81 +151,105 @@
                 \draw [very thick] (n4) to [bend left=20] (n5);
             \end{tikzpicture}
         \end{subfigure}
-        \caption*{Kantenkontraktion der Knoten $v, w$}
+        \caption*{Kantenkontraktion der Kante zwischen den Knoten \sansserif{A} und \sansserif{B}}
     \end{figure}
 
-    Der Algorithmus lässt sich wie folgt beschreiben:
+    Nach dem Ausführen des Algorithmus bleiben genau zwei Knoten übrig.
+    Der Min-Cut ist die Anzahl der Kanten zwischen diesen Knoten.
 
-    \begin{lstlisting}[escapeinside={(;}{;)}]
-        for (;$i = 1$;) to (;$n-2$;):
-            Kontrahiere zufällige Kante
-        return Kantenmenge,
-            die einem der beiden verbleibenden Knoten entspricht
-    \end{lstlisting}
+    \subsection*{Min-Cut-Algorithmus von Karger: Analyse}
 
-    Es bleiben zwei große Knoten mit einigen Kanten zwischen ihnen übrig.
-    Der errechnete Min-Cut ist die Anzahl der Kanten zwischen diesen Knoten.
+    \begin{itemize}
+        \item \fett{Annahme:} Der Min-Cut ist eindeutig.
+        \item {\fett{Beobachtung:}
+        \begin{enumerate}
+            \item Der Algorithmus berechnet genau dann das richtige Ergebnis,
+            wenn er nie eine der Min-Cut-Kanten kontrahiert.
+            \item Sei $k$ die Größe des Min-Cuts und $m$ die Anzahl der Kanten.
+            Die Wahrscheinlichkeit im ersten Kontraktionsschritt einen Fehler zu machen, beträgt $\frac{k}{m}$,
+            die Wahrscheinlichkeit keinen Fehler zu machen $1-\frac{k}{m}$.
+        \end{enumerate} }
+    \end{itemize}
 
-    \subsection*{Analyse von Kargers Min-Cut-Algorithmus}\label{subsec:analyseVonKargersMincut-algorithmus}
-
-    \textbf{\textsf{Annahme:}}  Min-Cut ist eindeutig.
-    \newline
-    \textbf{\textsf{Beobachtung:}} Algorithmus berechnet genau dann das richtige Ergebnis, wenn er nie eine der Min-Cut-Kanten kontrahiert.
-
-    Sei $k$ die Größe des Min-Cuts, $m$ die Anzahl der Kanten.
-    Die Wahrscheinlichkeit im ersten Kontraktionsschritt einen Fehler zu machen, beträgt $\frac{k}{m}$,
-    die Wahrscheinlichkeit keinen Fehler zu machen $1-\frac{k}{m}$.
-
-    \newproof{Betrachte einen Multigraphen (Mehrfachkanten zwischen Knoten erlaubt) $G(V,E)$ mit einem Min-Cut mit Wert $k$.
-        Dann gilt: G hat mindestens $\frac{k \cdot n}{2}$ Kanten.}
-    {
-        Jeder Knoten hat Grad $ \geq k$.
-
+    \begin{satz}
+        Betrachte einen Multigraphen $G(V,E)$ mit einem Min-Cut-Wert $k$.
+        Dann hat G mindestens $\frac{k \cdot n}{2}$ Kanten.
+    \end{satz}
+    \begin{proof}
+        Sei $d_G(v)$ der Knotengrad von $v$. Jeder Knoten hat $d_G(v) \geq k$.
+        Die Anzahl der Kanten ergibt sich somit zu
         \begin{equation*}
-            \# \text{Kanten} = \frac{\sum_{}^{}(\text{grad($v$)})}{2} \geq \frac{k \cdot n}{2}
+            \frac{\sum_{}^{}(d_G(v))}{2} \geq \frac{k \cdot n}{2}
         \end{equation*}
-    }
+    \end{proof}\\
 
     Sei $E_i$ das Ereignis, dass im $i$-ten Kontraktionsschritt keine Min-Cut-Kante erwischt wurde.
-    Wir wissen, dass die Wahrscheinlichkeit dafür $1-\frac{k}{m} \geq 1 - \frac{2}{n}$
-    ($m \geq \frac{k \cdot n}{2}$) beträgt.
+    Für $m \geq \frac{k \cdot n}{2}$ beträgt die Wahrscheinlichkeit wie bekannt
+    \begin{equation*}
+        1-\frac{k}{m} \geq 1 - \frac{2}{n}
+    \end{equation*}
+
 
     Falls $E_1$ eingetroffen ist, existieren vor dem zweiten Schritt mindestens $\frac{k \cdot (n-1)}{2}$ Kanten.
-    Daraus folgt dass die Wahrscheinlichkeit, im zweiten Schritt keinen Fehler zu machen
-    $P_r(E_2 | E_1) \geq 1 - \frac{k}{m} \geq 1 - \frac{2}{n-1}$ beträgt, falls $E_1$ eingetreten ist.
-
-    ...
-
-    Falls $E_1, E_2, ..., E_i$ eingetroffen sind, existieren vor dem $i+1$-Schritt mindestens $\frac{k \cdot (n-i)}{2}$ Kanten:
-    $P_r(E_{i+1})  \geq 1 - \frac{2}{n-i}$.
-    \newpage
-
+    Sei $\Pr(E_2 | E_1)$ die Wahrscheinlichkeit,
+    im zweiten Schritt keinen Fehler zu machen, falls $E_1$ eingetreten ist.
+    $\Pr(E_2 | E_1)$ beträgt
     \begin{equation*}
-        P_r(\bigcap_{i+1}^{n-2}) = P_r(E_1) \cdot P_r(E_2|E_1) \cdot P_r(E_3| E_1 \land E_2) ...
-    \end{equation*}
-    \begin{equation*}
-        \geq \prod_{i=1}^{n-2}1-\frac{2}{n - (i+1)} = \prod_{i=1}^{n-2}\frac{n-i+1-2}{n-i+1} = \prod_{i=1}^{n-2}\frac{n-i-1}{n-i+1}
-    \end{equation*}
-    \begin{equation*}
-        = \frac{\cancel{n-2}}{n} \cdot \frac{\cancel{n-3}}{n-1} \cdot \frac{n-4}{\cancel{n-2}} \cdot \frac{n-5}{\cancel{n-3}} ... = \frac{2}{n \cdot (n-1)}
+        1 - \frac{k}{m} \geq 1 - \frac{2}{n-1}
     \end{equation*}
 
-    Die Wahrscheinlichkeit, dass der Algorithmus korrekt arbeitet, beträgt damit
+    Falls $E_1, E_2, \dots , E_i$ eingetroffen sind,
+    existieren vor dem $i+1$-Schritt mindestens $\frac{k \cdot (n-i)}{2}$ Kanten.
+    Sei $\Pr(\bigwedge_{1}^i E_i|E_{i+1})$ die Wahrscheinlichkeit,
+    im $i+1$-Schritt keinen Fehler zu machen, falls $E_1 \dots E_i$ eingetreten ist.
+    $\Pr(\bigwedge_{1}^i E_i|E_{i+1})$  beträgt
     \begin{equation*}
-        \geq \frac{2}{n \cdot (n-1)}
+        1 - \frac{k}{m} \geq 1 - \frac{2}{n-i}
     \end{equation*}
+
+    Sei $\Pr_{correct}(\bigcap_{i+1}^{n-2})$ die Wahrscheinlichkeit, dass der Algorithmus korrekt arbeitet.
+    Es gilt:
+    \begin{align*}
+        \Pr_{correct}(\bigcap_{i+1}^{n-2}) & =
+        \Pr(E_1)\ \cdot\
+        \Pr(E_2|E_1)\ \cdot\
+        \Pr(E_3| E_1 \land E_2)\ \cdot\ \dots\ \cdot\
+        \Pr(\bigwedge_{1}^i E_i|E_{i+1}) \\
+        & \geq \prod_{i=1}^{n-2}1-\frac{2}{n - (i+1)} \\
+        & = \prod_{i=1}^{n-2}\frac{n-i+1-2}{n-i+1} \\
+        & = \prod_{i=1}^{n-2}\frac{n-i-1}{n-i+1} \\
+        & = \frac{\cancel{n-2}}{n}\ \cdot\
+        \frac{\cancel{n-3}}{n-1}\ \cdot\
+        \frac{n-4}{\cancel{n-2}}\ \cdot\
+        \frac{n-5}{\cancel{n-3}} \quad\dots \\
+        & = \frac{2}{n \cdot (n-1)} \\
+        & \\
+        \Pr_{correct}(\bigcap_{i+1}^{n-2}) & \geq \frac{2}{n \cdot (n-1)}
+    \end{align*}
+
     Die Erfolgswahrscheinlichkeit kann beliebig erhöht werden.
     Dafür muss der Algorithmus so oft wie gewünscht wiederholt werden.
-    Der kleinste Wert, der in Folge dieser Wiederholungen herauskommt, ist der Min-Cut.
-    Die Wahrscheinlichkeit, in jedem der $r$ Versuche \textbf{nicht}
-    den Min-Cut zu finden, beträgt
+    Der kleinste Wert, der in Folge dieser Wiederholungen herauskommt, ist der Min-Cut.\\
+
+    Sei $r$ die Anzahl der Versuche.
+    Die Wahrscheinlichkeit, \fett{nicht} den Min-Cut zu finden, ist
+    \begin{align*}
+        & \leq (1 - \frac{2}{n \cdot (n-1)})^r \\
+        & \leq e^{-\frac{2}{n \cdot (n-1)}} = e^{\frac{-2r}{n \cdot (n-1)}}
+    \end{align*}
+
+    Sei $r = \frac{n \cdot (n-1)}{2}$.
+    Die Wahrscheinlichkeit, einen falschen Min-Cut zu erhalten, ist
     \begin{equation*}
-        \leq (1 - \frac{2}{n \cdot (n-1)})^r \leq e^{-\frac{2}{n \cdot (n-1)}} = e^{\frac{-2r}{n \cdot (n-1)}}
+        \leq \frac{1}{e} \approx 0,36
     \end{equation*}
 
-    Wähle zum Beispiel $r = \frac{n \cdot (n-1)}{2}$.
-    Die Wahrscheinlichkeit für falsch ist $\leq \frac{1}{e} \approx 0,36$.
+    Sei $r \approx n^2$. Es stellt sich eine \fett{nahezu konstante} Erfolgswahrscheinlichkeit ein.\\
 
-    Für $r \approx n^2$ bekommen wir eine \textbf{konstante} Erfolgswahrscheinlichkeit,
-    für $r \approx n^2 \cdot n \cdot \log(n)$ ist das Ergebnis mit hoher Wahrscheinlichkeit korrekt, d.h. $\leq \frac{1}{n^2}$ für falsch.
+    Sei $r \approx n^2 \cdot n \cdot \log(n)$.
+    Das Ergebnis ist mit sehr hoher Wahrscheinlichkeit korrekt.
+    Die Wahrscheinlichkeit, jetzt noch einen falschen Min-Cut zu haben, ist
+    \begin{equation*}
+        \leq \frac{1}{n^2}
+    \end{equation*}
 \end{document}
