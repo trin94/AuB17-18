@@ -2,147 +2,145 @@
 \input{../lectures-tex/configuration}
 
 \begin{document}
-    \headerline{Algorithmen und Berechenbarkeit}{Vorlesungsmitschrift}{Vorlesung 03}
+    \header{Algorithmen und Berechenbarkeit}{Mitschrift}{Vorlesung 03}
 
-    \subsection*{Laufzeiten}
+    \section*{Landau-Symbole und Laufzeiten}
     \label{subsec:laufzeiten}
 
     \begin{itemize}
-        \item $O(n^2)$ beschreibt die Menge aller Funktionen, die echt langsamer wachsen als $n^2$.
-        \begin{itemize}
-            \item \textbf{In $O(n^2)$:}\quad $n,\quad n^{1,99},\quad n \cdot \log(n),\quad n \cdot \log^2(n)$
-            \item \textbf{Nicht in $O(n^2)$:}\quad $n^2,\quad n^2 \cdot \log(n),\quad 2^n$
-        \end{itemize}
-        \item $\Omega(n^2)$ beschreibt die Menge aller Funktionen, die mindestens so schnell wie $n^2$ wachsen (asymptotisch).
-        \begin{itemize}
-            \item \textbf{In $\Omega(n^2)$:}\quad $n^2,\quad n^2 \cdot \log(n),\quad n^{2,1},\quad 2^n$
-            \item \textbf{Nicht in $\Omega(n^2)$:}\quad $n \cdot \log(n),\quad n^{1,9},\quad \sqrt{n},\quad n \cdot \log^2(n),\quad \frac{n^2}{\log(n)}$
-        \end{itemize}
-        \item $\omega(n^2)$ beschreibt die Menge aller Funktionen, die echt schneller wachsen als $n^2$.
-        \begin{itemize}
-            \item \textbf{In $\omega(n^2)$:}\quad $n^{2,1},\quad n^2 \cdot \log(n), \quad 2^n$
-            \item \textbf{Nicht in $\omega(n^2)$:}\quad $n^2, \quad n \cdot \log(n), \quad \frac{n^2}{\log(n)}, \quad \log(n)$
-        \end{itemize}
-        \item $\Theta(n^2)$ beschreibt die Menge aller Funktionen, die sowohl in $O(n^2)$ als auch in $\Omega(n^2)$ enthalten sind.
+        \item $\mathcal{O}(n^2)$ Die Menge aller Funktionen, die (asymptotisch)\\
+        nicht schneller wachsen als $n^2.\hfill (\leq)$
+        \item $o(n^2)$ Die Menge aller Funktionen, die (asymptotisch)\\
+        echt langsamer wachsen als $n^2.\hfill (<)$
+        \item $\Omega(n^2)$ Die Menge aller Funktionen, die (asymptotisch)\\
+        mindestens so schnell wachsen wie $n^2.\hfill (\geq)$
+        \item $\omega(n^2)$ Die Menge aller Funktionen, die (asymptotisch)\\
+        echt schneller wachsen als $n^2.\hfill (>)$
+        \item $\Theta(n^2)$ Die Menge aller Funktionen, die (asymptotisch)\\
+        genau so schnell wachsen wie $n^2.\hfill (=)$
     \end{itemize}
 
-    \subsection*{Vergleichsbasiertes Sortieren}
+    \section*{Einschub: Vergleichsbasiertes Sortieren}
     \label{subsec:vergleichsbasiertessortieren}
 
-    Es wird \textit{Vergleichsbasiertes Sortieren} von $n$ Objekten betrachtet, wobei die Elemente nur verglichen werden dürfen.
-    Hier stellt sich die \textbf{Frage}: Was ist die Komplexität des vergleichsbasierten Sortierens?
+    Beim \kursiv{vergleichsbasierten Sortieren} von $n$ Objekten,
+    wobei die Elemente nur verglichen werden dürfen,
+    liefert jeder Algorithmus eine obere Schranke für $T(n)$ (Laufzeit für $n$ Elemente).
+    Zum Beispiel ist die obere Schranke von \fett{Bubblesort} $\in \mathcal{O}(n^2)$
+    und die von \fett{Mergesort} $\in \mathcal{O}(n \cdot \log(n))$.
 
-    Die ersten Überlegungen stellen klar: Jeder Sortieralgorithmus liefert eine obere Schranke für $T(n)$:
-    \begin{itemize}
-        \item \textbf{Bubblesort} $\Rightarrow T(n) \in O(n^2)$
-        \item \textbf{Mergesort} $\Rightarrow T(n) \in O(n \cdot \log(n))$
-    \end{itemize}
-    \newpage
-    \begin{theorem}
-        Es kann bewiesen werden, dass $T(n) \in \Omega(n \cdot \log(n)) \quad \Rightarrow \quad T(n) \in \Theta(n \cdot \log(n))$
-    \end{theorem}
+    \begin{satz}
+        Es kann bewiesen werden, dass $T(n) \in \Omega(n \cdot \log(n)) \Rightarrow T(n) \in \Theta(n \cdot \log(n))$.
+    \end{satz}
 
-    \begin{proof}[\textbf{Beweis}]
-        Man betrachte einen beliebigen Algorithmus $\mathcal{A}$ zum Sortieren. $\mathcal{A}$ vergleicht $e_i$ mit $e_j$.
-
+    \begin{proof}
+        Sei $A$ ein beliebiger Algorithmus zum Sortieren. $A$ vergleicht $e_i$ mit $e_j$.
+        Die Vergleiche können exemplarisch als Binärbaum skizziert werden.
         \begin{figure}[htb]
             \centering
-
             \begin{tikzpicture}[level distance=1.5cm,
-            level 1/.style={sibling distance=5cm},
-            level 2/.style={sibling distance=1.5cm}]
-                \node {Vergleich $e_1 \& e_2$}
-                child {node {Vergleich $e_3 \& e_5$}
-                child {node {\ldots}}
-                child {node {\ldots}}
+            level 1/.style={sibling distance=7cm},
+            level 2/.style={sibling distance=4.5cm},
+            every node/.style = {shape=rectangle, rounded corners,
+            draw, align=center,
+            top color=upforestgreen!30, bottom color=upforestgreen!30}]
+                \node {Vergleiche $e_1$ mit $e_2$}
+                child { node {Vergleiche $e_3$ mit $e_5$}child {node {\dots}}
+                child {node {\dots}}
                 }
-                child {node {Vergleich $e_4 \& e_6$}
-                child {node {\ldots}}
-                child {node {\ldots}}
-                };
+                child { node {Vergleiche $e_4$ mit $e_6$}child {node {\dots}}
+                child {node {\dots}}
+                }
+                ;
             \end{tikzpicture}
-            \caption*{Exemplarische Vergleiche beim vergleichsbasierten Sortieren}
         \end{figure}
 
-        Ein Blatt in diesem Baum heißt im Prinzip: Der Algorithmus hat fertig sortiert.
-        Es heißt aber genauso: Der Algorithmus hat "`herausgefunden"', was die "`Permutation"' der Eingabe war.
-        Daraus folgt, dass der Baum $n!$ Blätter haben muss.
-        Es zeigt sich außerdem, dass die Worst-Case-Laufzeit des Algorithmus $\mathcal{A}$ genau der Tiefe des Baumes entspricht.
-        Damit stellt sich die nächste \textbf{Frage}:
+        Trifft der Algorithmus auf ein Blatt des Binärbaums, so hat der Algorithmus fertig sortiert,
+        bzw.\ der Algorithmus hat \kursiv{herausgefunden}, was die Permutation der Eingabe war.
+        Es lässt sich nun festhalten
 
-        Was ist die minimale Tiefe eines Binärbaumes, der $n!$ Blätter hat?
+        \begin{enumerate}
+            \item Der Baum muss $n!$ Blätter haben.
+            \item Die Worst-Case-Laufzeit des Algorithmus $A$ entspricht genau der Tiefe des Baums.
+        \end{enumerate}
+
+        Nun lässt sich die minimale Tiefe eines Binärbaums, der $n!$ Blätter hat, berechnen. Sei
 
         \begin{equation*}
-            2^n = n!
+            2^n \approx n! \approx \left({\frac{n}{e}}\right)^{\frac{n}{e}}
         \end{equation*}
-        \begin{equation*}
-            \left(n! \approx \left({\frac{n}{e}}\right)^{\frac{n}{e}} \Rightarrow x = \log_2\left(\frac{n}{e}\right)^{\frac{n}{e}}
-            \Rightarrow x = n \cdot \log(n)\right)
-        \end{equation*}
+
+        Sei $x$ die minimale Tiefe. Dann gilt
+
+        \begin{align*}
+            x &= \log_2\left(\frac{n}{e}\right)^{\frac{n}{e}}\\
+            &= n \cdot \log(n)
+        \end{align*}
 
     \end{proof}
 
-    \subsection*{Monte-Carlo und Las-Vegas Algorithmen ineinander umwandeln}
-    \label{subsec:monte-carloUndLas-vegasAlgorithmenIneinanderUmwandeln}
-
-    Es stellt sich die \textbf{Frage}, ob jeder Las-Vegas-Algorithmus in einen Monte-Carlo-Algorithmus umgewandelt werden kann, und andersherum.
-
-    \subsubsection*{Las-Vegas $\Rightarrow$ Monte-Carlo}
-    Die Idee besteht aus folgender Überlegung: Lasse den Las-Vegas-Algorithmus eine bestimmte Anzahl an Schritten laufen und breche dann ab.
-    War der Las-Vegas-Algorithmus bis dahin fertig, so muss auch das Ergebnis korrekt sein.
-    War der Las-Vegas-Algorithmus bis dahin nicht fertig, dann gibt es auch kein korrektes Ergebnis.
-
-    Die zentrale \textbf{Frage}, die sich hier anfügt: Wie lange darf der Algorithmus laufen und was ist seine Erfolgswahrscheinlichkeit?
-
-    Sei nun $\mathcal{A}$ ein Las-Vegas-Algorithmus mit erwarteter Laufzeit $f(n)$.
-    $\mathcal{A}$ darf nun für maximal $\alpha \cdot f(n)\ | \alpha \geq 1$ Schritte laufen.
-    Falls der Algorithmus bis dahin fertig ist, ist das Ergebnis sicher korrekt.
-    Ist der Algorithmus bis dahin nicht fertig, so wird \textit{Müll} zurückgegeben.
-
-    Dieser modifizierte Algorithmus hat immer eine Laufzeit von $< \alpha \cdot f(n)$.
-    Die Wahrscheinlichkeit, dass \textit{Müll} zurückgegeben wird, ist gleich der Wahrscheinlichkeit,
-    dass $\mathcal{A}$ länger als $\alpha \cdot f(n)$ Zeit zum Sortieren benötigt.
-
-    \subsubsection*{Monte-Carlo $\Rightarrow$ Las-Vegas}
-
-    Nicht alle Monte-Carlo-Algorithmen können ohne Weiteres in Las-Vegas-Algorithmen umgewandelt werden.
-
-    Für manche Probleme ist die Verifikation des Ergebnisses einfacher als die Berechnung:
-    \begin{itemize}
-        \item Sortieren: $O(n \cdot \log(n))$ \quad vs. \quad $O(n)$.
-        \item Kürzeste Wege: $O(n \cdot \log(n+m))$ \quad vs. \quad $O(m)$.
-    \end{itemize}
-
-    Das Überführen von Monte-Carlo- in Las-Vegas-Algorithmen ist möglich, wenn man einen effizienten \textit{Checker} hat.
+    \section*{Randomisierte Algorithmen: Monte-Carlo und Las-Vegas}
+    In Vorlesung 01 und 02 wurden zwei verschiedene Arten von randomisierten Algorithmen angeschnitten:
+    Las-Vegas- bzw.\ Monte-Carlo-Algorithmen.
 
     \begin{itemize}
-        \item Monte-Carlo-Algorithmus $\mathcal{A}$ hat eine Laufzeit von $f(n)$.
-        \item Checker $\mathcal{O}$ hat eine Laufzeit von $f(n)$.
-        \item Die Erfolgswahrscheinlichkeit von $\mathcal{A}$ sei $p(n)$.
+        \item \fett{Las-Vegas:}
+        \begin{itemize}
+            \item \kursiv{Charakterisierung:} Die Laufzeit hängt vom Zufall ab, die Korrektheit nicht.
+            \item \kursiv{Beispiel}: Randomisierter Closest-Pair-Algorithmus
+            \item \kursiv{Umwandlung in Monte-Carlo-Algorithmus:}
+            Die Umwandlung von Las-Vegas- in Monte-Carlo-Algorithmen ist möglich.
+            Sei $A_L$ ein Las-Vegas-Algorithmus.
+            Man lässt $A$ eine bestimmte Anzahl an Schritten laufen und bricht dann ab.
+            War $A$ bis dahin fertig, so muss das Ergebnis korrekt sein.
+            War $A$ bis dahin nicht fertig, dann gibt es auch kein korrektes Ergebnis.
+
+            Sei $f(n)$ die erwartete Laufzeit von $A$. $A$ darf nun für maximal $\alpha \cdot f(n)$
+            (mit $\alpha \geq 1$) Schritte laufen.
+            Es gilt: $A$ hat immer eine Laufzeit von $< \alpha \cdot f(n)$.
+            Die Wahrscheinlichkeit, dass $A$ ein falsches Resultat liefert,
+            entspricht genau der Wahrscheinlichkeit, dass $A$ länger als $\alpha \cdot f(n)$ Zeit benötigt.
+        \end{itemize}
+        \item \fett{Monte-Carlo:}
+        \begin{itemize}
+            \item \kursiv{Charakterisierung:} Die Laufzeit hängt nicht vom Zufall ab, die Korrektheit schon.
+            \item \kursiv{Beispiel}: Kargers Min-Cut-Algorithmus
+            \item \kursiv{Umwandlung in Las-Vegas-Algorithmus:}
+            Die Umwandlung ist nicht für alle Monte-Carlo-Algorithmen können ohne Weiteres möglich.
+            Für manche Probleme ist die Verifikation des Ergebnisses einfacher als die Berechnung:
+            \begin{itemize}
+                \item Sortieren: $\mathcal{O}(n \cdot \log(n))$ vs.\ $O(n)$
+                \item Kürzeste Wege: $\mathcal{O}(n \cdot \log(n+m))$ vs.\ $O(m)$
+            \end{itemize}
+            Das Überführen von Monte-Carlo- in Las-Vegas-Algorithmen ist möglich,
+            wenn ein effizienter \textit{Checker} existiert. Sei $B$ ein Monte-Carlo-Algorithmus mit Laufzeit $f(n)$,
+            sei $C$ ein Checker mit Laufzeit $f(n)$, die Erfolgswahrscheinlichkeit von $B$ sei $p(n)$.
+            \newpage
+            Ein Las-Vegas-Algorithmus kann nun auf folgende Weise erzeugt werden:
+            \begin{figure}[H]
+                \centering
+                \begin{minipage}{.55\linewidth}
+                    \begin{algorithmic}
+                        \STATE{lasse $B$ laufen}
+                        \IF {$B.result$ ist korrekt}
+                        \RETURN {$B.result$}
+                        \ELSE
+                        \STATE {starte neu}
+                        \ENDIF
+                    \end{algorithmic}
+                \end{minipage}
+            \end{figure}
+
+            Für die erwartete Laufzeit $R_B$ ergibt sich
+            \begin{align*}
+                R_B &= p(n) \cdot \left( f(n) + g(n) \right) \\
+                &\quad + ((1 - p(n)) \cdot p(n) \cdot (f(n) + g(n))) \cdot 2\\
+                &\quad + ((1 - p(n))^2 \cdot p(n) \cdot (f(n) + g(n))) \cdot 3 +\ \dots \\\nonumber
+                &=(f(n) + g(n)) \cdot p(n) \cdot \sum^{\infty}_{i=1}\left( 1-p(n)\right)^{i}\\
+                & < \frac{f(n) + g(n)}{p(n)} \cdot (i+1)
+            \end{align*}
+        \end{itemize}
     \end{itemize}
-
-    Mit folgendem Algorithmus kann dann ein Las-Vegas-Algorithmus erzeugt werden:
-
-    \begin{lstlisting}
-        1. Lasse Algorithmus laufen
-        2. Überprüfe Ergebnis mit Checker
-            Falls korrekt, dann fertig
-            Falls nicht korrekt, zurück zu 1.
-    \end{lstlisting}
-
-    Die erwartete Laufzeit $\mathcal{R}$ ist dann
-
-    \begin{equation*}
-        \begin{flalign}
-            \mathcal{R} &= p(n) \cdot (f(n) + g(n))&&\\\nonumber
-            &\quad + ((1 - p(n)) \cdot p(n) \cdot (f(n) + g(n))) \cdot 2&&\\\nonumber
-            &\quad + ((1 - p(n))^2 \cdot p(n) \cdot (f(n) + g(n))) \cdot 3&&\\\nonumber
-            &\quad +\ ...&&\\\nonumber
-            &=\left( f(n) + g(n)) \cdot p(n) \cdot \sum^{\infty}_{i=1}((1-p(n))^i < \frac{f(n) + g(n)}{p(n)}) \cdot (i+1)\right)
-        \end{flalign}
-    \end{equation*}
-
-    \hrulefill
 
     \section*{Anhang}
     \label{sec:anhang}
