@@ -2,7 +2,7 @@
 
 Mitschriften zur Vorlesung *AuB17/18* der Uni Stuttgart. Kein Anspruch auf Korrektheit.
 
-Aktuell: *Die Mitschriften erhalten eine Überarbeitung* (Fertig: 01-03).
+Aktuell: Wenn jemand das Repo übernehmen mag, bitte eine Mail schreiben.
 
 
 |Vorlesung|Datum der VL|PDF                                |Thema
